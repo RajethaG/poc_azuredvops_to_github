@@ -2,9 +2,21 @@
   <v-main>
     <v-container class="container bordered borderStyle">
       <v-layout wrap>
-        <v-flex class="my-3" xs12 md12 v-for="data in commands" :key="data">
+        <v-flex
+          class="my-3"
+          xs12
+          md12
+          v-for="(data, index) in commands"
+          :key="index"
+        >
           <v-layout>
-            <v-flex xs12 md6 class="text-left" v-for="dat in data" :key="dat">
+            <v-flex
+              xs12
+              md6
+              class="text-left"
+              v-for="(dat, index) in data"
+              :key="index"
+            >
               <strong>{{ dat.text }}</strong>
               <div>{{ dat.icon }}</div>
             </v-flex>

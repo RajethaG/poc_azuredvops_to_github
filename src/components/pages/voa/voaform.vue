@@ -178,8 +178,19 @@
 export default {
   methods: {
     save() {
-      this.$router.push('voasummary')
+      this.$router.push({ name: 'voasummary', params: { id: 1 } })
     }
+  },
+  created() {
+    this.referenceNumber = '12345'
+    this.accountHistory = '30'
+    this.refreshPeriod = '30 Days Refresh'
+    this.ssn = '1233123123'
+    this.firstName = 'rajetha'
+    this.lastName = 'jagadish'
+    this.email = 'rajethauday98@gmail.com'
+    this.phone = '9876543210'
+    this.employerName = 'rajetha'
   },
   data() {
     return {
