@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from '@/router/routes'
-// import { store } from '@/store'
+import { store } from '@/store'
 
 Vue.use(Router)
 
@@ -16,6 +16,14 @@ const router = new Router({
       component: () => import('@/components/pages/nextpage.vue')
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  switch (to.name) {
+    case 'voaform':
+      store.dispatch('getClientConfig', to)
+  }
+  return next()
 })
 
 export default router

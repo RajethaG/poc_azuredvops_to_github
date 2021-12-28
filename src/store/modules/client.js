@@ -10,14 +10,20 @@ const getters = {
 }
 
 const actions = {
-  getClientConfig({ commit }, client) {
+  getClientConfig: ({ commit }, client) => {
+    const token = client.query?.tk
+    if (!token) {
+      return new Promise((resolve, reject) => {
+        reject(new Error('invalid token'))
+      })
+    }
+
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
       api
-        .getClientConfig(client)
+        .getClientConfig(token)
         .then((response) => {
           if (response && response.status === 200) {
-            // Vuetify.theme.primary = '#9E9D24'
             commit(types.SET_CLIENT_CONFIG, response.data)
             resolve()
           }
@@ -42,7 +48,7 @@ const state = {
   config: {
     themeName: null,
     themes: null,
-    layout: 'default'
+    layout: ''
   }
 }
 

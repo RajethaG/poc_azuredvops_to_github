@@ -1,19 +1,29 @@
 import axios from 'axios'
 
 export default {
-  getClientConfig(client) {
-    console.log('calling API endpoint for client configuration')
+  getClientConfig(token) {
+    console.log(
+      'Calling API endpoint for client configuration using token ',
+      token
+    )
     return new Promise((resolve) => {
       setTimeout(() => {
-        if (client === 'avantus') {
+        if (token === 'avantus') {
           resolve({
             status: 200,
             data: {
-              client,
               layout: 'default',
               theme: 'def',
               themes: {
                 primary: '#0277BD'
+              },
+              customerInfo: {},
+              autoFill: {
+                reference: '283020338',
+                firstname: 'first _name',
+                lastname: 'last _name',
+                ssn: '333-99-333',
+                email: 'autoemail@abc.com'
               }
             }
           })
@@ -21,11 +31,17 @@ export default {
           resolve({
             status: 200,
             data: {
-              client,
               layout: 'small',
               theme: 'def',
               themes: {
                 primary: '#FFA000'
+              },
+              autoFill: {
+                reference: '283020338',
+                firstname: 'first _name',
+                lastname: 'last _name',
+                ssn: '333-99-333',
+                email: 'autoemail@abc.com'
               }
             }
           })

@@ -175,20 +175,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   methods: {
     save() {
       this.$router.push({ name: 'voasummary', params: { id: 1 } })
     }
   },
+  computed: {
+    ...mapGetters(['config'])
+  },
   created() {
-    this.referenceNumber = '12345'
+    this.referenceNumber = this.config.autoFill.reference
     this.accountHistory = '30'
     this.refreshPeriod = '30 Days Refresh'
-    this.ssn = '1233123123'
-    this.firstName = 'rajetha'
-    this.lastName = 'jagadish'
-    this.email = 'rajethauday98@gmail.com'
+    this.ssn = this.config.autoFill.ssn
+    this.firstName = this.config.autoFill.firstname
+    this.lastName = this.config.autoFill.lastname
+    this.email = this.config.autoFill.email
     this.phone = '9876543210'
     this.employerName = 'rajetha'
   },

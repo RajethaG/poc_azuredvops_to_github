@@ -18,7 +18,6 @@ new Vue({
   store,
   render: (h) => h(App),
   created() {
-    store.dispatch('getClientConfig')
     // if (!store.client.isClientConfigured) {
     //   store.dispatch('getClientConfig')
     // }
