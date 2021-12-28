@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>Small Layout without app-bar</h1>
+    <page-title text="Verification of Assets" />
     <!-- <v-app-bar height="90" fixed class="primary" shrink-on-scroll dark> -->
     <!-- </v-app-bar> -->
     <transition name="fade" mode="out-in">

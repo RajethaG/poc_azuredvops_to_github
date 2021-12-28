@@ -3,8 +3,7 @@ import axios from 'axios'
 export default {
   getClientConfig(token) {
     console.log(
-      'Calling API endpoint for client configuration using token ',
-      token
+      'calling API curl GET https://devapi.creditplus.com/consumerreport/api/voa/OrderReport --header Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2Vy...'
     )
     return new Promise((resolve) => {
       setTimeout(() => {
