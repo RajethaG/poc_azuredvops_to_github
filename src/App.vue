@@ -2,6 +2,7 @@
   <v-app>
     <layout-default v-if="layout === 'default'" />
     <layout-small v-else-if="layout === 'small'" />
+    <layout-blank v-if="layout === 'plain'" />
     <v-overlay :value="isAppBusy" color="#aaa" opacity="0.9">
       <v-progress-circular
         indeterminate
@@ -15,6 +16,7 @@
 <script>
 import LayoutDefault from './components/layout/layout-default.vue'
 import LayoutSmall from './components/layout/layout-small.vue'
+import LayoutBlank from './components/layout/layout-blank.vue'
 import { mapGetters } from 'vuex'
 export default {
   name: 'App',
@@ -26,7 +28,8 @@ export default {
   },
   components: {
     LayoutDefault,
-    LayoutSmall
+    LayoutSmall,
+    LayoutBlank
   },
   watch: {
     config(val) {
@@ -47,6 +50,5 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
 </style>

@@ -4,7 +4,6 @@
     </v-app-bar> -->
     <transition name="fade" mode="out-in">
       <div class="container bordered mt-5 rounded">
-        <h1>What is this</h1>
         <v-breadcrumbs :items="breadcrumbs">
           <template v-slot:item="{ item }">
             <v-breadcrumbs-item :href="item.href" :disabled="item.disabled">

@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <page-title text="VOA Order Summary" />
     <v-layout row wrap class="my-3">
       <v-flex xs12 md12>
         <BaseCard />

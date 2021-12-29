@@ -1,10 +1,8 @@
 <template>
-  <v-container grid-list-md>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <h2 class="text-uppercase">{{ text }}</h2>
-      </v-flex>
-    </v-layout>
+  <v-container>
+    <v-flex xs12>
+      <h2 class="text-uppercase primary--text">{{ text }}</h2>
+    </v-flex>
   </v-container>
 </template>
 <script>
