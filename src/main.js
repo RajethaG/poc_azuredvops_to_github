@@ -5,7 +5,6 @@ import '@/plugins/veevalidate'
 import App from './App.vue'
 import router from '@/router'
 import { store } from '@/store'
-
 import '@/components/sections/_loader.js'
 
 Vue.config.productionTip = false

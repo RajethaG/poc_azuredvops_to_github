@@ -12,7 +12,8 @@ import {
   max,
   min_value,
   max_value,
-  numeric
+  numeric,
+  alpha_num
 } from 'vee-validate/dist/rules'
 
 extend('required', { ...required, message: '{_field_} Is Required' })
@@ -21,6 +22,10 @@ extend('email', email)
 extend('numeric', { ...numeric, message: '{_field_} Must Be Number' })
 extend('min', { ...min, message: '{_field_} Minimum {length} Expected' })
 extend('max', { ...max, message: '{_field_} Maximum Length Exceeded' })
+extend('alpha_num', {
+  ...alpha_num,
+  message: '{_field_} should not contain special characters'
+})
 extend('digits_between', {
   validate: (value, { min, max } = {}) => {
     return Number(min) <= value && Number(max) >= value

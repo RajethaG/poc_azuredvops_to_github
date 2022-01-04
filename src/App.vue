@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapGetters(['isAppBusy', 'themes', 'config']),
     layout() {
-      return this.config?.layout || ''
+      return this.config.appTheme?.Layout || ''
     }
   },
   components: {
@@ -36,7 +36,6 @@ export default {
       if (!val) {
         return
       }
-
       if (val.themes) {
         this.$setTheme(val.themes)
       }

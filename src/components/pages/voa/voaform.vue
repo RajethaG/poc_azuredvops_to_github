@@ -8,7 +8,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Reference Number"
-                rules="required|max:15"
+                rules="required|max:14|alpha_num"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -62,7 +62,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="First Name"
-                rules="required|max:50"
+                rules="required|max:50|alpha_num"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -79,7 +79,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Last Name"
-                rules="required|max:50"
+                rules="required|max:50|alpha_num"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -96,7 +96,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="SSN"
-                rules="required|max:50"
+                rules="required|max:10"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -115,7 +115,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Email Id"
-                rules="required|email"
+                rules="required|email|max:100"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -132,7 +132,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Phone Number"
-                rules="required"
+                rules="required|max:10"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -151,7 +151,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Employer Name"
-                rules="required"
+                rules="required|max:50|alpha_num"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -195,25 +195,24 @@ export default {
       return this.$route.query.tk
     }
   },
-  created() {
-    console.log('VOA FORM Created again')
-    if (this.config.autoFill) {
-      this.referenceNumber = this.config.autoFill.reference
-      this.accountHistory = '30'
-      this.refreshPeriod = '30 Days Refresh'
-      this.ssn = this.config.autoFill.ssn
-      this.firstName = this.config.autoFill.firstname
-      this.lastName = this.config.autoFill.lastname
-      this.email = this.config.autoFill.email
-      this.phone = '9876543210'
-      this.employerName = 'rajetha'
+  watch: {
+    config(value) {
+      this.referenceNumber = value.voaRequest.referenceNumber
+      this.accountHistory = value.voaRequest.accountHistory
+      this.refreshPeriod = value.voaRequest.refreshPeriod
+      this.ssn = value.voaRequest.ssn
+      this.firstName = value.voaRequest.firstName
+      this.lastName = value.voaRequest.lastName
+      this.email = value.voaRequest.emailID
+      this.phone = value.voaRequest.phoneNumber
+      this.employerName = value.voaRequest.employerName
     }
   },
   data() {
     return {
       referenceNumber: '',
       accountHistory: '',
-      refreshPeriod: '',
+      refreshPeriod: null,
       firstName: '',
       lastName: '',
       ssn: '',
@@ -221,9 +220,9 @@ export default {
       phone: '',
       employerName: '',
       accountHistoryItems: [
-        { text: '30 days', value: '30' },
-        { text: '60 days', value: '60' },
-        { text: '90 days', value: '90' }
+        { text: '30 days', value: 30 },
+        { text: '60 days', value: 60 },
+        { text: '90 days', value: 90 }
       ],
       refreshPeriodItems: [
         { text: 'One Time Report', value: 'One Time Report' },

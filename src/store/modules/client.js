@@ -48,7 +48,8 @@ const state = {
   config: {
     themeName: null,
     themes: null,
-    layout: ''
+    layout: '',
+    appTheme: ''
   }
 }
 

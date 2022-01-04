@@ -39,7 +39,7 @@ export default {
     toggleLayout() {
       this.$store.dispatch(
         'getClientConfig',
-        this.config.layout === 'default' ? 'small' : 'avantus'
+        this.config.appTheme.layout === 'default' ? 'small' : 'avantus'
       )
     },
     showSuccess() {

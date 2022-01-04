@@ -1,0 +1,5 @@
+{
+    "voa":{
+        "getvoaorder":"consumerreport/api/voa/getvoaorder"
+    }
+}

@@ -11,7 +11,7 @@
             </v-breadcrumbs-item>
           </template>
         </v-breadcrumbs>
-        <router-view class="mt-12 pt-12" />
+        <router-view class="mt-6" />
       </div>
     </transition>
     <SuccessMessage />
