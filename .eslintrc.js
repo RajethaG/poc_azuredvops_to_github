@@ -46,6 +46,7 @@ module.exports = {
     'no-unexpected-multiline': ['warn'],
     'no-unreachable': ['warn'],
     'no-magic-numbers': ['off'],
+    'max-len': [2, 80, 4, {"ignoreUrls": true}],
     'max-params': ['off'],
     'max-nested-callbacks': ['off'],
     'new-cap': ['off'],
