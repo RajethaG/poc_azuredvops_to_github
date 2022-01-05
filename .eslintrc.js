@@ -47,7 +47,6 @@ module.exports = {
     'no-unreachable': ['warn'],
     'no-magic-numbers': ['off'],
     'max-params': ['off'],
-    'max-len': [2, 80, 4, { ignoreUrls: true }],
     'max-nested-callbacks': ['off'],
     'new-cap': ['off'],
     'consistent-this': ['error', 'that'],
