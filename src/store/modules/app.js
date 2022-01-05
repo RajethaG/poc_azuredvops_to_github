@@ -19,6 +19,14 @@ const mutations = {
 }
 
 const actions = {
+  setLandingConfig({ commit }) {
+    commit(types.SET_CLIENT_CONFIG, {
+      layout: 'default',
+      themes: {
+        primary: '#0277BD'
+      }
+    })
+  },
   addTask({ commit }, loader) {
     commit(types.ADD_TASK, loader)
   },
