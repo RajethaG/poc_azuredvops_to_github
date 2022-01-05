@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapGetters(['isAppBusy', 'themes', 'config']),
     layout() {
-      return this.config.appTheme?.Layout || 'small'
+      return this.config.appTheme?.Layout || ''
     }
   },
   components: {

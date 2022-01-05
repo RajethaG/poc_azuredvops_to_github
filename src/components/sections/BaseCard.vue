@@ -37,7 +37,6 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      color: 'red',
       commands: [
         [
           { text: 'view Report', icon: 'pencil' },
