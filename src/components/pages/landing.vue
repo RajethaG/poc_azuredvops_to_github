@@ -44,7 +44,8 @@ export default {
     },
     showSuccess() {
       this.setAlert({
-        msg: 'The update is done successfully. Please check the notification and try again'
+        msg:
+          'The update is done successfully. Please check the notification and try again'
       })
       this.$router.push('nextpage')
 
