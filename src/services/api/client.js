@@ -11,6 +11,17 @@ export default {
           Layout: 'small',
           Theme: '#FFA0F0'
         }
+        response.data.autoFill = [
+          { key: 'referenceNumber', value: '12345' },
+          { key: 'accountHistory', value: '30' },
+          { key: 'refreshPeriod', value: '30 days' }
+        ]
+
+        response.data.productsList = [
+          { key: '50', name: 'VOA' },
+          { key: '51', name: 'VOE' }
+        ]
+
         return response
       })
       .catch((error) => {

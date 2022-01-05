@@ -49,7 +49,8 @@ const state = {
     themeName: null,
     themes: null,
     layout: '',
-    appTheme: ''
+    appTheme: '',
+    productsList: []
   }
 }
 

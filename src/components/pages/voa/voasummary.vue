@@ -33,11 +33,7 @@ export default {
       ],
       desserts: [
         { one: 'one from items', two: 'two from items' },
-        { one: 'one from items', two: 'three from items' },
-        { one: 'one from items', two: 'two from items' },
-        { one: 'one from items', two: 'two from items' },
-        { one: 'one from items', two: 'two from items' },
-        { one: 'one from items', two: 'two from items' }
+        { one: 'one from items', two: 'three from items' }
       ]
     }
   }

@@ -180,6 +180,12 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+  props: {
+    prefillData: {
+      type: Object,
+      default: () => {}
+    }
+  },
   methods: {
     save() {
       this.$router.push({
@@ -195,22 +201,23 @@ export default {
       return this.$route.query.tk
     }
   },
-  watch: {
-    config(value) {
-      this.referenceNumber = value.voaRequest.referenceNumber
-      this.accountHistory = value.voaRequest.accountHistory
-      this.refreshPeriod = value.voaRequest.refreshPeriod
-      this.ssn = value.voaRequest.ssn
-      this.firstName = value.voaRequest.firstName
-      this.lastName = value.voaRequest.lastName
-      this.email = value.voaRequest.emailID
-      this.phone = value.voaRequest.phoneNumber
-      this.employerName = value.voaRequest.employerName
-    }
-  },
+  // watch: {
+  //   voaData(value) {
+  //     console.log(value)
+  //     this.referenceNumber = value.voaRequest.referenceNumber
+  //     this.accountHistory = value.voaRequest.accountHistory
+  //     this.refreshPeriod = value.voaRequest.refreshPeriod
+  //     this.ssn = value.voaRequest.ssn
+  //     this.firstName = value.voaRequest.firstName
+  //     this.lastName = value.voaRequest.lastName
+  //     this.email = value.voaRequest.emailID
+  //     this.phone = value.voaRequest.phoneNumber
+  //     this.employerName = value.voaRequest.employerName
+  //   }
+  // },
   data() {
     return {
-      referenceNumber: '',
+      referenceNumber: this.prefillData.referenceNumber,
       accountHistory: '',
       refreshPeriod: null,
       firstName: '',
@@ -219,6 +226,7 @@ export default {
       email: '',
       phone: '',
       employerName: '',
+      voaData: this.prefillData,
       accountHistoryItems: [
         { text: '30 days', value: 30 },
         { text: '60 days', value: 60 },
