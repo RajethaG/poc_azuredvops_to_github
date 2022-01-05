@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapGetters(['isAppBusy', 'themes', 'config']),
     layout() {
-      return this.config.appTheme?.Layout || ''
+      return this.config.appTheme?.Layout || 'small'
     }
   },
   components: {
@@ -36,8 +36,11 @@ export default {
       if (!val) {
         return
       }
-      if (val.themes) {
-        this.$setTheme(val.themes)
+      if (val.appTheme.Theme) {
+        const themes = {
+          primary: val.appTheme.Theme
+        }
+        this.$setTheme(themes)
       }
     }
   }

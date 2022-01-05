@@ -1,6 +1,11 @@
 <template>
   <v-main>
-    <v-container class="container bordered borderStyle">
+    <v-container
+      class="container bordered"
+      :style="{
+        'border-left': `5px solid  ${borderStyle}`
+      }"
+    >
       <v-layout wrap>
         <v-flex
           class="my-3"
@@ -28,9 +33,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      color: 'red',
       commands: [
         [
           { text: 'view Report', icon: 'pencil' },
@@ -42,12 +49,12 @@ export default {
         ]
       ]
     }
+  },
+  computed: {
+    ...mapGetters(['config']),
+    borderStyle() {
+      return this.config.appTheme?.Theme || '#fff'
+    }
   }
 }
 </script>
-
-<style scoped>
-.borderStyle {
-  border-left: 5px solid rgb(8, 164, 175);
-}
-</style>

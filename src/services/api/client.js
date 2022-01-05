@@ -7,6 +7,10 @@ export default {
     return axios
       .get(`${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`)
       .then((response) => {
+        response.data.appTheme = {
+          Layout: 'small',
+          Theme: '#FFA0F0'
+        }
         return response
       })
       .catch((error) => {

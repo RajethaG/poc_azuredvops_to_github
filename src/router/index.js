@@ -32,6 +32,7 @@ router.beforeEach((to, from, next) => {
       }, 250)
       break
     case 'voaform':
+    case 'landingPage':
     case 'voasummary':
       store
         .dispatch('getClientConfig', to)

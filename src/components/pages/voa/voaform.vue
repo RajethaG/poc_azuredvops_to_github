@@ -96,7 +96,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="SSN"
-                rules="required|max:10"
+                rules="required|max:10|min:10"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -132,7 +132,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Phone Number"
-                rules="required|max:10"
+                rules="required|max:10|min:10"
                 v-slot="{ errors }"
               >
                 <v-text-field
