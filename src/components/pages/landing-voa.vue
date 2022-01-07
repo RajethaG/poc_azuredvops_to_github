@@ -5,16 +5,14 @@
         <page-title :text="title" />
       </v-flex>
     </v-layout>
-    <v-layout row wrap>
+    <v-layout row wrap v-if="products && products.length > 0">
       <v-flex sm12 md6>
         <v-select
-          v-if="products && products.length > 0"
           v-model="selectedComponent"
           :items="products"
           label="Choose Product"
           outlined
           dense
-          @change="getPreFillData(selectedComponent)"
         ></v-select>
       </v-flex>
     </v-layout>
@@ -22,7 +20,7 @@
       <v-flex sm12 md12>
         <component
           :is="selectedComponent"
-          v-bind="{ prefillData: getValue }"
+          v-bind="{ prefillData: config.voaRequest }"
         ></component>
       </v-flex>
     </v-layout>
@@ -39,7 +37,7 @@ export default {
   components: { VOA, VOE, PageTitle },
   data() {
     return {
-      items: [{ text: 'VOA', value: 'voaform' }],
+      items: [],
       selectedComponent: '',
       getValue: {}
     }
@@ -62,6 +60,13 @@ export default {
       return []
     }
   },
+  mounted() {
+    // mount is triggered only after config is loaded
+    // uncomment if default selection is to be enabled
+    // if (this.config.voaRequest) {
+    //   this.selectedComponent = 'VOA'
+    // }
+  },
   methods: {
     getComponentKey(key) {
       switch (Number(key)) {
@@ -71,24 +76,6 @@ export default {
           return 'VOA'
       }
       return ''
-    },
-    getAllValue(array) {
-      const rObject = {}
-      array.forEach((key) => {
-        rObject[key] = this.config.autoFill?.find((x) => x.key === key)?.value
-      })
-      return rObject
-    },
-    getPreFillData(component) {
-      switch (component) {
-        case 'VOA':
-          this.getValue = this.getAllValue([
-            'referenceNumber',
-            'accountHistory',
-            'refreshPeriod'
-          ])
-          break
-      }
     }
   }
 }
