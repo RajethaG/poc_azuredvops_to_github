@@ -1,6 +1,6 @@
 {
     "voa":{
         "getvoaorder":"consumerreport/api/voa/getvoaorder",
-        "getvoasummary":"consumerreport/api/voa/getvoaorder"
+        "getvoasummary":"/consumerreport/api/VOA/GetOrderDetails"
     }
 }

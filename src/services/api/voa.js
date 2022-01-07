@@ -7,7 +7,8 @@ import * as types from '@/store/mutation-types'
 const getHeader = (token, attr = {}) => {
   return {
     headers: {
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
+      Authorization: 'Bearer a211d13f72d14c2a9a2c9a06a0e1f14c',
       ...attr
     }
   }
@@ -15,9 +16,16 @@ const getHeader = (token, attr = {}) => {
 
 export default {
   pullSummaryVOA(orderId, token) {
-    return new Promise((resolve) => {
-      resolve()
-    })
+    const endpoint = `${appConfig.apiEndPoint}/${apiPath.voa.getvoasummary}
+    /orderId=${orderId}`
+    axios
+      .get(endpoint, getHeader(token))
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   },
   pullVOA(token) {
     return new Promise((resolve, reject) => {
@@ -52,7 +60,7 @@ export default {
   },
   submitVOA(payload, token) {
     return axios.post(
-      'https://apim-dev-cpss.azure-api.net/consumer/api/VOA/OrderReport',
+      'https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/OrderReport',
       payload,
       getHeader(token)
     )

@@ -34,7 +34,7 @@ const actions = {
         .doPOST({ product, payload, token })
         .then((response) => {
           if (response && response.status === 200) {
-            resolve()
+            resolve(response.data)
           }
         })
         .catch(() => {
