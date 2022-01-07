@@ -1,9 +1,9 @@
 <template>
-  <v-container>
+  <section class="my-3">
     <v-flex xs12>
       <h2 class="text-uppercase primary--text">{{ text }}</h2>
     </v-flex>
-  </v-container>
+  </section>
 </template>
 <script>
 export default {

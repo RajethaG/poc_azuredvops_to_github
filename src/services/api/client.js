@@ -1,11 +1,25 @@
 import axios from 'axios'
 import apiPath from '../../constants/apipath.json'
 import appConfig from '../../constants/appconfig.json'
+import * as types from './api-types'
 
-export default {
-  getClientConfig(token) {
-    return axios
-      .get(`${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`)
+const getHeader = (token, attr = {}) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...attr
+    }
+  }
+}
+
+const pullVOA = (token) => {
+  return new Promise((resolve, reject) => {
+    const endpoint = `${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`
+
+    console.log('Requesting Endpoint ', endpoint)
+
+    axios
+      .get(endpoint, getHeader(token))
       .then((response) => {
         response.data.appTheme = {
           Layout: 'small',
@@ -17,16 +31,51 @@ export default {
           { key: 'refreshPeriod', value: '30 days' }
         ]
 
-        response.data.productsList = [
-          { key: '50', name: 'VOA' },
-          { key: '51', name: 'VOE' }
+        response.data.productOptions = [
+          { key: '50', value: 'Verification of Employment' },
+          { key: '51', value: 'Verification of Assets' }
         ]
 
-        return response
+        resolve(response)
       })
       .catch((error) => {
-        return error
+        reject(error)
       })
+  })
+}
+
+const pullSummaryVOA = (orderId, token) => {
+  return new Promise((resolve) => {
+    resolve()
+  })
+}
+
+export default {
+  getClientConfig(client) {
+    const token = client.query?.tk
+    const product = (client.params.product || '').toLowerCase()
+    const name = (client.name || '').toLowerCase()
+
+    if (!token || !name) {
+      return new Promise((reject) => {
+        reject(new Error('invalid request'))
+      })
+    }
+
+    switch (name) {
+      case types.INTEGRATION_VOA:
+        return pullVOA(token)
+      case types.SUMMARY_REQUEST:
+        if (product === types.PRODUCT_VOA) {
+          return pullSummaryVOA(client.params.orderId, token)
+        }
+        break
+    }
+
+    return new Promise((reject) => {
+      reject()
+    })
+
     // return new Promise((resolve) => {
     //   setTimeout(() => {
     //     if (token === 'avantus') {

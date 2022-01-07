@@ -7,7 +7,8 @@ export default [
     },
     component: () =>
       import(
-        /* webpackChunkName: "landingpage" */ '@/components/pages/landingpage.vue'
+        // eslint-disable-next-line max-len
+        /* webpackChunkName: "landing" */ '@/components/pages/landing.vue'
       )
   }
 ]

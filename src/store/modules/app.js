@@ -21,9 +21,9 @@ const mutations = {
 const actions = {
   setLandingConfig({ commit }) {
     commit(types.SET_CLIENT_CONFIG, {
-      layout: 'default',
-      themes: {
-        primary: '#0277BD'
+      appTheme: {
+        Layout: 'default',
+        Theme: '#0277BD'
       }
     })
   },

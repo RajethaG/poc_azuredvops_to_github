@@ -1,9 +1,8 @@
 <template>
-  <v-container>
-    <page-title text="Verification of Employment" />
+  <section>
     <ValidationObserver v-slot="{ handleSubmit }">
       <form @submit.prevent="handleSubmit(save)">
-        <v-container grid-list-md>
+        <v-container grid-list-md class="px-0 mx-0">
           <v-layout row wrap>
             <v-flex xs12 sm4>
               <ValidationProvider
@@ -68,7 +67,7 @@
         </v-container>
       </form>
     </ValidationObserver>
-  </v-container>
+  </section>
 </template>
 
 <script>

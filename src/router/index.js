@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import routes from '@/router/routes'
 import { store } from '@/store'
 import * as types from '@/store/mutation-types'
+import * as reqTypes from '@/services/api/api-types'
 
 Vue.use(Router)
 
@@ -31,9 +32,9 @@ router.beforeEach((to, from, next) => {
         })
       }, 250)
       break
-    case 'voaform':
-    case 'landingPage':
-    case 'voasummary':
+    case reqTypes.INTEGRATION_VOA:
+    case reqTypes.INTEGRATION_FRAUDPLUS:
+    case reqTypes.SUMMARY_REQUEST:
       store
         .dispatch('getClientConfig', to)
         .catch(() => next({ name: 'authError' }))
