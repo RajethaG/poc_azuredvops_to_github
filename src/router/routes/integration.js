@@ -19,6 +19,8 @@ export default [
       requiresAuth: false
     },
     component: () =>
-      import(/* webpackChunkName: "landing" */ '@/components/pages/landing.vue')
+      import(
+        /* webpackChunkName: "landing" */ '@/components/pages/summary-main.vue'
+      )
   }
 ]

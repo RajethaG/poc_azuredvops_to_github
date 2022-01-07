@@ -178,53 +178,76 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import * as apiTypes from '@/services/api/api-types'
 export default {
   props: {
     prefillData: {
       type: Object,
       default: () => {}
+    },
+    tk: {
+      type: String,
+      default: ''
     }
   },
   methods: {
+    buildVOAPayload() {
+      const payload = {
+        userId: 2,
+        productId: '112',
+        OrderForUser: 1222,
+        OrderForCustomer: 6,
+        borrowerFirstName: this.firstName,
+        borrowerLastName: this.lastName,
+        borrowerSSN: this.ssn,
+        referenceNo: this.referenceNumber,
+        borrowerEmailId: this.email,
+        employerName: this.employerName === '' ? null : this.employerName,
+        accountHistory: this.accountHistory,
+        refreshPeriod: this.refreshPeriod,
+        phoneNumber: this.phone.replace(/[^0-9]/g, '')
+      }
+
+      return payload
+    },
     save() {
-      this.$router.push({
-        name: 'voasummary',
-        params: { id: 1 },
-        query: { tk: this.token }
+      const payload = this.buildVOAPayload()
+
+      this.$store.dispatch('doPOST', {
+        product: apiTypes.PRODUCT_VOA,
+        payload,
+        token:
+          // eslint-disable-next-line max-len
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImU4YzI1YzljLTg0OTItNGIzNS05ZGRhLTk2NDVmNmE0ZTQ3ZSIsIlVzZXJJRCI6IjIiLCJDdXN0b21lcklkIjoiMSIsIkZpcnN0TmFtZSI6ImNwc3MiLCJNaWRkbGVJbml0aWFsIjoiSjEiLCJMYXN0TmFtZSI6ImFkbWluIiwiZW1haWwiOiJjcHNzYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDcmVkaXQgUGx1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMCIsIkN1c3RvbWVyTmFtZSI6IkNyZWRpdCBQbHVzIiwiUm9sZXMiOiJDcmVkaXQgUGx1cyBBZG1pbiIsImV4cCI6MTY0MTU1OTQzMywiaXNzIjoiaHR0cHM6Ly9hemFwcC1jcHNzLWRldi1hcGktMDAxLmF6dXJld2Vic2l0ZXMubmV0L2F1dGgiLCJhdWQiOiJodHRwczovL2F6YXBwLWNwc3MtZGV2LWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.VFAuPNW6WSICqnDbYaQZS-QzTj9nyLcuEmXnzMWaMJQ'
       })
+
+      // this.$router.push({
+      //   name: apiTypes.SUMMARY_REQUEST,
+      //   params: {
+      //     product: apiTypes.PRODUCT_VOA,
+      //     orderId: '333444222'
+      //   },
+      //   query: { tk: this.token }
+      // })
     }
   },
   computed: {
     ...mapGetters(['config']),
     token() {
-      return this.$route.query.tk
+      return this.tk
     }
   },
-  // watch: {
-  //   voaData(value) {
-  //     console.log(value)
-  //     this.referenceNumber = value.voaRequest.referenceNumber
-  //     this.accountHistory = value.voaRequest.accountHistory
-  //     this.refreshPeriod = value.voaRequest.refreshPeriod
-  //     this.ssn = value.voaRequest.ssn
-  //     this.firstName = value.voaRequest.firstName
-  //     this.lastName = value.voaRequest.lastName
-  //     this.email = value.voaRequest.emailID
-  //     this.phone = value.voaRequest.phoneNumber
-  //     this.employerName = value.voaRequest.employerName
-  //   }
-  // },
   data() {
     return {
-      referenceNumber: this.prefillData.referenceNumber,
-      accountHistory: '',
-      refreshPeriod: null,
-      firstName: '',
-      lastName: '',
-      ssn: '',
-      email: '',
-      phone: '',
-      employerName: '',
+      referenceNumber: this.prefillData.referenceNumber || '',
+      accountHistory: this.prefillData.accountHistory || '',
+      refreshPeriod: this.prefillData.refreshPeriod || '',
+      firstName: this.prefillData.firstName || '',
+      lastName: this.prefillData.lastName || '',
+      ssn: this.prefillData.ssn || '',
+      email: this.prefillData.emailID || '',
+      phone: this.prefillData.phoneNumber || '',
+      employerName: this.prefillData.employerName || '',
       voaData: this.prefillData,
       accountHistoryItems: [
         { text: '30 days', value: 30 },
@@ -232,10 +255,10 @@ export default {
         { text: '90 days', value: 90 }
       ],
       refreshPeriodItems: [
-        { text: 'One Time Report', value: 'One Time Report' },
-        { text: '30 Days Refresh', value: '30 Days Refresh' },
-        { text: '60 Days Refresh', value: '60 Days Refresh' },
-        { text: '90 Days Refresh', value: '90 Days Refresh' }
+        { text: 'One Time Report', value: 0 },
+        { text: '30 Days Refresh', value: 30 },
+        { text: '60 Days Refresh', value: 60 },
+        { text: '90 Days Refresh', value: 90 }
       ]
     }
   }

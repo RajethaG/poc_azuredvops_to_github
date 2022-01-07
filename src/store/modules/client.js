@@ -26,6 +26,22 @@ const actions = {
         })
         .finally(() => commit(types.REMOVE_TASK))
     })
+  },
+  doPOST: ({ commit }, { product, payload, token }) => {
+    return new Promise((resolve, reject) => {
+      commit(types.ADD_TASK)
+      api
+        .doPOST({ product, payload, token })
+        .then((response) => {
+          if (response && response.status === 200) {
+            resolve()
+          }
+        })
+        .catch(() => {
+          reject()
+        })
+        .finally(() => commit(types.REMOVE_TASK))
+    })
   }
 }
 

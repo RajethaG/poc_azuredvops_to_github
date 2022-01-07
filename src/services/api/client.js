@@ -1,54 +1,17 @@
 import axios from 'axios'
 import apiPath from '../../constants/apipath.json'
 import appConfig from '../../constants/appconfig.json'
-import * as types from './api-types'
+import * as apiTypes from './api-types'
+import voa from './voa'
 
-const getHeader = (token, attr = {}) => {
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      ...attr
-    }
-  }
-}
-
-const pullVOA = (token) => {
-  return new Promise((resolve, reject) => {
-    const endpoint = `${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`
-
-    console.log('Requesting Endpoint ', endpoint)
-
-    axios
-      .get(endpoint, getHeader(token))
-      .then((response) => {
-        response.data.appTheme = {
-          Layout: 'small',
-          Theme: '#FFA0F0'
-        }
-        response.data.autoFill = [
-          { key: 'referenceNumber', value: '12345' },
-          { key: 'accountHistory', value: '30' },
-          { key: 'refreshPeriod', value: '30 days' }
-        ]
-
-        response.data.productOptions = [
-          { key: '50', value: 'Verification of Employment' },
-          { key: '51', value: 'Verification of Assets' }
-        ]
-
-        resolve(response)
-      })
-      .catch((error) => {
-        reject(error)
-      })
-  })
-}
-
-const pullSummaryVOA = (orderId, token) => {
-  return new Promise((resolve) => {
-    resolve()
-  })
-}
+// const getHeader = (token, attr = {}) => {
+//   return {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//       ...attr
+//     }
+//   }
+// }
 
 export default {
   getClientConfig(client) {
@@ -63,11 +26,11 @@ export default {
     }
 
     switch (name) {
-      case types.INTEGRATION_VOA:
-        return pullVOA(token)
-      case types.SUMMARY_REQUEST:
-        if (product === types.PRODUCT_VOA) {
-          return pullSummaryVOA(client.params.orderId, token)
+      case apiTypes.INTEGRATION_VOA:
+        return voa.pullVOA(token)
+      case apiTypes.SUMMARY_REQUEST:
+        if (product === apiTypes.PRODUCT_VOA) {
+          return voa.pullSummaryVOA(client.params.orderId, token)
         }
         break
     }
@@ -119,5 +82,13 @@ export default {
     //   }, 1500)
     // })
     // return axios.get('/api/theme', client)
+  },
+  doPOST({ product, payload, token }) {
+    console.log('inside service/api doPOST method ', product, payload, token)
+    switch (product) {
+      case apiTypes.PRODUCT_VOA:
+        return voa.submitVOA(payload, token)
+    }
+    return new Promise((reject) => reject())
   }
 }

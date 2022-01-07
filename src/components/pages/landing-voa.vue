@@ -20,7 +20,10 @@
       <v-flex sm12 md12>
         <component
           :is="selectedComponent"
-          v-bind="{ prefillData: config.voaRequest }"
+          v-bind="{
+            prefillData: config.voaRequest,
+            token: this.$route.params.tk
+          }"
         ></component>
       </v-flex>
     </v-layout>

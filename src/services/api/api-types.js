@@ -3,3 +3,4 @@ export const INTEGRATION_FRAUDPLUS = 'integration-fraudplus'
 export const SUMMARY_REQUEST = 'summary'
 
 export const PRODUCT_VOA = 'voa'
+export const PRODUCT_FRAUDPLUS = 'fraudplus'
