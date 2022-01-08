@@ -38,14 +38,8 @@ export default {
         .then((response) => {
           response.data.appTheme = {
             Layout: 'small',
-            Theme: '#FFA0F0'
+            Theme: '#3949AB'
           }
-          response.data.autoFill = [
-            { key: 'referenceNumber', value: '12345' },
-            { key: 'accountHistory', value: '30' },
-            { key: 'refreshPeriod', value: '30 days' }
-          ]
-
           response.data.productOptions = [
             { key: '50', value: 'Verification of Employment' },
             { key: '51', value: 'Verification of Assets' }

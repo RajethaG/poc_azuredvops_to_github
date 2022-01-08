@@ -2,9 +2,7 @@
   <v-container>
     <v-flex xs12 md12>
       <page-title text="VOA Order Summary" />
-      <v-btn
-        @click="alert('DownLoad is not Available')"
-        class="primary darken-2 justify-content-left"
+      <v-btn @click="alertMessage" class="primary darken-2 justify-content-left"
         >DownLoad Report</v-btn
       >
     </v-flex>
@@ -85,7 +83,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addTask', 'removeTask'])
+    ...mapActions(['addTask', 'removeTask', 'setAlert']),
+    alertMessage() {
+      this.setAlert({
+        msg: 'Download is currently unavailable ',
+        showErrorMessage: true
+      })
+    }
   },
   mounted() {
     this.addTask('voasummary')

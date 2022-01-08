@@ -4,7 +4,7 @@
       <v-flex>
         <v-snackbar
           v-model="showMessage"
-          color="success"
+          color="error"
           top
           right
           :timeout="messageTimeout"
