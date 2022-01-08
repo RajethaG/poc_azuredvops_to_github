@@ -1,0 +1,32 @@
+export default {
+  downloadFile(fileData, contentType, fileName, forceDownload) {
+    const blob = new Blob([base64ToArrayBuffer(fileData)], {
+      type: contentType
+    })
+    const url = window.URL.createObjectURL(blob)
+    if (forceDownload) {
+      // check for support for IE, which will not support blob save via links
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(blob, fileName)
+      } else {
+        const link = document.createElement('a')
+
+        link.href = url
+        link.target = '_blank'
+        link.download = fileName
+        link.click()
+      }
+    }
+  }
+}
+// eslint-disable-next-line func-style
+function base64ToArrayBuffer(base64) {
+  const binaryString = window.atob(base64)
+  const binaryLen = binaryString.length
+  const bytes = new Uint8Array(binaryLen)
+  for (let i = 0; i < binaryLen; i++) {
+    const ascii = binaryString.charCodeAt(i)
+    bytes[i] = ascii
+  }
+  return bytes
+}

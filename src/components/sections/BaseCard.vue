@@ -23,7 +23,7 @@
               :key="index"
             >
               <strong>{{ dat.text }}</strong>
-              <div>{{ dat.icon }}</div>
+              <div>{{ dat.value }}</div>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -35,24 +35,33 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+  props: {
+    links: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
-      commands: [
-        [
-          { text: 'view Report', icon: 'pencil' },
-          { text: 'Report', icon: 'sync' }
-        ],
-        [
-          { text: 'show Report', icon: 'pencil' },
-          { text: 'Get Report', icon: 'sync' }
-        ]
-      ]
+      // commands: [
+      //   [
+      //     { text: 'view Report', icon: 'pencil' },
+      //     { text: 'Report', icon: 'sync' }
+      //   ],
+      //   [
+      //     { text: 'show Report', icon: 'pencil' },
+      //     { text: 'Get Report', icon: 'sync' }
+      //   ]
+      // ]
     }
   },
   computed: {
     ...mapGetters(['config']),
     borderStyle() {
       return this.config.appTheme?.Theme || '#fff'
+    },
+    commands() {
+      return this.links
     }
   }
 }

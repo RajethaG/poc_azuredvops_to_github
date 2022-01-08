@@ -10,7 +10,14 @@
           :items="items"
           :items-per-page="rows"
           v-bind="$attrs"
-        />
+        >
+          <template v-slot:[`item.url`]="{ item }">
+            <v-flex>
+              <a @click="openUrl(item.url)">{{ item.url }}</a>
+              <v-btn class="primary darken-2 ml-2">Resend Invitation</v-btn>
+            </v-flex>
+          </template>
+        </v-data-table>
       </v-flex>
     </v-layout>
   </v-main>
@@ -43,6 +50,11 @@ export default {
   data() {
     return {
       return() {}
+    }
+  },
+  methods: {
+    openUrl(frameURL) {
+      window.open(frameURL, '_blank')
     }
   }
 }

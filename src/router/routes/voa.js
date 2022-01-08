@@ -18,7 +18,8 @@ export default [
     },
     component: () =>
       import(
-        /* webpackChunkName: "voasummary" */ '@/components/pages/voa/voasummary.vue'
+        // eslint-disable-next-line max-len
+        /* webpackChunkName: "voasummary" */ '@/components/pages/summary-main.vue'
       )
   }
 ]
