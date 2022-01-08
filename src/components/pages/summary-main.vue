@@ -66,7 +66,7 @@ export default {
   },
   data() {
     return {
-      summarydata: {},
+      summarydata: [],
       rows: 5,
       tabledata: [],
       headers: [
