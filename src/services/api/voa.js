@@ -7,8 +7,8 @@ import * as types from '@/store/mutation-types'
 const getHeader = (token, attr = {}) => {
   return {
     headers: {
-      // Authorization: `Bearer ${token}`,
-      Authorization: 'Bearer a211d13f72d14c2a9a2c9a06a0e1f14c',
+      Authorization: `Bearer ${token}`,
+      // Authorization: 'Bearer a211d13f72d14c2a9a2c9a06a0e1f14c',
       ...attr
     }
   }
@@ -21,17 +21,17 @@ export default {
     axios
       .get(endpoint, getHeader(token))
       .then((response) => {
-        console.log(response)
+        // console.log(response)
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
       })
   },
   pullVOA(token) {
     return new Promise((resolve, reject) => {
-      const endpoint = `${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`
-
-      console.log('Requesting Endpoint ', endpoint)
+      const endpoint =
+        'https://azapp-cpss-dev-api-001.azurewebsites.net/consumerreportapi/api/voa/getvoaOrder'
+      //  `${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`
 
       axios
         .get(endpoint, getHeader(token))

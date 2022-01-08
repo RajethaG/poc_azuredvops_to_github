@@ -1,5 +1,6 @@
 import camelCase from 'lodash/camelCase'
-const requireModule = require.context('.', false, /\.js$/) // Get js files inside modules folder
+const requireModule = require.context('.', false, /\.js$/)
+// Get js files inside modules folder
 const modules = {}
 
 requireModule.keys().forEach((fileName) => {
