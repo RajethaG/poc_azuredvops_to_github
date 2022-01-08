@@ -1,4 +1,5 @@
-const requireRoute = require.context('.', false, /\.js$/) // Get js files inside routes folder
+const requireRoute = require.context('.', false, /\.js$/)
+// Get js files inside routes folder
 const routes = []
 
 requireRoute.keys().forEach((fileName) => {
