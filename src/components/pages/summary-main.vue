@@ -323,7 +323,7 @@ export default {
         .then((response) => {
           if (response && response.data.responseStatus === 1) {
             this.setNotification({
-              msg: 'response.data.message',
+              msg: response.data.message,
               type: 'success'
             })
           }
