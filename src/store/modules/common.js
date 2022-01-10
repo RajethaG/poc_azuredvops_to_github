@@ -1,4 +1,6 @@
+/* eslint-disable prettier/prettier */
 export default {
+  // eslint-disable-next-line max-statements
   downloadFile(fileData, contentType, fileName, forceDownload) {
     const blob = new Blob([base64ToArrayBuffer(fileData)], {
       type: contentType
@@ -16,8 +18,22 @@ export default {
         link.download = fileName
         link.click()
       }
+      return
     }
-  }
+    if (contentType !== 'application/pdf') {
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(blob, fileName)
+      } else {
+        const link = document.createElement('a')
+        link.href = url
+        link.click()
+      }
+    } else {
+      // eslint-disable-next-line consistent-return
+      return url
+    }
+  },
+
 }
 // eslint-disable-next-line func-style
 function base64ToArrayBuffer(base64) {

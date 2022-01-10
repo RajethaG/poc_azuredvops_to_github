@@ -14,7 +14,12 @@
           <template v-slot:[`item.url`]="{ item }">
             <v-flex>
               <a @click="openUrl(item.url)">{{ item.url }}</a>
-              <v-btn class="primary darken-2 ml-2">Resend Invitation</v-btn>
+              <v-btn
+                v-if="item.isDisplayMail"
+                class="primary darken-2 ml-2"
+                @click="resendMail"
+                >Resend Invitation</v-btn
+              >
             </v-flex>
           </template>
         </v-data-table>
@@ -55,6 +60,9 @@ export default {
   methods: {
     openUrl(frameURL) {
       window.open(frameURL, '_blank')
+    },
+    resendMail() {
+      this.$emit('sendMail')
     }
   }
 }

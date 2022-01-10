@@ -22,7 +22,7 @@ const actions = {
   setLandingConfig({ commit }) {
     commit(types.SET_CLIENT_CONFIG, {
       appTheme: {
-        Layout: 'default',
+        Layout: 'plain',
         Theme: '#0277BD'
       }
     })

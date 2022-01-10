@@ -1,11 +1,10 @@
 <template>
   <v-container>
-    <v-flex xs12 md12>
-      <page-title text="VOA Order Summary" />
-      <v-btn @click="alertMessage" class="primary darken-2 justify-content-left"
-        >DownLoad Report</v-btn
-      >
-    </v-flex>
+    <page-title text="VOA Order Summary" />
+    <BaseReportLink
+      :actionLinks="clickableLink"
+      @onCommandEvent="onCommandEvent"
+    />
     <section>
       <v-layout row wrap class="my-3">
         <v-flex xs12 md12>
@@ -19,6 +18,7 @@
             :fields="headers"
             hide-default-footer
             label="Borrower Details"
+            @sendMail="sendMails"
           >
           </BaseTable>
         </v-flex>
@@ -48,6 +48,19 @@
           </ul>
         </v-flex>
       </v-layout>
+
+      <v-snackbar
+        v-model="showMessage"
+        color="success"
+        top
+        right
+        :timeout="3000"
+      >
+        Email Sent Successfully
+        <v-btn icon @click="showMessage = false" class="float-right"
+          ><v-icon>mdi-close</v-icon></v-btn
+        >
+      </v-snackbar>
     </section>
   </v-container>
 </template>
@@ -56,7 +69,14 @@
 import BaseCard from '../sections/BaseCard.vue'
 import BaseTable from '../sections/BaseTable.vue'
 import axios from 'axios'
+import common from '../../store/modules/common'
+import constant from '../../constants/constant'
 import { mapActions } from 'vuex'
+const EventCodes = {
+  generate: 1,
+  view_transferReport: 2,
+  view_Refresh: 4
+}
 export default {
   components: {
     BaseCard,
@@ -64,9 +84,20 @@ export default {
   },
   data() {
     return {
-      summarydata: [],
       rows: 5,
+      showMessage: false,
       tabledata: [],
+      status: '',
+      orderFileId: '',
+      displayPdfView: false,
+      displayGenerate: false,
+      displayRefreshIcon: false,
+      displayResendEmail: false,
+      isRefreshPeriod: 'No',
+      isPdfGenerated: 'No',
+      referenceNumber: '',
+      statusMessage: '',
+      orderId: '',
       headers: [
         { text: 'Name', value: 'name', sortable: false },
         { text: 'Email', value: 'email' },
@@ -82,13 +113,240 @@ export default {
       infoModel: []
     }
   },
+  computed: {
+    summarydata() {
+      const data = []
+      data.push(
+        [
+          { text: 'Order ID', value: this.orderId },
+          { text: 'Status', value: this.statusMessage }
+        ],
+        [
+          {
+            text: 'Reference Number',
+            value: this.referenceNumber
+          }
+        ]
+      )
+      return data
+    },
+    clickableLink() {
+      return [
+        {
+          text: 'Generate Report',
+          event: EventCodes.generate,
+          isShow: this.displayGenerate
+        },
+        {
+          text: 'PDF View',
+          event: EventCodes.view_transferReport,
+          icon: '',
+          isShow: this.displayPdfView || this.displayRefreshIcon
+        },
+        {
+          text: 'Refresh',
+          event: EventCodes.view_Refresh,
+          icon: '',
+          isShow: this.displayRefreshIcon
+        }
+      ]
+    }
+  },
   methods: {
     ...mapActions(['addTask', 'removeTask', 'setAlert']),
+    onCommandEvent(command) {
+      switch (command) {
+        case EventCodes.generate:
+          this.generateReports(this.orderId)
+          break
+        case EventCodes.view_transferReport:
+          this.downloadOrderFile()
+          break
+        case EventCodes.view_Refresh:
+          this.refreshVoaResult(this.orderId)
+          break
+      }
+    },
+    refreshVoaResult(orderId) {
+      this.addTask('refresh pdf')
+      axios
+        .get(
+          `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
+          {
+            headers: this.setHeaders()
+          }
+        )
+        .then((response) => {
+          if (response.data !== null) {
+            this.orderFileId = response.data.orderFieldId
+          }
+        })
+        .finally(() => this.removeTask('refresh pdf'))
+    },
+
+    downloadOrderFile() {
+      // eslint-disable-next-line no-alert
+      this.addTask('download file')
+      axios
+        .get(
+          `https://apim-dev-cpss.azure-api.net/bcr/api/document/download?orderFileId=${this.orderFileId}`,
+
+          {
+            headers: this.setHeaders()
+          }
+        )
+        .then((response) => {
+          console.log(response)
+          const url = common.downloadFile(
+            response.data.fileData,
+            response.data.contentType,
+            response.data.fileName
+          )
+          // this.$router.open({
+          //   name: 'pdfviewer',
+          //   query: {
+          //     url
+          //   }
+          // })
+          const routeData = this.$router.resolve({
+            name: 'pdfviewer',
+            query: { url }
+          })
+          window.open(routeData.href, '_blank')
+        })
+        .finally(() => this.removeTask('download file'))
+    },
+
+    generateReports(orderId) {
+      this.addTask('generate report')
+      axios
+        .get(
+          `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
+          {
+            headers: this.setHeaders()
+          }
+        )
+        .then((response) => {
+          this.status = response.data.status
+          this.isRefreshPeriod = response.data.isRefreshPeriod
+          this.isPdfGenerated = response.data.isPdfGenerated
+          this.orderFileId = response.data.orderFieldId
+          this.getStatus()
+          const respData = response.data || response
+          const url = common.downloadFile(
+            respData.reportByteArray,
+            constant.contentType.pdf,
+            `VoA_${respData.orderId}`
+          )
+          const routeData = this.$router.resolve({
+            name: 'pdfviewer',
+            query: { url }
+          })
+          window.open(routeData.href, '_blank')
+        })
+        .finally(() => this.removeTask('generate report'))
+    },
+    // eslint-disable-next-line complexity
+    getStatus() {
+      if (this.status !== '507' && this.status !== '513') {
+        this.NotAcceptedTerms()
+      } else if (this.status === '513') {
+        this.RefreshPeriodEnded()
+      } else if (this.status === '507' && this.isPdfGenerated === 'No') {
+        this.ReportCreated()
+      } else if (
+        this.status === '507' &&
+        this.isPdfGenerated === 'Yes' &&
+        this.isRefreshPeriod === 'No'
+      ) {
+        this.ReportCreatedWithoutRefresh()
+      } else if (
+        this.status === '507' &&
+        this.isPdfGenerated === 'Yes' &&
+        this.isRefreshPeriod === 'Yes'
+      ) {
+        this.ReportCreatedWithRefresh()
+      }
+    },
+    NotAcceptedTerms() {
+      this.displayResendEmail = true
+      this.statusMessage = 'InProgress'
+    },
+    RefreshPeriodEnded() {
+      this.displayPdfView = true
+      this.displayGenerate = false
+      this.displayRefreshIcon = false
+      this.displayResendEmail = false
+      this.statusMessage = 'Completed'
+    },
+
+    ReportCreated() {
+      this.displayGenerate = true
+      this.displayResendEmail = true
+      this.displayPdfView = false
+      this.displayRefreshIcon = false
+      this.statusMessage = 'InProgress'
+    },
+    ReportCreatedWithoutRefresh() {
+      this.displayPdfView = true
+      this.displayGenerate = false
+      this.displayRefreshIcon = false
+      this.displayResendEmail = false
+      this.statusMessage = 'Completed'
+    },
+    ReportCreatedWithRefresh() {
+      this.displayPdfView = true
+      this.displayRefreshIcon = true
+      this.displayResendEmail = true
+      this.displayGenerate = false
+      this.statusMessage = 'InProgress'
+    },
+
+    setHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        // eslint-disable-next-line max-len
+        Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImU4YzI1YzljLTg0OTItNGIzNS05ZGRhLTk2NDVmNmE0ZTQ3ZSIsIlVzZXJJRCI6IjIiLCJDdXN0b21lcklkIjoiMSIsIkZpcnN0TmFtZSI6ImNwc3MiLCJNaWRkbGVJbml0aWFsIjoiSjEiLCJMYXN0TmFtZSI6ImFkbWluIiwiZW1haWwiOiJjcHNzYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDcmVkaXQgUGx1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMCIsIkN1c3RvbWVyTmFtZSI6IkNyZWRpdCBQbHVzIiwiUm9sZXMiOiJDcmVkaXQgUGx1cyBBZG1pbiIsImV4cCI6MTY0MTQ3MDQzNywiaXNzIjoiaHR0cHM6Ly9hemFwcC1jcHNzLWRldi1hcGktMDAxLmF6dXJld2Vic2l0ZXMubmV0L2F1dGgiLCJhdWQiOiJodHRwczovL2F6YXBwLWNwc3MtZGV2LWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.r9dhN68EoSkLXk4kUyALhX5Pj9cFhZ2uIYV0EY9SpfQ`
+      }
+    },
     alertMessage() {
-      this.setAlert({
-        msg: 'Download is currently unavailable ',
-        showErrorMessage: true
-      })
+      axios
+        .get(
+          'https://apim-dev-cpss.azure-api.net/bcr/api/document/download?orderFileId=20157',
+
+          {
+            headers: this.setHeaders()
+          }
+        )
+        .then((response) => {
+          console.log(response)
+          const url = common.downloadFile(
+            response.data.fileData,
+            response.data.contentType,
+            response.data.fileName
+          )
+          console.log(url)
+        })
+    },
+    sendMails() {
+      this.addTask('sendMail')
+      axios
+        .post(
+          `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/SendMail?orderId=${this.orderId}`
+        )
+        .then((response) => {
+          if (response && response.data.responseStatus === 1) {
+            // console.log(response)
+            // this.setAlert({ msg: response.data.message, color: 'success' })
+            this.showMessage = true
+          }
+        })
+        .catch((error) => {
+          this.setAlert({
+            msg: 'An Error Occured While Processing Your Request'
+          })
+        })
+        .finally(() => this.removeTask('sendMail'))
     }
   },
   mounted() {
@@ -98,24 +356,19 @@ export default {
         `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderDetails?orderId=${this.$route.params.orderId}`
       )
       .then((response) => {
-        this.summarydata = [
-          [
-            { text: 'Order ID', value: response.data.orderId },
-            { text: 'Status', value: 'In Progress' }
-          ],
-          [
-            {
-              text: 'Reference Number',
-              value: response.data.referenceNumber
-            }
-          ]
-        ]
-
+        this.orderId = response.data.orderId
+        this.status = response.data.status
+        this.referenceNumber = response.data.referenceNumber
+        this.isPdfGenerated = response.data.isPdfGenerated
+        this.isRefreshPeriod = response.data.isRefreshPeriod
+        this.orderFileId = response.data.orderFieldId
+        this.getStatus()
         this.tabledata = [
           {
             name: response.data.borrowerName,
             email: response.data.borrowerEmail,
-            url: response.data.url
+            url: response.data.url,
+            isDisplayMail: this.displayResendEmail
           }
         ]
         this.orderStatusItems = [
@@ -139,7 +392,7 @@ export default {
   width: 0.98em;
   height: 0.8em;
   content: '';
-  background-color: green;
+  background-color: #3949ab;
   border: 1px rgb(204, 204, 204) solid;
   border-radius: 50%;
   transform: translateX(50%);
