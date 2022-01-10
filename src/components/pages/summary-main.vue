@@ -182,7 +182,6 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response)
           const url = common.downloadFile(
             response.data.fileData,
             response.data.contentType,
@@ -305,13 +304,11 @@ export default {
           }
         )
         .then((response) => {
-          console.log(response)
           const url = common.downloadFile(
             response.data.fileData,
             response.data.contentType,
             response.data.fileName
           )
-          console.log(url)
         })
     },
     sendMails() {
