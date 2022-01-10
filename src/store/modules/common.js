@@ -32,8 +32,7 @@ export default {
       // eslint-disable-next-line consistent-return
       return url
     }
-  },
-
+  }
 }
 // eslint-disable-next-line func-style
 function base64ToArrayBuffer(base64) {

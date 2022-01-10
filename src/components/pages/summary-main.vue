@@ -48,19 +48,6 @@
           </ul>
         </v-flex>
       </v-layout>
-
-      <v-snackbar
-        v-model="showMessage"
-        color="success"
-        top
-        right
-        :timeout="3000"
-      >
-        Email Sent Successfully
-        <v-btn icon @click="showMessage = false" class="float-right"
-          ><v-icon>mdi-close</v-icon></v-btn
-        >
-      </v-snackbar>
     </section>
   </v-container>
 </template>
@@ -85,7 +72,6 @@ export default {
   data() {
     return {
       rows: 5,
-      showMessage: false,
       tabledata: [],
       status: '',
       orderFileId: '',
@@ -153,7 +139,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addTask', 'removeTask', 'setAlert']),
+    ...mapActions(['addTask', 'removeTask', 'setNotification']),
     onCommandEvent(command) {
       switch (command) {
         case EventCodes.generate:
@@ -336,14 +322,16 @@ export default {
         )
         .then((response) => {
           if (response && response.data.responseStatus === 1) {
-            // console.log(response)
-            // this.setAlert({ msg: response.data.message, color: 'success' })
-            this.showMessage = true
+            this.setNotification({
+              msg: 'response.data.message',
+              type: 'success'
+            })
           }
         })
         .catch((error) => {
-          this.setAlert({
-            msg: 'An Error Occured While Processing Your Request'
+          this.setNotification({
+            msg: 'An Error Occured While Processing Your Request',
+            type: 'error'
           })
         })
         .finally(() => this.removeTask('sendMail'))
