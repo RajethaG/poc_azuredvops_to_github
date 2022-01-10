@@ -84,7 +84,6 @@ export default {
     // return axios.get('/api/theme', client)
   },
   doPOST({ product, payload, token }) {
-    console.log('inside service/api doPOST method ', product, payload, token)
     switch (product) {
       case apiTypes.PRODUCT_VOA:
         return voa.submitVOA(payload, token)
