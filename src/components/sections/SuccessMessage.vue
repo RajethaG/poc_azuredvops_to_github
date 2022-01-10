@@ -4,7 +4,7 @@
       <v-flex>
         <v-snackbar
           v-model="showMessage"
-          color="error"
+          :color="notificationType"
           top
           right
           :timeout="messageTimeout"
@@ -27,24 +27,25 @@ export default {
   name: 'SuccessMessage',
   computed: {
     ...mapGetters([
-      'showSuccessMessage',
-      'successMessageTimeout',
-      'successMessage'
+      'showNotification',
+      'notificationTimeout',
+      'notificationMessage',
+      'notificationType'
     ]),
     showMessage: {
       get() {
-        return this.showSuccessMessage
+        return this.showNotification
       },
       set(value) {
         console.log('setting showMessage ', value)
-        this.$store.commit(types.SHOW_SUCCESS, value)
+        this.$store.commit(types.SHOW_NOTIFICATION, value)
       }
     },
     message() {
-      return this.successMessage
+      return this.notificationMessage
     },
     messageTimeout() {
-      return this.successMessageTimeout
+      return this.notificationTimeout
     }
   },
   watch: {
