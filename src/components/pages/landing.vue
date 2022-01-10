@@ -35,7 +35,7 @@ export default {
     console.log('landing mounted ', this.breadcrumb)
   },
   methods: {
-    ...mapActions(['setAlert']),
+    ...mapActions(['setAlert', 'setNotification']),
     toggleLayout() {
       this.$store.dispatch(
         'getClientConfig',
@@ -43,8 +43,9 @@ export default {
       )
     },
     showSuccess() {
-      this.setAlert({
-        msg: 'The update is done successfully'
+      this.setNotification({
+        msg: 'how are you',
+        type: 'error'
       })
       this.$router.push('nextpage')
 
