@@ -24,12 +24,7 @@ router.beforeEach((to, from, next) => {
   switch (to.name) {
     case 'authError':
       setTimeout(() => {
-        store.commit(types.SET_CLIENT_CONFIG, {
-          layout: 'plain',
-          themes: {
-            primary: '#FF1744'
-          }
-        })
+        store.dispatch('setErrorConfig')
       }, 250)
       break
     case reqTypes.INTEGRATION_VOA:

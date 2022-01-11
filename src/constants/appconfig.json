@@ -1,3 +1,4 @@
 {
-    "apiEndPoint":"https://devapi.creditplus.com"
+    "reportApiEndpoint":"https://azapp-cpss-dev-api-001.azurewebsites.net",
+    "summaryApiEndpoint":"https://apim-dev-cpss.azure-api.net"
 }

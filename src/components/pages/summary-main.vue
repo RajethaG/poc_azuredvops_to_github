@@ -59,6 +59,9 @@ import axios from 'axios'
 import common from '../../store/modules/common'
 import constant from '../../constants/constant'
 import { mapActions } from 'vuex'
+import apiPath from '../../constants/apipath.json'
+import appConfig from '../../constants/appconfig.json'
+
 const EventCodes = {
   generate: 1,
   view_transferReport: 2,
@@ -157,7 +160,8 @@ export default {
       this.addTask('refresh pdf')
       axios
         .get(
-          `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
+          `${appConfig.summaryApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`,
+          // `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
           {
             headers: this.setHeaders()
           }

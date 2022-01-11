@@ -30,8 +30,8 @@ export default {
   pullVOA(token) {
     return new Promise((resolve, reject) => {
       const endpoint =
-        'https://azapp-cpss-dev-api-001.azurewebsites.net/consumerreportapi/api/voa/getvoaOrder'
-      //  `${appConfig.apiEndPoint}/${apiPath.voa.getvoaorder}`
+        // 'https://azapp-cpss-dev-api-001.azurewebsites.net/consumerreportapi/api/voa/getvoaOrder'
+        `${appConfig.reportApiEndpoint}/${apiPath.voa.getvoaorder}`
 
       axios
         .get(endpoint, getHeader(token))

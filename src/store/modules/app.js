@@ -19,6 +19,14 @@ const mutations = {
 }
 
 const actions = {
+  setErrorConfig({ commit }) {
+    commit(types.SET_CLIENT_CONFIG, {
+      appTheme: {
+        Layout: 'plain',
+        Theme: '#FF1744'
+      }
+    })
+  },
   setLandingConfig({ commit }) {
     commit(types.SET_CLIENT_CONFIG, {
       appTheme: {
