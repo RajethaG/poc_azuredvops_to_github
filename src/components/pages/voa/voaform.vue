@@ -227,8 +227,8 @@ export default {
             params: {
               product: apiTypes.PRODUCT_VOA,
               orderId: response.orderId
-            }
-            // query: { tk: this.token }
+            },
+            query: { tk: this.token }
           })
         })
 

@@ -1,4 +1,4 @@
 {
-    "reportApiEndpoint":"https://azapp-cpss-dev-api-001.azurewebsites.net",
-    "summaryApiEndpoint":"https://apim-dev-cpss.azure-api.net"
+    "integrationApiEndpoint":"https://azapp-cpss-dev-api-001.azurewebsites.net",
+    "cpssApiEndpoint":"https://apim-dev-cpss.azure-api.net"
 }

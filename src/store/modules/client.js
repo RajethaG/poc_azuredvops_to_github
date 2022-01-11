@@ -19,6 +19,8 @@ const actions = {
           if (response && response.status === 200) {
             commit(types.SET_CLIENT_CONFIG, response.data)
             resolve()
+          } else {
+            console.error('response is not 200')
           }
         })
         .catch(() => {
@@ -32,6 +34,22 @@ const actions = {
       commit(types.ADD_TASK)
       api
         .doPOST({ product, payload, token })
+        .then((response) => {
+          if (response && response.status === 200) {
+            resolve(response.data)
+          }
+        })
+        .catch(() => {
+          reject()
+        })
+        .finally(() => commit(types.REMOVE_TASK))
+    })
+  },
+  doGET: ({ commit }, { getType, params }) => {
+    return new Promise((resolve, reject) => {
+      commit(types.ADD_TASK)
+      api
+        .doGET({ getType, params })
         .then((response) => {
           if (response && response.status === 200) {
             resolve(response.data)

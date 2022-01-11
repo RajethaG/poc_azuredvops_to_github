@@ -1,6 +1,3 @@
-import axios from 'axios'
-import apiPath from '../../constants/apipath.json'
-import appConfig from '../../constants/appconfig.json'
 import * as apiTypes from './api-types'
 import voa from './voa'
 
@@ -21,6 +18,7 @@ export default {
 
     if (!token || !name) {
       return new Promise((reject) => {
+        console.error('request rejected... no token')
         reject(new Error('invalid request'))
       })
     }
@@ -30,7 +28,7 @@ export default {
         return voa.pullVOA(token)
       case apiTypes.SUMMARY_REQUEST:
         if (product === apiTypes.PRODUCT_VOA) {
-          return voa.pullSummaryVOA(client.params.orderId, token)
+          return voa.pullClientConfig(token)
         }
         break
     }
@@ -87,6 +85,14 @@ export default {
     switch (product) {
       case apiTypes.PRODUCT_VOA:
         return voa.submitVOA(payload, token)
+    }
+    return new Promise((reject) => reject())
+  },
+  doGET({ getType, params }) {
+    console.log(getType, params)
+    switch (getType) {
+      case apiTypes.CPSS_GET_VOA_SUMMARY:
+        return voa.pullSummaryVOA(params.orderId, params.token)
     }
     return new Promise((reject) => reject())
   }

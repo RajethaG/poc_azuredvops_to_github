@@ -15,23 +15,44 @@ const getHeader = (token, attr = {}) => {
 }
 
 export default {
+  pullClientConfig(token) {
+    return new Promise((resolve, reject) => {
+      this.pullVOA(token)
+        .then((response) => {
+          const config = {
+            status: 200,
+            data: {
+              appTheme: response.data.appTheme
+            }
+          }
+          resolve(config)
+        })
+        .catch(() => {
+          console.error('pullClientConfig error')
+          reject()
+        })
+    })
+  },
   pullSummaryVOA(orderId, token) {
-    const endpoint = `${appConfig.apiEndPoint}/${apiPath.voa.getvoasummary}
-    /orderId=${orderId}`
-    axios
-      .get(endpoint, getHeader(token))
-      .then((response) => {
-        // console.log(response)
-      })
-      .catch((error) => {
-        // console.log(error)
-      })
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`
+    return new Promise((resolve, reject) => {
+      axios
+        .get(endpoint, getHeader(token))
+        .then((response) => {
+          // console.log(response)
+          resolve(response)
+        })
+        .catch((error) => {
+          // console.log(error)
+          reject()
+        })
+    })
   },
   pullVOA(token) {
     return new Promise((resolve, reject) => {
       const endpoint =
         // 'https://azapp-cpss-dev-api-001.azurewebsites.net/consumerreportapi/api/voa/getvoaOrder'
-        `${appConfig.reportApiEndpoint}/${apiPath.voa.getvoaorder}`
+        `${appConfig.integrationApiEndpoint}/${apiPath.voa.getvoaorder}`
 
       axios
         .get(endpoint, getHeader(token))

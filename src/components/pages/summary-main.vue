@@ -61,6 +61,7 @@ import constant from '../../constants/constant'
 import { mapActions } from 'vuex'
 import apiPath from '../../constants/apipath.json'
 import appConfig from '../../constants/appconfig.json'
+import * as apiTypes from '@/services/api/api-types'
 
 const EventCodes = {
   generate: 1,
@@ -103,6 +104,12 @@ export default {
     }
   },
   computed: {
+    ORDERID() {
+      return this.$route.params.orderId
+    },
+    TOKEN() {
+      return this.$route.params.tk || ''
+    },
     summarydata() {
       const data = []
       data.push(
@@ -142,7 +149,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addTask', 'removeTask', 'setNotification']),
+    ...mapActions(['addTask', 'removeTask', 'setNotification', 'doGET']),
     onCommandEvent(command) {
       switch (command) {
         case EventCodes.generate:
@@ -160,7 +167,7 @@ export default {
       this.addTask('refresh pdf')
       axios
         .get(
-          `${appConfig.summaryApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`,
+          `${appConfig.cpssApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`,
           // `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
           {
             headers: this.setHeaders()
@@ -339,38 +346,38 @@ export default {
     }
   },
   mounted() {
-    this.addTask('voasummary')
-    axios
-      .get(
-        `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderDetails?orderId=${this.$route.params.orderId}`
-      )
-      .then((response) => {
-        this.orderId = response.data.orderId
-        this.status = response.data.status
-        this.referenceNumber = response.data.referenceNumber
-        this.isPdfGenerated = response.data.isPdfGenerated
-        this.isRefreshPeriod = response.data.isRefreshPeriod
-        this.orderFileId = response.data.orderFieldId
-        this.getStatus()
-        this.tabledata = [
-          {
-            name: response.data.borrowerName,
-            email: response.data.borrowerEmail,
-            url: response.data.url,
-            isDisplayMail: this.displayResendEmail
-          }
-        ]
-        this.orderStatusItems = [
-          {
-            date: '12/01/2022',
-            verification: response.data.verificationType,
-            account: response.data.accountHistory,
-            refresh: response.data.refreshPeriod
-          }
-        ]
-        this.infoModel = response.data.orderStatus
-      })
-      .finally(() => this.removeTask('voasummary'))
+    this.doGET({
+      getType: apiTypes.CPSS_GET_VOA_SUMMARY,
+      params: {
+        token: this.TOKEN,
+        orderId: this.ORDERID
+      }
+    }).then((data) => {
+      this.orderId = data.orderId
+      this.status = data.status
+      this.referenceNumber = data.referenceNumber
+      this.isPdfGenerated = data.isPdfGenerated
+      this.isRefreshPeriod = data.isRefreshPeriod
+      this.orderFileId = data.orderFieldId
+      this.getStatus()
+      this.tabledata = [
+        {
+          name: data.borrowerName,
+          email: data.borrowerEmail,
+          url: data.url,
+          isDisplayMail: this.displayResendEmail
+        }
+      ]
+      this.orderStatusItems = [
+        {
+          date: '12/01/2022',
+          verification: data.verificationType,
+          account: data.accountHistory,
+          refresh: data.refreshPeriod
+        }
+      ]
+      this.infoModel = data.orderStatus
+    })
   }
 }
 </script>

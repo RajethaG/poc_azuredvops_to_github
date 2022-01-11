@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routes from '@/router/routes'
 import { store } from '@/store'
-import * as types from '@/store/mutation-types'
 import * as reqTypes from '@/services/api/api-types'
 
 Vue.use(Router)
