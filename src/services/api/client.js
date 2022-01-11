@@ -17,7 +17,7 @@ export default {
     const name = (client.name || '').toLowerCase()
 
     if (!token || !name) {
-      return new Promise((reject) => {
+      return new Promise(({ reject }) => {
         console.error('request rejected... no token')
         reject(new Error('invalid request'))
       })
@@ -33,7 +33,7 @@ export default {
         break
     }
 
-    return new Promise((reject) => {
+    return new Promise(({ reject }) => {
       reject()
     })
 
@@ -86,7 +86,7 @@ export default {
       case apiTypes.PRODUCT_VOA:
         return voa.submitVOA(payload, token)
     }
-    return new Promise((reject) => reject())
+    return new Promise(({ reject }) => reject())
   },
   doGET({ getType, params }) {
     console.log(getType, params)
@@ -94,6 +94,7 @@ export default {
       case apiTypes.CPSS_GET_VOA_SUMMARY:
         return voa.pullSummaryVOA(params.orderId, params.token)
     }
-    return new Promise((reject) => reject())
+
+    return new Promise(({ reject }) => reject())
   }
 }

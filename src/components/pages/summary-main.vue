@@ -347,7 +347,8 @@ export default {
       params: {
         token: this.TOKEN,
         orderId: this.ORDERID
-      }
+      },
+      errorMessage: 'An error occured while loading the VOA summary data'
     }).then((data) => {
       this.orderId = data.orderId
       this.status = data.status

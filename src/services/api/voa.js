@@ -39,11 +39,9 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          // console.log(response)
           resolve(response)
         })
         .catch((error) => {
-          // console.log(error)
           reject()
         })
     })
