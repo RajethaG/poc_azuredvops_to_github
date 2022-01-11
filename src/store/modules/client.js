@@ -36,8 +36,6 @@ const actions = {
   ) => {
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
-      console.log(payload)
-      console.log(product)
       api
         .doPOST({ product, payload, token })
         .then((response) => {
