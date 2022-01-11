@@ -164,21 +164,17 @@ export default {
       }
     },
     refreshVoaResult(orderId) {
-      this.addTask('refresh pdf')
-      axios
-        .get(
-          `${appConfig.cpssApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`,
-          // `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
-          {
-            headers: this.setHeaders()
-          }
-        )
-        .then((response) => {
-          if (response.data !== null) {
-            this.orderFileId = response.data.orderFieldId
-          }
-        })
-        .finally(() => this.removeTask('refresh pdf'))
+      this.doGET({
+        getType: apiTypes.CPSS_GET_VOA_SUMMARY,
+        params: {
+          token: this.TOKEN,
+          orderId
+        }
+      }).then((response) => {
+        if (response.data !== null) {
+          this.orderFileId = response.data.orderFieldId
+        }
+      })
     },
 
     downloadOrderFile() {

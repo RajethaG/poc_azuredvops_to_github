@@ -24,38 +24,66 @@ const actions = {
           }
         })
         .catch(() => {
+          console.error('it is rejected by API')
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))
     })
   },
-  doPOST: ({ commit }, { product, payload, token }) => {
+  doPOST: (
+    { commit },
+    { product, payload, token, successMsg, errorMessage }
+  ) => {
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
       api
         .doPOST({ product, payload, token })
         .then((response) => {
           if (response && response.status === 200) {
+            if (successMsg) {
+              commit(types.SET_NOTIFICATION, {
+                msg: successMsg,
+                type: 'success'
+              })
+            }
             resolve(response.data)
           }
         })
         .catch(() => {
+          if (errorMessage) {
+            commit(types.SET_NOTIFICATION, {
+              msg: errorMessage,
+              type: 'error'
+            })
+          }
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))
     })
   },
-  doGET: ({ commit }, { getType, params }) => {
+  doGET: ({ commit }, { getType, params, successMsg, errorMessage }) => {
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
       api
         .doGET({ getType, params })
         .then((response) => {
           if (response && response.status === 200) {
+            if (successMsg) {
+              commit(types.SET_NOTIFICATION, {
+                msg: successMsg,
+                type: 'success'
+              })
+            }
             resolve(response.data)
           }
         })
         .catch(() => {
+          if (errorMessage) {
+            commit(types.SET_NOTIFICATION, {
+              msg: errorMessage,
+              type: 'error'
+            })
+          }
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))
