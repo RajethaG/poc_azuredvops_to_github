@@ -108,7 +108,7 @@ export default {
       return this.$route.params.orderId
     },
     TOKEN() {
-      return this.$route.params.tk || ''
+      return this.$route.query.tk || ''
     },
     summarydata() {
       const data = []

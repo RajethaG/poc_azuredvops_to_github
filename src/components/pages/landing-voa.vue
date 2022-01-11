@@ -22,7 +22,7 @@
           :is="selectedComponent"
           v-bind="{
             prefillData: config.voaRequest,
-            token: this.$route.params.tk
+            token: this.$route.query.tk
           }"
         ></component>
       </v-flex>

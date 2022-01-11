@@ -185,9 +185,9 @@ export default {
       type: Object,
       default: () => {}
     },
-    tk: {
+    token: {
       type: String,
-      default: ''
+      default: null
     }
   },
   methods: {
@@ -243,10 +243,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['config']),
-    token() {
-      return this.tk
-    }
+    ...mapGetters(['config'])
   },
   data() {
     return {
