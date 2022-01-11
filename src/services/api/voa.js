@@ -46,6 +46,46 @@ export default {
         })
     })
   },
+  pullReportVOA(orderId, token) {
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.getvoareport}?orderId=${orderId}`
+    return new Promise((resolve, reject) => {
+      axios
+        .get(endpoint, getHeader(token))
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject()
+        })
+    })
+  },
+  sendMail(payload, token) {
+    console.log(payload)
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.sendMail}?orderId=${payload.orderId}`
+    return new Promise((resolve, reject) => {
+      axios
+        .post(endpoint, getHeader(token))
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject()
+        })
+    })
+  },
+  downloadPdfVOA(orderId, token) {
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.downloadfile}?orderFileId=${orderId}`
+    return new Promise((resolve, reject) => {
+      axios
+        .get(endpoint, { headers: this.setHeaders() })
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject()
+        })
+    })
+  },
   pullVOA(token) {
     return new Promise((resolve, reject) => {
       const endpoint =
@@ -99,5 +139,12 @@ export default {
     // })
     // .catch((error) => {
     // })
+  },
+  setHeaders() {
+    return {
+      'Content-Type': 'application/json',
+      // eslint-disable-next-line max-len
+      Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImU4YzI1YzljLTg0OTItNGIzNS05ZGRhLTk2NDVmNmE0ZTQ3ZSIsIlVzZXJJRCI6IjIiLCJDdXN0b21lcklkIjoiMSIsIkZpcnN0TmFtZSI6ImNwc3MiLCJNaWRkbGVJbml0aWFsIjoiSjEiLCJMYXN0TmFtZSI6ImFkbWluIiwiZW1haWwiOiJjcHNzYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDcmVkaXQgUGx1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMCIsIkN1c3RvbWVyTmFtZSI6IkNyZWRpdCBQbHVzIiwiUm9sZXMiOiJDcmVkaXQgUGx1cyBBZG1pbiIsImV4cCI6MTY0MTQ3MDQzNywiaXNzIjoiaHR0cHM6Ly9hemFwcC1jcHNzLWRldi1hcGktMDAxLmF6dXJld2Vic2l0ZXMubmV0L2F1dGgiLCJhdWQiOiJodHRwczovL2F6YXBwLWNwc3MtZGV2LWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.r9dhN68EoSkLXk4kUyALhX5Pj9cFhZ2uIYV0EY9SpfQ`
+    }
   }
 }

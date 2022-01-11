@@ -2,13 +2,13 @@
   <v-container>
     <page-title text="VOA Order Summary" />
     <BaseReportLink
-      :actionLinks="clickableLink"
+      :actionLinks="GENERATELINKS"
       @onCommandEvent="onCommandEvent"
     />
     <section>
       <v-layout row wrap class="my-3">
         <v-flex xs12 md12>
-          <BaseCard :links="summarydata" />
+          <BaseCard :links="SUMMARYDATA" />
         </v-flex>
       </v-layout>
       <v-layout row wrap class="my-5 pl-3">
@@ -55,12 +55,9 @@
 <script>
 import BaseCard from '../sections/BaseCard.vue'
 import BaseTable from '../sections/BaseTable.vue'
-import axios from 'axios'
 import common from '../../store/modules/common'
 import constant from '../../constants/constant'
 import { mapActions } from 'vuex'
-import apiPath from '../../constants/apipath.json'
-import appConfig from '../../constants/appconfig.json'
 import * as apiTypes from '@/services/api/api-types'
 
 const EventCodes = {
@@ -75,7 +72,6 @@ export default {
   },
   data() {
     return {
-      rows: 5,
       tabledata: [],
       status: '',
       orderFileId: '',
@@ -87,7 +83,6 @@ export default {
       isPdfGenerated: 'No',
       referenceNumber: '',
       statusMessage: '',
-      orderId: '',
       headers: [
         { text: 'Name', value: 'name', sortable: false },
         { text: 'Email', value: 'email' },
@@ -110,11 +105,11 @@ export default {
     TOKEN() {
       return this.$route.query.tk || ''
     },
-    summarydata() {
+    SUMMARYDATA() {
       const data = []
       data.push(
         [
-          { text: 'Order ID', value: this.orderId },
+          { text: 'Order ID', value: this.ORDERID },
           { text: 'Status', value: this.statusMessage }
         ],
         [
@@ -126,7 +121,7 @@ export default {
       )
       return data
     },
-    clickableLink() {
+    GENERATELINKS() {
       return [
         {
           text: 'Generate Report',
@@ -149,94 +144,86 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addTask', 'removeTask', 'setNotification', 'doGET']),
+    ...mapActions([
+      'addTask',
+      'removeTask',
+      'setNotification',
+      'doGET',
+      'doPOST'
+    ]),
     onCommandEvent(command) {
       switch (command) {
         case EventCodes.generate:
-          this.generateReports(this.orderId)
+          this.generateReports()
           break
         case EventCodes.view_transferReport:
           this.downloadOrderFile()
           break
         case EventCodes.view_Refresh:
-          this.refreshVoaResult(this.orderId)
+          this.refreshVoaResult()
           break
       }
     },
-    refreshVoaResult(orderId) {
+    refreshVoaResult() {
       this.doGET({
-        getType: apiTypes.CPSS_GET_VOA_SUMMARY,
+        getType: apiTypes.CPSS_GET_VOA_REPORT,
         params: {
           token: this.TOKEN,
-          orderId
+          orderId: this.ORDERID
         }
-      }).then((response) => {
-        if (response.data !== null) {
-          this.orderFileId = response.data.orderFieldId
-        }
+      }).then((data) => {
+        this.orderFileId = data.orderFieldId
       })
     },
 
     downloadOrderFile() {
       // eslint-disable-next-line no-alert
-      this.addTask('download file')
-      axios
-        .get(
-          `https://apim-dev-cpss.azure-api.net/bcr/api/document/download?orderFileId=${this.orderFileId}`,
-
-          {
-            headers: this.setHeaders()
-          }
+      this.doGET({
+        getType: apiTypes.CPSS_GET_DOCUMENT_DOWNLOAD,
+        params: {
+          token: this.TOKEN,
+          orderId: this.orderFileId
+        }
+      }).then((data) => {
+        const url = common.downloadFile(
+          data.fileData,
+          data.contentType,
+          data.fileName
         )
-        .then((response) => {
-          const url = common.downloadFile(
-            response.data.fileData,
-            response.data.contentType,
-            response.data.fileName
-          )
-          // this.$router.open({
-          //   name: 'pdfviewer',
-          //   query: {
-          //     url
-          //   }
-          // })
-          const routeData = this.$router.resolve({
-            name: 'pdfviewer',
-            query: { url }
-          })
-          window.open(routeData.href, '_blank')
+        const routeData = this.$router.resolve({
+          name: 'pdfviewer',
+          query: { url }
         })
-        .finally(() => this.removeTask('download file'))
+        window.open(routeData.href, '_blank')
+      })
     },
 
-    generateReports(orderId) {
-      this.addTask('generate report')
-      axios
-        .get(
-          `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/GetOrderReport?orderId=${orderId}`,
-          {
-            headers: this.setHeaders()
-          }
+    generateReports() {
+      this.doGET({
+        getType: apiTypes.CPSS_GET_VOA_REPORT,
+        params: {
+          token: this.TOKEN,
+          orderId: this.ORDERID
+        },
+        errorMessage: 'An error occured while Generating Report'
+      }).then((data) => {
+        this.status = data.status
+        this.isRefreshPeriod = data.isRefreshPeriod
+        this.isPdfGenerated = data.isPdfGenerated
+        this.orderFileId = data.orderFieldId
+        this.getStatus()
+        const respData = data
+        const url = common.downloadFile(
+          respData.reportByteArray,
+          constant.contentType.pdf,
+          `VoA_${respData.orderId}`
         )
-        .then((response) => {
-          this.status = response.data.status
-          this.isRefreshPeriod = response.data.isRefreshPeriod
-          this.isPdfGenerated = response.data.isPdfGenerated
-          this.orderFileId = response.data.orderFieldId
-          this.getStatus()
-          const respData = response.data || response
-          const url = common.downloadFile(
-            respData.reportByteArray,
-            constant.contentType.pdf,
-            `VoA_${respData.orderId}`
-          )
-          const routeData = this.$router.resolve({
-            name: 'pdfviewer',
-            query: { url }
-          })
-          window.open(routeData.href, '_blank')
+        const routeData = this.$router.resolve({
+          name: 'pdfviewer',
+          query: { url }
         })
-        .finally(() => this.removeTask('generate report'))
+        window.open(routeData.href, '_blank')
+      })
     },
     // eslint-disable-next-line complexity
     getStatus() {
@@ -262,7 +249,7 @@ export default {
     },
     NotAcceptedTerms() {
       this.displayResendEmail = true
-      this.statusMessage = 'InProgress'
+      this.statusMessage = 'In Progress'
     },
     RefreshPeriodEnded() {
       this.displayPdfView = true
@@ -277,7 +264,7 @@ export default {
       this.displayResendEmail = true
       this.displayPdfView = false
       this.displayRefreshIcon = false
-      this.statusMessage = 'InProgress'
+      this.statusMessage = 'In Progress'
     },
     ReportCreatedWithoutRefresh() {
       this.displayPdfView = true
@@ -291,54 +278,17 @@ export default {
       this.displayRefreshIcon = true
       this.displayResendEmail = true
       this.displayGenerate = false
-      this.statusMessage = 'InProgress'
-    },
-
-    setHeaders() {
-      return {
-        'Content-Type': 'application/json',
-        // eslint-disable-next-line max-len
-        Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImU4YzI1YzljLTg0OTItNGIzNS05ZGRhLTk2NDVmNmE0ZTQ3ZSIsIlVzZXJJRCI6IjIiLCJDdXN0b21lcklkIjoiMSIsIkZpcnN0TmFtZSI6ImNwc3MiLCJNaWRkbGVJbml0aWFsIjoiSjEiLCJMYXN0TmFtZSI6ImFkbWluIiwiZW1haWwiOiJjcHNzYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDcmVkaXQgUGx1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMCIsIkN1c3RvbWVyTmFtZSI6IkNyZWRpdCBQbHVzIiwiUm9sZXMiOiJDcmVkaXQgUGx1cyBBZG1pbiIsImV4cCI6MTY0MTQ3MDQzNywiaXNzIjoiaHR0cHM6Ly9hemFwcC1jcHNzLWRldi1hcGktMDAxLmF6dXJld2Vic2l0ZXMubmV0L2F1dGgiLCJhdWQiOiJodHRwczovL2F6YXBwLWNwc3MtZGV2LWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.r9dhN68EoSkLXk4kUyALhX5Pj9cFhZ2uIYV0EY9SpfQ`
-      }
-    },
-    alertMessage() {
-      axios
-        .get(
-          'https://apim-dev-cpss.azure-api.net/bcr/api/document/download?orderFileId=20157',
-
-          {
-            headers: this.setHeaders()
-          }
-        )
-        .then((response) => {
-          const url = common.downloadFile(
-            response.data.fileData,
-            response.data.contentType,
-            response.data.fileName
-          )
-        })
+      this.statusMessage = 'In Progress'
     },
     sendMails() {
-      this.addTask('sendMail')
-      axios
-        .post(
-          `https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/SendMail?orderId=${this.orderId}`
-        )
-        .then((response) => {
-          if (response && response.data.responseStatus === 1) {
-            this.setNotification({
-              msg: response.data.message,
-              type: 'success'
-            })
-          }
-        })
-        .catch((error) => {
-          this.setNotification({
-            msg: 'An Error Occured While Processing Your Request',
-            type: 'error'
-          })
-        })
-        .finally(() => this.removeTask('sendMail'))
+      const payload = { orderId: this.ORDERID }
+      this.doPOST({
+        product: apiTypes.CPSS_POST_SEND_MAIL,
+        payload,
+        token: this.TOKEN,
+        errorMessage: 'An error occured while Sending Email',
+        successMsg: 'Email Sent Successfully'
+      })
     }
   },
   mounted() {
@@ -350,7 +300,6 @@ export default {
       },
       errorMessage: 'An error occured while loading the VOA summary data'
     }).then((data) => {
-      this.orderId = data.orderId
       this.status = data.status
       this.referenceNumber = data.referenceNumber
       this.isPdfGenerated = data.isPdfGenerated
@@ -367,7 +316,7 @@ export default {
       ]
       this.orderStatusItems = [
         {
-          date: '12/01/2022',
+          date: data.responseTime,
           verification: data.verificationType,
           account: data.accountHistory,
           refresh: data.refreshPeriod

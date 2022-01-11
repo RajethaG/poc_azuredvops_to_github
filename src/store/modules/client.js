@@ -36,10 +36,15 @@ const actions = {
   ) => {
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
+      console.log(payload)
+      console.log(product)
       api
         .doPOST({ product, payload, token })
         .then((response) => {
-          if (response && response.status === 200) {
+          if (
+            response &&
+            (response.status === 200 || response.responseStatus === 1)
+          ) {
             if (successMsg) {
               commit(types.SET_NOTIFICATION, {
                 msg: successMsg,

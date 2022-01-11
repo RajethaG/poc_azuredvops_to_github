@@ -85,6 +85,8 @@ export default {
     switch (product) {
       case apiTypes.PRODUCT_VOA:
         return voa.submitVOA(payload, token)
+      case apiTypes.CPSS_POST_SEND_MAIL:
+        return voa.sendMail(payload, token)
     }
     return new Promise(({ reject }) => reject())
   },
@@ -93,6 +95,10 @@ export default {
     switch (getType) {
       case apiTypes.CPSS_GET_VOA_SUMMARY:
         return voa.pullSummaryVOA(params.orderId, params.token)
+      case apiTypes.CPSS_GET_VOA_REPORT:
+        return voa.pullReportVOA(params.orderId, params.token)
+      case apiTypes.CPSS_GET_DOCUMENT_DOWNLOAD:
+        return voa.downloadPdfVOA(params.orderId, params.token)
     }
 
     return new Promise(({ reject }) => reject())
