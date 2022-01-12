@@ -55,7 +55,7 @@
 <script>
 import BaseCard from '../sections/BaseCard.vue'
 import BaseTable from '../sections/BaseTable.vue'
-import common from '../../store/modules/common'
+import common from '../../utils/common'
 import constant from '../../constants/constant'
 import { mapActions } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
