@@ -35,7 +35,7 @@ export default {
     console.log('landing mounted ', this.breadcrumb)
   },
   methods: {
-    ...mapActions(['setAlert', 'setNotification']),
+    ...mapActions(['setNotification']),
     toggleLayout() {
       this.$store.dispatch(
         'getClientConfig',
