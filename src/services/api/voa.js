@@ -28,7 +28,7 @@ export default {
           resolve(config)
         })
         .catch(() => {
-          console.error('pullClientConfig error')
+          // console.error('pullClientConfig error')
           reject()
         })
     })
@@ -60,7 +60,7 @@ export default {
     })
   },
   sendMail(payload, token) {
-    console.log(payload)
+    // console.log(payload)
     const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.sendMail}?orderId=${payload.orderId}`
     return new Promise((resolve, reject) => {
       axios
