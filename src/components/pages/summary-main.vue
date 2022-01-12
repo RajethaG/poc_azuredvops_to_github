@@ -154,7 +154,7 @@ export default {
     onCommandEvent(command) {
       switch (command) {
         case EventCodes.generate:
-          this.generateReports()
+          this.generateReport()
           break
         case EventCodes.view_transferReport:
           this.downloadOrderFile()
@@ -198,7 +198,7 @@ export default {
       })
     },
 
-    generateReports() {
+    generateReport() {
       this.doGET({
         getType: apiTypes.CPSS_GET_VOA_REPORT,
         params: {

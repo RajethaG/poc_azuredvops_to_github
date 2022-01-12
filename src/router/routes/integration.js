@@ -2,7 +2,7 @@ import * as types from '@/services/api/api-types.js'
 
 export default [
   {
-    path: '/voa',
+    path: '/integration/voa',
     name: types.INTEGRATION_VOA,
     meta: {
       requiresAuth: false
