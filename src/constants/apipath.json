@@ -4,6 +4,7 @@
         "getvoasummary":"consumerreport/api/VOA/GetOrderDetails",
         "getvoareport":"consumerreport/api/VOA/GetOrderReport",
         "downloadfile":"bcr/api/document/download",
-        "sendMail":"consumerreport/api/VOA/SendMail"
+        "sendMail":"consumerreport/api/VOA/SendMail",
+        "submitVOA":"consumerreport/api/VOA/OrderReport"
     }
 }

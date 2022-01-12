@@ -113,7 +113,7 @@ export default {
   },
   submitVOA(payload, token) {
     return axios.post(
-      'https://apim-dev-cpss.azure-api.net/consumerreport/api/VOA/OrderReport',
+      `${appConfig.cpssApiEndpoint}/${apiPath.voa.submitVOA}`,
       payload,
       getHeader(token)
     )
