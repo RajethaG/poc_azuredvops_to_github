@@ -1,4 +1,4 @@
 {
-    "integrationApiEndpoint":"https://azapp-cpss-dev-api-001.azurewebsites.net",
+    "integrationApiEndpoint":"https://devapi.creditplus.com",
     "cpssApiEndpoint":"https://apim-dev-cpss.azure-api.net"
 }
