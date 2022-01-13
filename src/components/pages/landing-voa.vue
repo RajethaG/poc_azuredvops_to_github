@@ -51,8 +51,8 @@ export default {
       return 'Verification of Assets'
     },
     products() {
-      if (this.config.productOptions && this.config.productOptions.length > 0) {
-        const prods = this.config.productOptions.map((item) => {
+      if (this.config.dataProviders && this.config.dataProviders.length > 0) {
+        const prods = this.config.dataProviders.map((item) => {
           return {
             value: this.getComponentKey(item.key),
             text: item.value
@@ -73,10 +73,10 @@ export default {
   methods: {
     getComponentKey(key) {
       switch (Number(key)) {
-        case 50:
-          return 'VOE'
-        case 51:
+        case 112:
           return 'VOA'
+        case 207:
+          return 'VOAFiserve'
       }
       return ''
     }

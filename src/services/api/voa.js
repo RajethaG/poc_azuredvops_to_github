@@ -97,11 +97,6 @@ export default {
             Layout: 'small',
             Theme: '#3949AB'
           }
-          response.data.productOptions = [
-            { key: '50', value: 'Verification of Employment' },
-            { key: '51', value: 'Verification of Assets' }
-          ]
-
           resolve(response)
         })
         .catch((error) => {
