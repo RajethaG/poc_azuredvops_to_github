@@ -103,7 +103,7 @@ export default {
       return this.$route.params.orderId
     },
     TOKEN() {
-      return this.$route.query.token || ''
+      return this.$route.query.Token || ''
     },
     SUMMARYDATA() {
       const data = []

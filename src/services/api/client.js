@@ -12,13 +12,13 @@ import voa from './voa'
 
 export default {
   getClientConfig(client) {
-    const token = client.query?.token
+    const token = client.query?.Token
     const product = (client.params.product || '').toLowerCase()
     const name = (client.name || '').toLowerCase()
 
     if (!token || !name) {
       return new Promise(({ reject }) => {
-        console.error('request rejected... no token')
+        // console.error('request rejected... no token')
         reject(new Error('invalid request'))
       })
     }
@@ -91,7 +91,7 @@ export default {
     return new Promise(({ reject }) => reject())
   },
   doGET({ getType, params }) {
-    console.log(getType, params)
+    // console.log(getType, params)
     switch (getType) {
       case apiTypes.CPSS_GET_VOA_SUMMARY:
         return voa.pullSummaryVOA(params.orderId, params.token)
