@@ -34,7 +34,8 @@ router.beforeEach((to, from, next) => {
         .catch(() => next({ name: 'authError' }))
       break
     default:
-      store.dispatch('setLandingConfig')
+      // store.dispatch('setLandingConfig')
+      return next({ name: 'authError' })
   }
   return next()
 })

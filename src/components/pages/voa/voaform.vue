@@ -7,7 +7,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Reference Number"
-                rules="required|max:14|alpha_num"
+                rules="required|max:50|alpha_num"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -95,7 +95,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="SSN"
-                rules="required|max:10|min:10"
+                rules="required|numeric|max:10|min:10"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -131,7 +131,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Phone Number"
-                rules="required|max:10|min:10"
+                rules="required|numeric|max:10|min:10"
                 v-slot="{ errors }"
               >
                 <v-text-field
