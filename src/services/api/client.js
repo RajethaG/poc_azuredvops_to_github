@@ -12,7 +12,7 @@ import voa from './voa'
 
 export default {
   getClientConfig(client) {
-    const token = client.query?.tk
+    const token = client.query?.token
     const product = (client.params.product || '').toLowerCase()
     const name = (client.name || '').toLowerCase()
 
