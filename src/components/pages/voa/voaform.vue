@@ -179,6 +179,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
+import constant from '../../../constants/constant.json'
 export default {
   props: {
     prefillData: {
@@ -194,7 +195,7 @@ export default {
     buildVOAPayload() {
       const payload = {
         userId: 2,
-        productId: '112',
+        productId: constant.productIds.VOA,
         OrderForUser: 1222,
         OrderForCustomer: 6,
         borrowerFirstName: this.firstName,
@@ -256,7 +257,6 @@ export default {
       email: this.prefillData.emailID || '',
       phone: this.prefillData.phoneNumber || '',
       employerName: this.prefillData.employerName || '',
-      voaData: this.prefillData,
       accountHistoryItems: [
         { text: '30 days', value: 30 },
         { text: '60 days', value: 60 },

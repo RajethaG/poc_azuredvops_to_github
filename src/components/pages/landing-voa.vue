@@ -34,10 +34,10 @@
 import { mapGetters } from 'vuex'
 import PageTitle from '../sections/PageTitle.vue'
 import VOA from './voa/voaform.vue'
-import VOE from './voe/voeform.vue'
+import VOAFiserve from './voa/voaform-fiserv.vue'
 
 export default {
-  components: { VOA, VOE, PageTitle },
+  components: { VOA, VOAFiserve, PageTitle },
   data() {
     return {
       items: [],
