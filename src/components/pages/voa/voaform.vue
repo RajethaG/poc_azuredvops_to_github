@@ -228,7 +228,7 @@ export default {
               product: apiTypes.PRODUCT_VOA,
               orderId: response.orderId
             },
-            query: { tk: this.token }
+            query: { Token: this.token }
           })
         })
 
@@ -238,7 +238,7 @@ export default {
       //     product: apiTypes.PRODUCT_VOA,
       //     orderId: '333444222'
       //   },
-      //   query: { tk: this.token }
+      //   query: { Token: this.token }
       // })
     }
   },
