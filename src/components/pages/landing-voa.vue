@@ -10,7 +10,7 @@
         <v-select
           v-model="selectedComponent"
           :items="products"
-          label="Choose Product"
+          label="Choose Data Provider"
           outlined
           dense
         ></v-select>
@@ -51,8 +51,8 @@ export default {
   computed: {
     ...mapGetters(['config']),
     USERID() {
-      return 1247
-      // return this.config.customerInfo.userId,
+      // return 1247
+      return this.config.customerInfo.userId
     },
     title() {
       return 'Verification of Assets'

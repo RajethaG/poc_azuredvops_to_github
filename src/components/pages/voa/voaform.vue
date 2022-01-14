@@ -113,12 +113,12 @@
           <v-layout row wrap>
             <v-flex xs12 sm4>
               <ValidationProvider
-                name="Email Id"
+                name="Email"
                 rules="required|email|max:100"
                 v-slot="{ errors }"
               >
                 <v-text-field
-                  label="Email Id"
+                  label="Email"
                   v-model="email"
                   :error="errors.length > 0"
                   :error-messages="errors[0]"
