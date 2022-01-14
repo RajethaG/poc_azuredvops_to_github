@@ -15,17 +15,79 @@ const getHeader = (token, attr = {}) => {
 
 const getCustomerUserProducts = (userId, token) => {
   return new Promise((resolve, reject) => {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.admin.getuserproduuct}?UserId=${userId}`
-    axios
-      .get(endpoint, getHeader(token))
-      .then((response) => {
-        if (response && response.status === 200) {
-          resolve(response)
-        } else {
-          reject()
-        }
+    setTimeout(() => {
+      resolve({
+        status: 200,
+        data: [
+          {
+            productId: 112,
+            name: 'Verification of Assets',
+            productAddOns: [
+              {
+                productAddOnId: 113,
+                name: 'One Time Report',
+                defaultScope: true,
+                changeable: true
+              },
+              {
+                productAddOnId: 114,
+                name: '30 Days Refresh',
+                defaultScope: true,
+                changeable: true
+              },
+              {
+                productAddOnId: 115,
+                name: '60 Days Refresh',
+                defaultScope: true,
+                changeable: true
+              },
+              {
+                productAddOnId: 116,
+                name: '90 Days Refresh',
+                defaultScope: true,
+                changeable: true
+              }
+            ]
+          },
+          {
+            productId: 207,
+            name: 'Verification of Assets - Fiserv',
+            productAddOns: [
+              {
+                productAddOnId: 209,
+                name: '30 Days Refresh',
+                defaultScope: true,
+                changeable: true
+              },
+              {
+                productAddOnId: 210,
+                name: '60 Days Refresh',
+                defaultScope: true,
+                changeable: true
+              },
+              {
+                productAddOnId: 211,
+                name: '90 Days Refresh',
+                defaultScope: true,
+                changeable: true
+              }
+            ]
+          }
+        ]
       })
-      .catch((error) => reject(error))
+    }, 850)
+
+    // const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.admin.getuserproduuct}?UserId=${userId}`
+    // axios
+    //   .get(endpoint, getHeader(token))
+    //   .then((response) => {
+    //     if (response && response.status === 200) {
+    //       resolve(response)
+    //     } else {
+    //       reject()
+    //     }
+    //   })
+    //   .catch((error) => reject(error))
   })
 }
 
