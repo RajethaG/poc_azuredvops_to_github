@@ -93,10 +93,10 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          response.data.appTheme = {
-            Layout: 'small',
-            Theme: '#3949AB'
-          }
+          // response.data.appTheme = {
+          //   Layout: 'small',
+          //   Theme: '#3949AB'
+          // }
           resolve(response)
         })
         .catch((error) => {

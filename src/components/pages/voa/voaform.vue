@@ -258,9 +258,9 @@ export default {
       phone: this.prefillData.phoneNumber || '',
       employerName: this.prefillData.employerName || '',
       accountHistoryItems: [
-        { text: '30 days', value: 30 },
-        { text: '60 days', value: 60 },
-        { text: '90 days', value: 90 }
+        { text: '30 days', value: '30' },
+        { text: '60 days', value: '60' },
+        { text: '90 days', value: '90' }
       ],
       refreshPeriodItems: [
         { text: 'One Time Report', value: 0 },

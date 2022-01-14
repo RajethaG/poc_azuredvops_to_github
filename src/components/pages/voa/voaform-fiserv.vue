@@ -3,6 +3,11 @@
     <form @submit.prevent="handleSubmit(save)">
       <v-container grid-list-md class="mx-0 px-0">
         <v-layout row wrap>
+          <v-alert type="info">
+            VOA-Fiserv is not yet implemented in CPSS
+          </v-alert>
+        </v-layout>
+        <v-layout row wrap v-if="1 === 3">
           <v-flex xs12 sm4>
             <ValidationProvider
               name="Reference Number"
@@ -55,13 +60,9 @@
               ></v-select>
             </ValidationProvider>
           </v-flex>
-        </v-layout>
-        <v-layout wrap row>
-          <v-flex>
+          <v-flex xs12>
             <BaseLabel label="Borrower Information" />
           </v-flex>
-        </v-layout>
-        <v-layout row wrap>
           <v-flex xs12 sm4>
             <ValidationProvider
               name="First Name"
@@ -113,8 +114,7 @@
               ></v-text-field>
             </ValidationProvider>
           </v-flex>
-        </v-layout>
-        <v-layout row wrap>
+
           <v-flex xs12 sm4>
             <ValidationProvider
               name="Email Id"
@@ -150,7 +150,7 @@
             </ValidationProvider>
           </v-flex>
         </v-layout>
-        <v-layout justify-start>
+        <v-layout justify-start v-if="1 === 3">
           <v-flex xs12 md1>
             <v-btn type="submit" class="primary darken-2">Order</v-btn>
           </v-flex>
