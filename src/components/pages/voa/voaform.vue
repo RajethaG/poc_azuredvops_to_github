@@ -189,9 +189,25 @@ export default {
     token: {
       type: String,
       default: null
+    },
+    customerProducts: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
+    getRefreshPeriodMappable(stringValue) {
+      switch (stringValue) {
+        case '30 Days Refresh':
+          return 30
+        case '60 Days Refresh':
+          return 60
+        case '90 Days Refresh':
+          return 90
+        default:
+          return 1
+      }
+    },
     buildVOAPayload() {
       const payload = {
         userId: 2,
@@ -244,7 +260,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['config'])
+    ...mapGetters(['config']),
+    refreshPeriodItems() {
+      const product = this.customerProducts.filter(
+        (x) => Number(x.productId) === Number(constant.productIds.VOA)
+      )
+      if (product && product.length > 0) {
+        const pd = product[0].productAddOns.map((item) => {
+          return {
+            value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
+            text: item.name
+          }
+        })
+        return pd
+      }
+      return []
+    }
   },
   data() {
     return {
@@ -261,13 +292,13 @@ export default {
         { text: '30 days', value: '30' },
         { text: '60 days', value: '60' },
         { text: '90 days', value: '90' }
-      ],
-      refreshPeriodItems: [
-        { text: 'One Time Report', value: 0 },
-        { text: '30 Days Refresh', value: 30 },
-        { text: '60 Days Refresh', value: 60 },
-        { text: '90 Days Refresh', value: 90 }
       ]
+      // refreshPeriodItems: [
+      //   { text: 'One Time Report', value: 0 },
+      //   { text: '30 Days Refresh', value: 30 },
+      //   { text: '60 Days Refresh', value: 60 },
+      //   { text: '90 Days Refresh', value: 90 }
+      // ]
     }
   }
 }

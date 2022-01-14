@@ -4,5 +4,9 @@
         "html": "text/html",
         "tif": "image/tif",
         "tiff": "image/tiff"
-      }
+      },
+    "productIds": {
+      "VOA": 112,
+      "VOAFiserv": 207
+    }
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label v-if="label">{{ label }}</label>
+    <label v-if="label" :class="vclass">{{ label }}</label>
     <span v-if="markRequired" class="text-danger">*</span>
   </div>
 </template>
@@ -15,6 +15,10 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    vclass: {
+      type: String,
+      default: ''
     }
   }
 }

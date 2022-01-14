@@ -1,7 +1,9 @@
 <template>
   <section class="my-3">
     <v-flex xs12>
-      <h2 class="text-uppercase primary--text">{{ text }}</h2>
+      <div class="text-uppercase primary--text text-h4">
+        {{ text }}
+      </div>
     </v-flex>
   </section>
 </template>

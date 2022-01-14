@@ -23,8 +23,8 @@ const actions = {
             console.error('response is not 200')
           }
         })
-        .catch(() => {
-          console.error('it is rejected by API')
+        .catch((error) => {
+          console.error('it is rejected by API', error)
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))

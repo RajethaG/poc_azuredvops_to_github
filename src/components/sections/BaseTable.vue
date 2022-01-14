@@ -1,12 +1,12 @@
 <template>
   <v-main>
     <v-layout row wrap class="mt-5">
-      <BaseLabel :label="label" />
+      <BaseLabel :label="label" :vclass="labelclass" />
     </v-layout>
     <v-layout row wrap>
       <v-flex md12 xs12>
         <v-data-table
-          :headers="fields"
+          :headers="HEADERS"
           :items="items"
           :items-per-page="rows"
           v-bind="$attrs"
@@ -50,6 +50,10 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    labelclass: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -64,8 +68,21 @@ export default {
     resendMail() {
       this.$emit('sendMail')
     }
+  },
+  computed: {
+    HEADERS() {
+      return this.fields.map((item) => {
+        return Object.assign({}, { ...item }, { class: 'bheaders' })
+      })
+    }
   }
 }
 </script>
 
-<style></style>
+<style>
+.bheaders {
+  background: #f5f5f5;
+  color: white;
+  font-weight: bold;
+}
+</style>

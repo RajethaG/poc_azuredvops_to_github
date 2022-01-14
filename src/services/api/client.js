@@ -1,14 +1,33 @@
+import axios from 'axios'
 import * as apiTypes from './api-types'
+import apiPath from '../../constants/apipath.json'
+import appConfig from '../../constants/appconfig.json'
 import voa from './voa'
 
-// const getHeader = (token, attr = {}) => {
-//   return {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//       ...attr
-//     }
-//   }
-// }
+const getHeader = (token, attr = {}) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      ...attr
+    }
+  }
+}
+
+const getCustomerUserProducts = (userId, token) => {
+  return new Promise((resolve, reject) => {
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.admin.getuserproduuct}?UserId=${userId}`
+    axios
+      .get(endpoint, getHeader(token))
+      .then((response) => {
+        if (response && response.status === 200) {
+          resolve(response)
+        } else {
+          reject()
+        }
+      })
+      .catch((error) => reject(error))
+  })
+}
 
 export default {
   getClientConfig(client) {
@@ -18,8 +37,7 @@ export default {
 
     if (!token || !name) {
       return new Promise(({ reject }) => {
-        // console.error('request rejected... no token')
-        reject(new Error('invalid request'))
+        reject(new Error('invalid request... no token'))
       })
     }
 
@@ -99,6 +117,8 @@ export default {
         return voa.pullReportVOA(params.orderId, params.token)
       case apiTypes.CPSS_GET_DOCUMENT_DOWNLOAD:
         return voa.downloadPdfVOA(params.orderId, params.token)
+      case apiTypes.CPSS_GET_CUST_USER_PRODUCTS:
+        return getCustomerUserProducts(params.userId, params.token)
     }
 
     return new Promise(({ reject }) => reject())

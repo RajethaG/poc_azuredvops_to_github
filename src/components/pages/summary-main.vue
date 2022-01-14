@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container grid-list-md>
     <page-title text="VOA Order Summary" />
     <BaseReportLink
       :actionLinks="GENERATELINKS"
@@ -7,29 +7,31 @@
     />
     <section>
       <v-layout row wrap class="my-3">
-        <v-flex xs12 md12>
+        <v-flex xs12>
           <BaseCard :links="SUMMARYDATA" />
         </v-flex>
       </v-layout>
-      <v-layout row wrap class="my-5 pl-3">
-        <v-flex xs12 md12>
+      <v-layout row wrap class="my-5">
+        <v-flex xs12>
           <BaseTable
             :items="tabledata"
             :fields="headers"
             hide-default-footer
             label="Borrower Details"
+            labelclass="text-button"
             @sendMail="sendMails"
           >
           </BaseTable>
         </v-flex>
       </v-layout>
-      <v-layout row wrap class="my-5 pl-3">
+      <v-layout row wrap class="my-5">
         <v-flex xs12 md12>
           <BaseTable
             :items="orderStatusItems"
             :fields="orderStatusFields"
             hide-default-footer
             label="Order History"
+            labelclass="text-button"
           >
           </BaseTable>
         </v-flex>
@@ -84,16 +86,16 @@ export default {
       referenceNumber: '',
       statusMessage: '',
       headers: [
-        { text: 'Name', value: 'name', sortable: false },
-        { text: 'Email', value: 'email' },
+        { text: 'NAME', value: 'name', sortable: false },
+        { text: 'EMAIL', value: 'email' },
         { text: 'URL', value: 'url' }
       ],
       orderStatusItems: [],
       orderStatusFields: [
-        { text: 'Date Ordered', value: 'date' },
-        { text: 'Verfication Type', value: 'verification' },
-        { text: 'Account History', value: 'account' },
-        { text: 'Refresh Period', value: 'refresh' }
+        { text: 'DATE ORDERED', value: 'date' },
+        { text: 'VERIFICATION TYPE', value: 'verification' },
+        { text: 'ACCOUNT HISTORY', value: 'account' },
+        { text: 'REFRESH PERIOD', value: 'refresh' }
       ],
       infoModel: []
     }

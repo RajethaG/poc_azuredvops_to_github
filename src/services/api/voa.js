@@ -27,8 +27,8 @@ export default {
           }
           resolve(config)
         })
-        .catch(() => {
-          reject()
+        .catch((error) => {
+          reject(error)
         })
     })
   },
@@ -41,7 +41,7 @@ export default {
           resolve(response)
         })
         .catch((error) => {
-          reject()
+          reject(error)
         })
     })
   },
@@ -54,7 +54,7 @@ export default {
           resolve(response)
         })
         .catch((error) => {
-          reject()
+          reject(error)
         })
     })
   },
@@ -67,7 +67,7 @@ export default {
           resolve(response)
         })
         .catch((error) => {
-          reject()
+          reject(error)
         })
     })
   },
@@ -80,7 +80,7 @@ export default {
           resolve(response)
         })
         .catch((error) => {
-          reject()
+          reject(error)
         })
     })
   },
