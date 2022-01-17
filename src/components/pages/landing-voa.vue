@@ -37,6 +37,7 @@ import PageTitle from '../sections/PageTitle.vue'
 import VOA from './voa/voaform.vue'
 import VOAFiserve from './voa/voaform-fiserv.vue'
 import * as apiTypes from '@/services/api/api-types'
+import constant from '../../constants/constant.json'
 
 export default {
   components: { VOA, VOAFiserve, PageTitle },
@@ -92,9 +93,9 @@ export default {
     ...mapActions(['doGET']),
     getComponentKey(key) {
       switch (Number(key)) {
-        case 111:
+        case constant.integrationProductIds.VOA:
           return 'VOA'
-        case 206:
+        case constant.integrationProductIds.VOAFiserve:
           return 'VOAFiserve'
       }
       return ''

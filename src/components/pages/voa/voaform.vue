@@ -211,7 +211,7 @@ export default {
     buildVOAPayload() {
       const payload = {
         userId: this.USERID, // 2
-        productId: constant.productIds.VOA,
+        productId: constant.cpssProductIds.VOA,
         OrderForUser: this.USERID, // 1222,
         OrderForCustomer: this.CUSTOMERID, // 6
         borrowerFirstName: this.firstName,
@@ -260,7 +260,7 @@ export default {
     },
     refreshPeriodItems() {
       const product = this.customerProducts.filter(
-        (x) => Number(x.productId) === Number(constant.productIds.VOA)
+        (x) => Number(x.productId) === Number(constant.cpssProductIds.VOA)
       )
       if (product && product.length > 0) {
         const pd = product[0].productAddOns.map((item) => {

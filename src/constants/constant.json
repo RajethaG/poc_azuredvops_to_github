@@ -5,8 +5,12 @@
         "tif": "image/tif",
         "tiff": "image/tiff"
       },
-    "productIds": {
+    "cpssProductIds": {
       "VOA": 112,
       "VOAFiserv": 207
+    },
+    "integrationProductIds" : {
+      "VOA": 111,
+      "VOAFiserve": 206
     }
 }
