@@ -300,7 +300,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.ORDERID)
     this.doGET({
       getType: apiTypes.CPSS_GET_VOA_SUMMARY,
       params: {
