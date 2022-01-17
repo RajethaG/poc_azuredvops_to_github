@@ -27,6 +27,14 @@ const actions = {
       }
     })
   },
+  setSoftErrorConfig({ commit }) {
+    commit(types.SET_CLIENT_CONFIG, {
+      appTheme: {
+        Layout: 'plain',
+        Theme: '#AA1744'
+      }
+    })
+  },
   setLandingConfig({ commit }) {
     commit(types.SET_CLIENT_CONFIG, {
       appTheme: {

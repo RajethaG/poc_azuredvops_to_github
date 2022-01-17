@@ -240,7 +240,7 @@ export default {
         })
         .then((response) => {
           this.$router.push({
-            name: apiTypes.SUMMARY_REQUEST,
+            name: apiTypes.SUMMARY_REQUEST_INTERNAL,
             params: {
               product: apiTypes.PRODUCT_VOA,
               orderId: response.orderId
@@ -248,15 +248,6 @@ export default {
             query: { Token: this.token }
           })
         })
-
-      // this.$router.push({
-      //   name: apiTypes.SUMMARY_REQUEST,
-      //   params: {
-      //     product: apiTypes.PRODUCT_VOA,
-      //     orderId: '333444222'
-      //   },
-      //   query: { Token: this.token }
-      // })
     }
   },
   computed: {

@@ -17,3 +17,25 @@ export const buildSuccess = (
   commit(types.ERROR, null)
   resolve(resolveParam)
 }
+
+export const handleError = (error, errorParams) => {
+  const status = error?.response?.status
+
+  if (errorParams) {
+    if (status === 500 && errorParams.redirect500) {
+      errorParams.router.push({
+        name: 'error',
+        params: { message: '500 Error occured' }
+      })
+    }
+  }
+}
+
+export const notifyError = (commit, errorMessage) => {
+  if (errorMessage) {
+    commit(types.SET_NOTIFICATION, {
+      msg: errorMessage,
+      type: 'error'
+    })
+  }
+}

@@ -92,9 +92,9 @@ export default {
     ...mapActions(['doGET']),
     getComponentKey(key) {
       switch (Number(key)) {
-        case 112:
+        case 111:
           return 'VOA'
-        case 207:
+        case 206:
           return 'VOAFiserve'
       }
       return ''

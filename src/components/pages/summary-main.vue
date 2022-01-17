@@ -104,7 +104,7 @@ export default {
   computed: {
     ...mapGetters(['config']),
     ORDERID() {
-      return this.config.orderId || 0
+      return this.config.orderId || this.$route.params.orderId || 0
     },
     TOKEN() {
       return this.$route.query.Token || ''
@@ -291,7 +291,11 @@ export default {
         payload,
         token: this.TOKEN,
         errorMessage: 'An error occured while Sending Email',
-        successMsg: 'Email Sent Successfully'
+        successMsg: 'Email Sent Successfully',
+        errorParams: {
+          router: this.$router,
+          redirect500: true
+        }
       })
     }
   },
@@ -303,7 +307,11 @@ export default {
         token: this.TOKEN,
         orderId: this.ORDERID
       },
-      errorMessage: 'An error occured while loading the VOA summary data'
+      errorMessage: 'An error occured while loading the VOA summary data',
+      errorParams: {
+        router: this.$router,
+        redirect500: true
+      }
     }).then((data) => {
       this.status = data.status
       this.referenceNumber = data.referenceNumber

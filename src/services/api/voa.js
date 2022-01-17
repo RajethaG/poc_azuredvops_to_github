@@ -16,21 +16,7 @@ const getHeader = (token, attr = {}) => {
 export default {
   pullClientConfig(token) {
     return new Promise((resolve, reject) => {
-      const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.clientConfig}`
-
-      // this.pullVOA(token)
-      //   .then((response) => {
-      //     const config = {
-      //       status: 200,
-      //       data: {
-      //         appTheme: response.data.appTheme
-      //       }
-      //     }
-      //     resolve(config)
-      //   })
-      //   .catch((error) => {
-      //     reject(error)
-      //   })
+      const endpoint = `${appConfig.integrationApiEndpoint}/${apiPath.voa.getVoaSummaryConfig}`
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
@@ -102,14 +88,6 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          // response.data.appTheme = {
-          //   Layout: 'small',
-          //   Theme: '#3949AB'
-          // }
-          response.data.dataProviders = [
-            { key: 112, value: 'Verification of Assert' },
-            { key: 207, value: 'Verification of Assert-Fiserv' }
-          ]
           resolve(response)
         })
         .catch((error) => {

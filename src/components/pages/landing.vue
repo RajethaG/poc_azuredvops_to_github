@@ -25,6 +25,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import formsComponents from '../sections/forms-components.vue'
 // import * as types from '@/store/mutation-types.js'
+import { handleError } from '../../utils/util.js'
+
 export default {
   components: { formsComponents },
   created() {
@@ -33,6 +35,13 @@ export default {
   },
   mounted() {
     console.log('landing mounted ', this.breadcrumb)
+    handleError(
+      { response: { status: 200 } },
+      {
+        router: this.$router,
+        redirect200: true
+      }
+    )
   },
   methods: {
     ...mapActions(['setNotification']),

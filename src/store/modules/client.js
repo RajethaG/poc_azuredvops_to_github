@@ -1,6 +1,6 @@
 import * as types from '@/store/mutation-types'
 import api from '@/services/api/client'
-import { buildSuccess, handleError } from '@/utils/util.js'
+import { buildSuccess, handleError, notifyError } from '@/utils/util.js'
 
 const getters = {
   isClientConfigured: (state) => !!state.themeName,
@@ -32,7 +32,7 @@ const actions = {
   },
   doPOST: (
     { commit },
-    { product, payload, token, successMsg, errorMessage }
+    { product, payload, token, successMsg, errorMessage, errorParams }
   ) => {
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
@@ -52,19 +52,20 @@ const actions = {
             resolve(response.data)
           }
         })
-        .catch(() => {
-          if (errorMessage) {
-            commit(types.SET_NOTIFICATION, {
-              msg: errorMessage,
-              type: 'error'
-            })
-          }
+        .catch((error) => {
+          handleError(error, errorParams)
+
+          notifyError(commit, errorMessage)
+
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))
     })
   },
-  doGET: ({ commit }, { getType, params, successMsg, errorMessage }) => {
+  doGET: (
+    { commit },
+    { getType, params, successMsg, errorMessage, errorParams }
+  ) => {
     return new Promise((resolve, reject) => {
       commit(types.ADD_TASK)
       api
@@ -80,13 +81,11 @@ const actions = {
             resolve(response.data)
           }
         })
-        .catch(() => {
-          if (errorMessage) {
-            commit(types.SET_NOTIFICATION, {
-              msg: errorMessage,
-              type: 'error'
-            })
-          }
+        .catch((error) => {
+          handleError(error, errorParams)
+
+          notifyError(commit, errorMessage)
+
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))

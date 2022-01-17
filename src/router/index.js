@@ -26,6 +26,11 @@ router.beforeEach((to, from, next) => {
         store.dispatch('setErrorConfig')
       }, 250)
       break
+    case 'error':
+      setTimeout(() => {
+        store.dispatch('setSoftErrorConfig')
+      }, 250)
+      break
     case reqTypes.INTEGRATION_VOA:
     case reqTypes.INTEGRATION_FRAUDPLUS:
     case reqTypes.SUMMARY_REQUEST:
@@ -33,9 +38,20 @@ router.beforeEach((to, from, next) => {
         .dispatch('getClientConfig', to)
         .catch(() => next({ name: 'authError' }))
       break
+    case reqTypes.SUMMARY_REQUEST_INTERNAL:
+      if (!store.state.client.config?.appTheme) {
+        store
+          .dispatch('getClientConfig', to)
+          .catch(() => next({ name: 'authError' }))
+      } else {
+        return next()
+      }
+      break
     default:
-      // store.dispatch('setLandingConfig')
-      return next({ name: 'authError' })
+      return next({
+        name: 'error',
+        params: { message: 'Direct access to page is forbidden' }
+      })
   }
   return next()
 })

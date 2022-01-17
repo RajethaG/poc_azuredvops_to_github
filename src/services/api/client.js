@@ -46,6 +46,7 @@ export default {
       case apiTypes.INTEGRATION_VOA:
         return voa.pullVOA(token)
       case apiTypes.SUMMARY_REQUEST:
+      case apiTypes.SUMMARY_REQUEST_INTERNAL:
         if (product === apiTypes.PRODUCT_VOA) {
           return voa.pullClientConfig(token)
         }
