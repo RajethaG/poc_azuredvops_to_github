@@ -1,7 +1,8 @@
+import * as types from '@/services/api/api-types.js'
 export default [
   {
     path: '/pdfviewer',
-    name: 'pdfviewer',
+    name: types.PDF_VIEWER,
     meta: {
       requiresAuth: false
     },

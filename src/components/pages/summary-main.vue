@@ -195,7 +195,7 @@ export default {
           data.fileName
         )
         const routeData = this.$router.resolve({
-          name: 'pdfviewer',
+          name: apiTypes.PDF_VIEWER,
           query: { url }
         })
         window.open(routeData.href, '_blank')
@@ -223,7 +223,7 @@ export default {
           `VoA_${respData.orderId}`
         )
         const routeData = this.$router.resolve({
-          name: 'pdfviewer',
+          name: apiTypes.PDF_VIEWER,
           query: { url }
         })
         window.open(routeData.href, '_blank')

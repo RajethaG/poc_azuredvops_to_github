@@ -19,6 +19,16 @@ const router = new Router({
   ]
 })
 
+const flowThroughNext = (requireConfig, to, next) => {
+  if (requireConfig && !store.state.client.config?.appTheme) {
+    store
+      .dispatch('getClientConfig', to)
+      .catch(() => next({ name: 'authError' }))
+  }
+
+  return next()
+}
+
 router.beforeEach((to, from, next) => {
   switch (to.name) {
     case 'authError':
@@ -38,15 +48,11 @@ router.beforeEach((to, from, next) => {
         .dispatch('getClientConfig', to)
         .catch(() => next({ name: 'authError' }))
       break
+    case reqTypes.PDF_VIEWER:
+      return flowThroughNext(false, to, next)
     case reqTypes.SUMMARY_REQUEST_INTERNAL:
-      if (!store.state.client.config?.appTheme) {
-        store
-          .dispatch('getClientConfig', to)
-          .catch(() => next({ name: 'authError' }))
-      } else {
-        return next()
-      }
-      break
+      return flowThroughNext(true, to, next)
+
     default:
       return next({
         name: 'error',

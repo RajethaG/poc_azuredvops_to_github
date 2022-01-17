@@ -2,6 +2,7 @@ export const INTEGRATION_VOA = 'integration-voa'
 export const INTEGRATION_FRAUDPLUS = 'integration-fraudplus'
 export const SUMMARY_REQUEST = 'summary'
 export const SUMMARY_REQUEST_INTERNAL = 'summary-internal'
+export const PDF_VIEWER = 'PDF_VIEWER'
 
 export const PRODUCT_VOA = 'voa'
 export const PRODUCT_FRAUDPLUS = 'fraudplus'
