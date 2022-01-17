@@ -51,7 +51,6 @@ export default {
   computed: {
     ...mapGetters(['config']),
     USERID() {
-      // return 1247
       return this.config.customerInfo.userId
     },
     title() {

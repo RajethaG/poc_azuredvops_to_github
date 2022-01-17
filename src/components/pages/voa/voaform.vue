@@ -210,10 +210,10 @@ export default {
     },
     buildVOAPayload() {
       const payload = {
-        userId: 2,
+        userId: this.USERID, // 2
         productId: constant.productIds.VOA,
-        OrderForUser: 1222,
-        OrderForCustomer: 6,
+        OrderForUser: this.USERID, // 1222,
+        OrderForCustomer: this.CUSTOMERID, // 6
         borrowerFirstName: this.firstName,
         borrowerLastName: this.lastName,
         borrowerSSN: this.ssn,
@@ -261,6 +261,12 @@ export default {
   },
   computed: {
     ...mapGetters(['config']),
+    USERID() {
+      return this.config.customerInfo.userId || 0
+    },
+    CUSTOMERID() {
+      return this.config.customerInfo.customerId || 0
+    },
     refreshPeriodItems() {
       const product = this.customerProducts.filter(
         (x) => Number(x.productId) === Number(constant.productIds.VOA)
