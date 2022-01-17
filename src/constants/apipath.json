@@ -5,7 +5,8 @@
         "getvoareport":"consumerreport/api/VOA/GetOrderReport",
         "downloadfile":"bcr/api/document/download",
         "sendMail":"consumerreport/api/VOA/SendMail",
-        "submitVOA":"consumerreport/api/VOA/OrderReport"
+        "submitVOA":"consumerreport/api/VOA/OrderReport",
+        "clientConfig":"consumerreport/api/voaSummary/GetVoaSummaryorder"
     },
     "admin": {
         "getuserproduuct" : "admin/api/user/getCustomerUserProducts"

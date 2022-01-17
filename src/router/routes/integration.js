@@ -13,7 +13,7 @@ export default [
       )
   },
   {
-    path: '/integration/:product/summary/:orderId',
+    path: '/integration/:product/summary/:orderId?',
     name: types.SUMMARY_REQUEST,
     meta: {
       requiresAuth: false

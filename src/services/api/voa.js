@@ -3,7 +3,6 @@ import apiPath from '../../constants/apipath.json'
 import appConfig from '../../constants/appconfig.json'
 import * as apiTypes from './api-types'
 import * as types from '@/store/mutation-types'
-
 const getHeader = (token, attr = {}) => {
   return {
     headers: {
@@ -17,15 +16,25 @@ const getHeader = (token, attr = {}) => {
 export default {
   pullClientConfig(token) {
     return new Promise((resolve, reject) => {
-      this.pullVOA(token)
+      const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.clientConfig}`
+
+      // this.pullVOA(token)
+      //   .then((response) => {
+      //     const config = {
+      //       status: 200,
+      //       data: {
+      //         appTheme: response.data.appTheme
+      //       }
+      //     }
+      //     resolve(config)
+      //   })
+      //   .catch((error) => {
+      //     reject(error)
+      //   })
+      axios
+        .get(endpoint, getHeader(token))
         .then((response) => {
-          const config = {
-            status: 200,
-            data: {
-              appTheme: response.data.appTheme
-            }
-          }
-          resolve(config)
+          resolve(response)
         })
         .catch((error) => {
           reject(error)
@@ -97,6 +106,10 @@ export default {
           //   Layout: 'small',
           //   Theme: '#3949AB'
           // }
+          response.data.dataProviders = [
+            { key: 112, value: 'Verification of Assert' },
+            { key: 207, value: 'Verification of Assert-Fiserv' }
+          ]
           resolve(response)
         })
         .catch((error) => {

@@ -34,6 +34,7 @@ export default {
     const token = client.query?.Token
     const product = (client.params.product || '').toLowerCase()
     const name = (client.name || '').toLowerCase()
+    const orderId = client.params.orderId || ''
 
     if (!token || !name) {
       return new Promise(({ reject }) => {

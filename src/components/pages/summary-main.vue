@@ -61,6 +61,7 @@ import common from '../../utils/common'
 import constant from '../../constants/constant'
 import { mapActions } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
+import { mapGetters } from 'vuex'
 
 const EventCodes = {
   generate: 1,
@@ -101,8 +102,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['config']),
     ORDERID() {
-      return this.$route.params.orderId
+      return this.config.orderId || 0
     },
     TOKEN() {
       return this.$route.query.Token || ''
@@ -294,6 +296,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.ORDERID)
     this.doGET({
       getType: apiTypes.CPSS_GET_VOA_SUMMARY,
       params: {
