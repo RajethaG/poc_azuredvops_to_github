@@ -152,7 +152,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Employer Name"
-                rules="required|max:50|alpha_num"
+                rules="max:50|alpha_num"
                 v-slot="{ errors }"
               >
                 <v-text-field
