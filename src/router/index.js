@@ -21,6 +21,7 @@ const router = new Router({
 
 const flowThroughNext = (requireConfig, to, next) => {
   const appTheme = store.state.client.config?.appTheme
+
   if (requireConfig && !appTheme) {
     store
       .dispatch('getClientConfig', to)
