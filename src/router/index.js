@@ -20,10 +20,14 @@ const router = new Router({
 })
 
 const flowThroughNext = (requireConfig, to, next) => {
-  if (requireConfig && !store.state.client.config?.appTheme) {
+  const appTheme = store.state.client.config?.appTheme
+
+  if (requireConfig && !appTheme) {
     store
       .dispatch('getClientConfig', to)
       .catch(() => next({ name: 'authError' }))
+  } else if (!appTheme) {
+    store.dispatch('setLandingConfig')
   }
 
   return next()
