@@ -95,7 +95,7 @@ export default {
       switch (Number(key)) {
         case constant.cpssProductIds.VOA:
           return 'VOA'
-        case constant.cpssProductIds.VOAFiserve:
+        case constant.cpssProductIds.VOAFiserv:
           return 'VOAFiserve'
       }
       return ''
