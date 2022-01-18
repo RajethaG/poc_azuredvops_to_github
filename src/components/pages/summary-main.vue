@@ -38,7 +38,7 @@
       </v-layout>
       <v-layout row wrap>
         <v-flex xs12 md12 class="my-5">
-          <BaseLabel label="Status History:"></BaseLabel>
+          <BaseLabel label="STATUS HISTORY:"></BaseLabel>
           <ul class="events p-0">
             <li v-for="itemStatus in infoModel" :key="itemStatus.statusDate">
               <time>{{ itemStatus.statusDate }}</time>
