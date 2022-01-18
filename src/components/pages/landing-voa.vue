@@ -93,9 +93,9 @@ export default {
     ...mapActions(['doGET']),
     getComponentKey(key) {
       switch (Number(key)) {
-        case constant.integrationProductIds.VOA:
+        case constant.cpssProductIds.VOA:
           return 'VOA'
-        case constant.integrationProductIds.VOAFiserve:
+        case constant.cpssProductIds.VOAFiserve:
           return 'VOAFiserve'
       }
       return ''
