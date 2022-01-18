@@ -95,12 +95,13 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="SSN"
-                rules="required|numeric|max:10|min:10"
+                rules="required"
                 v-slot="{ errors }"
               >
                 <v-text-field
                   label="SSN"
                   v-model="ssn"
+                  v-mask="'###-##-####'"
                   :error="errors.length > 0"
                   :error-messages="errors[0]"
                   autocomplete="off"
@@ -131,11 +132,12 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Phone Number"
-                rules="required|numeric|max:10|min:10"
+                rules="required"
                 v-slot="{ errors }"
               >
                 <v-text-field
                   label="Phone Number"
+                  v-mask="'(###) ###-####'"
                   v-model="phone"
                   :error="errors.length > 0"
                   :error-messages="errors[0]"

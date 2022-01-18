@@ -6,7 +6,8 @@ import App from './App.vue'
 import router from '@/router'
 import { store } from '@/store'
 import '@/components/sections/_loader.js'
-
+import VueMask from 'v-mask'
+Vue.use(VueMask)
 Vue.config.productionTip = false
 // Vue.use(VuetifyConfirm, { vuetify })
 Vue.use({ vuetify })
