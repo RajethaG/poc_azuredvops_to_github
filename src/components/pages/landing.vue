@@ -34,7 +34,6 @@ export default {
     // Not maintaining any user session for now... localStorage...
   },
   mounted() {
-    console.log('landing mounted ', this.breadcrumb)
     handleError(
       { response: { status: 200 } },
       {
