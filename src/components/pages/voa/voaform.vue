@@ -197,7 +197,45 @@ export default {
       default: () => []
     }
   },
+  mounted() {
+    if (!this.verifyValueInList(this.refreshPeriod, this.refreshPeriodItems)) {
+      this.refreshPeriod = ''
+    }
+    if (
+      !this.verifyValueInList(this.accountHistory, this.accountHistoryItems)
+    ) {
+      this.accountHistory = ''
+    }
+  },
+  watch: {
+    customerProducts() {
+      this.refreshPeriodItems = this.setRefreshPeriodItems()
+    }
+  },
   methods: {
+    verifyValueInList(value, list) {
+      return (list || []).filter((item) => item.value === value).length > 0
+    },
+    // eslint-disable-next-line consistent-return
+    setRefreshPeriodItems() {
+      if (this.customerProducts) {
+        const product = this.customerProducts.filter(
+          (x) => Number(x.productId) === Number(constant.cpssProductIds.VOA)
+        )
+        if (product && product.length > 0) {
+          const pd = product[0].productAddOns
+            .filter((item) => item.changeable === true)
+            .map((item) => {
+              return {
+                value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
+                text: item.name
+              }
+            })
+          return pd
+        }
+        return []
+      }
+    },
     getRefreshPeriodMappable(stringValue) {
       switch (stringValue) {
         case '30 Days Refresh':
@@ -259,21 +297,6 @@ export default {
     },
     CUSTOMERID() {
       return this.config.customerInfo.customerId || 0
-    },
-    refreshPeriodItems() {
-      const product = this.customerProducts.filter(
-        (x) => Number(x.productId) === Number(constant.cpssProductIds.VOA)
-      )
-      if (product && product.length > 0) {
-        const pd = product[0].productAddOns.map((item) => {
-          return {
-            value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
-            text: item.name
-          }
-        })
-        return pd
-      }
-      return []
     }
   },
   data() {
@@ -291,13 +314,8 @@ export default {
         { text: '30 days', value: '30' },
         { text: '60 days', value: '60' },
         { text: '90 days', value: '90' }
-      ]
-      // refreshPeriodItems: [
-      //   { text: 'One Time Report', value: 0 },
-      //   { text: '30 Days Refresh', value: 30 },
-      //   { text: '60 Days Refresh', value: 60 },
-      //   { text: '90 Days Refresh', value: 90 }
-      // ]
+      ],
+      refreshPeriodItems: this.setRefreshPeriodItems()
     }
   }
 }
