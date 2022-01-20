@@ -23,7 +23,7 @@ import '@/assets/custom.css'
 
 export default {
   created() {
-    console.log('default layout created ', this.breadcrumbs)
+    // console.log('default layout created ', this.breadcrumbs)
     this.$store.commit('SET_BREADCRUMB', [
       {
         text: 'red',
@@ -41,7 +41,7 @@ export default {
     ])
   },
   mounted() {
-    console.log(this.$store.state.app.breadcrumbs)
+    // console.log(this.$store.state.app.breadcrumbs)
   },
   computed: {
     breadcrumbs() {
