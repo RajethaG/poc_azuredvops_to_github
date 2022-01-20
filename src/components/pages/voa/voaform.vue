@@ -61,7 +61,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="First Name"
-                rules="required|max:50|alpha_num"
+                rules="required|max:50"
                 v-slot="{ errors }"
               >
                 <v-text-field
@@ -78,7 +78,7 @@
             <v-flex xs12 sm4>
               <ValidationProvider
                 name="Last Name"
-                rules="required|max:50|alpha_num"
+                rules="required|max:50"
                 v-slot="{ errors }"
               >
                 <v-text-field
