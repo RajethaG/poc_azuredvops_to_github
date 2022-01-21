@@ -107,6 +107,8 @@ export default {
         return voa.submitVOA(payload, token)
       case apiTypes.CPSS_POST_SEND_MAIL:
         return voa.sendMail(payload, token)
+      case apiTypes.INTEGRATION_REQUIRED_PRE_POST_CALL_FOR_VOA_IGNORE_RESPONSE:
+        return voa.mandatoryCall(payload, token)
     }
     return new Promise(({ reject }) => reject())
   },

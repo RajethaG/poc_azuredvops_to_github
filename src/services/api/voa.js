@@ -124,6 +124,13 @@ export default {
     // .catch((error) => {
     // })
   },
+  mandatoryCall(payload, token) {
+    return axios.post(
+      `${appConfig.integrationApiEndpoint}/${apiPath.voa.mandatoryCallAsPerAPIRequest}`,
+      payload,
+      getHeader(token)
+    )
+  },
   setHeaders() {
     return {
       'Content-Type': 'application/json',
