@@ -195,6 +195,10 @@ export default {
     customerProducts: {
       type: Array,
       default: () => []
+    },
+    dataProvider: {
+      type: Object,
+      default: () => {}
     }
   },
   mounted() {
@@ -213,6 +217,12 @@ export default {
     }
   },
   methods: {
+    formatPayload(payload) {
+      return {
+        key: payload.value,
+        value: payload.text
+      }
+    },
     verifyValueInList(value, list) {
       return (list || []).filter((item) => item.value === value).length > 0
     },
@@ -267,27 +277,47 @@ export default {
 
       return payload
     },
-    save() {
-      const payload = this.buildVOAPayload()
-
-      this.$store
-        .dispatch('doPOST', {
-          product: apiTypes.PRODUCT_VOA,
-          payload,
-          token:
-            // eslint-disable-next-line max-len
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImU4YzI1YzljLTg0OTItNGIzNS05ZGRhLTk2NDVmNmE0ZTQ3ZSIsIlVzZXJJRCI6IjIiLCJDdXN0b21lcklkIjoiMSIsIkZpcnN0TmFtZSI6ImNwc3MiLCJNaWRkbGVJbml0aWFsIjoiSjEiLCJMYXN0TmFtZSI6ImFkbWluIiwiZW1haWwiOiJjcHNzYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDcmVkaXQgUGx1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMCIsIkN1c3RvbWVyTmFtZSI6IkNyZWRpdCBQbHVzIiwiUm9sZXMiOiJDcmVkaXQgUGx1cyBBZG1pbiIsImV4cCI6MTY0MTU1OTQzMywiaXNzIjoiaHR0cHM6Ly9hemFwcC1jcHNzLWRldi1hcGktMDAxLmF6dXJld2Vic2l0ZXMubmV0L2F1dGgiLCJhdWQiOiJodHRwczovL2F6YXBwLWNwc3MtZGV2LWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.VFAuPNW6WSICqnDbYaQZS-QzTj9nyLcuEmXnzMWaMJQ'
-        })
-        .then((response) => {
-          this.$router.push({
-            name: apiTypes.SUMMARY_REQUEST_INTERNAL,
-            params: {
-              product: apiTypes.PRODUCT_VOA,
-              orderId: response.orderId
+    doMandatoryCallAsPerRequiredByAPI() {
+      return new Promise((resolve) => {
+        this.$store
+          .dispatch('doPOST', {
+            product:
+              apiTypes.INTEGRATION_REQUIRED_PRE_POST_CALL_FOR_VOA_IGNORE_RESPONSE,
+            payload: {
+              DataProvider: this.formatPayload(this.dataProvider),
+              RefreshPeriod: this.refreshPeriod,
+              AccountHistory: this.accountHistory
             },
-            query: { Token: this.token }
+            token: this.token
           })
-        })
+          .finally(() => {
+            return resolve()
+          })
+      })
+    },
+    save() {
+      this.doMandatoryCallAsPerRequiredByAPI().then(() => {
+        const payload = this.buildVOAPayload()
+
+        this.$store
+          .dispatch('doPOST', {
+            product: apiTypes.PRODUCT_VOA,
+            payload,
+            token:
+              // eslint-disable-next-line max-len
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImU4YzI1YzljLTg0OTItNGIzNS05ZGRhLTk2NDVmNmE0ZTQ3ZSIsIlVzZXJJRCI6IjIiLCJDdXN0b21lcklkIjoiMSIsIkZpcnN0TmFtZSI6ImNwc3MiLCJNaWRkbGVJbml0aWFsIjoiSjEiLCJMYXN0TmFtZSI6ImFkbWluIiwiZW1haWwiOiJjcHNzYWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDcmVkaXQgUGx1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMCIsIkN1c3RvbWVyTmFtZSI6IkNyZWRpdCBQbHVzIiwiUm9sZXMiOiJDcmVkaXQgUGx1cyBBZG1pbiIsImV4cCI6MTY0MTU1OTQzMywiaXNzIjoiaHR0cHM6Ly9hemFwcC1jcHNzLWRldi1hcGktMDAxLmF6dXJld2Vic2l0ZXMubmV0L2F1dGgiLCJhdWQiOiJodHRwczovL2F6YXBwLWNwc3MtZGV2LWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.VFAuPNW6WSICqnDbYaQZS-QzTj9nyLcuEmXnzMWaMJQ'
+          })
+          .then((response) => {
+            this.$router.push({
+              name: apiTypes.SUMMARY_REQUEST_INTERNAL,
+              params: {
+                product: apiTypes.PRODUCT_VOA,
+                orderId: response.orderId
+              },
+              query: { Token: this.token }
+            })
+          })
+      })
     }
   },
   computed: {

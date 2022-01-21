@@ -8,11 +8,12 @@
     <v-layout row wrap v-if="products && products.length > 0">
       <v-flex sm12 md6>
         <v-select
-          v-model="selectedComponent"
+          v-model="selectedDataProviderKey"
           :items="products"
           label="Choose Data Provider"
           outlined
           dense
+          @change="updateSelectedDataProvider"
         ></v-select>
       </v-flex>
     </v-layout>
@@ -23,7 +24,8 @@
           v-bind="{
             prefillData: config.voaRequest,
             token: this.$route.query.Token,
-            customerProducts: this.customerProducts
+            customerProducts: this.customerProducts,
+            dataProvider: this.SELECTED_DATA_PROVIDER
           }"
         ></component>
       </v-flex>
@@ -46,11 +48,28 @@ export default {
       items: [],
       selectedComponent: '',
       getValue: {},
-      customerProducts: []
+      customerProducts: [],
+      selectedDataProviderKey: ''
     }
   },
   computed: {
     ...mapGetters(['config']),
+    SELECTED_DATA_PROVIDER() {
+      if (this.config.dataProviders && this.config.dataProviders.length > 0) {
+        const prods = this.config.dataProviders
+          .filter((x) => x.key === this.selectedDataProviderKey)
+          .map((item) => {
+            return {
+              value: item.key,
+              text: item.value
+            }
+          })
+        if (prods && prods.length > 0) {
+          return prods[0]
+        }
+      }
+      return {}
+    },
     USERID() {
       return this.config.customerInfo.userId
     },
@@ -61,7 +80,7 @@ export default {
       if (this.config.dataProviders && this.config.dataProviders.length > 0) {
         const prods = this.config.dataProviders.map((item) => {
           return {
-            value: this.getComponentKey(item.key),
+            value: item.key,
             text: item.value
           }
         })
@@ -91,6 +110,9 @@ export default {
   },
   methods: {
     ...mapActions(['doGET']),
+    updateSelectedDataProvider(item) {
+      this.selectedComponent = this.getComponentKey(item)
+    },
     getComponentKey(key) {
       switch (Number(key)) {
         case constant.cpssProductIds.VOA:
