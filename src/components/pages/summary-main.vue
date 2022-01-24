@@ -155,6 +155,19 @@ export default {
       'doGET',
       'doPOST'
     ]),
+    getRefreshPeriodLabels(key) {
+      switch (key) {
+        case 1:
+          return 'One Time Report'
+        case 30:
+          return '30 Days Refresh'
+        case 60:
+          return '60 Days Refresh'
+        case 90:
+          return '90 Days Refresh'
+      }
+      return ''
+    },
     onCommandEvent(command) {
       switch (command) {
         case EventCodes.generate:
@@ -331,7 +344,7 @@ export default {
           date: data.responseTime,
           verification: data.verificationType,
           account: data.accountHistory,
-          refresh: data.refreshPeriod
+          refresh: this.getRefreshPeriodLabels(data.refreshPeriod)
         }
       ]
       this.infoModel = data.orderStatus
