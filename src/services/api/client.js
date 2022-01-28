@@ -15,7 +15,7 @@ const getHeader = (token, attr = {}) => {
 
 const getCustomerUserProducts = (userId, token) => {
   return new Promise((resolve, reject) => {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.admin.getuserproduuct}?UserId=${userId}`
+    const endpoint = `${appConfig.integrationApiEndpoint}/${apiPath.admin.getuserproduuct}?UserId=${userId}`
     axios
       .get(endpoint, getHeader(token))
       .then((response) => {
