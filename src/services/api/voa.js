@@ -28,7 +28,7 @@ export default {
     })
   },
   pullSummaryVOA(orderId, token) {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`
+    const endpoint = `${appConfig.integrationApiEndpoint}/${apiPath.voa.getvoasummary}?orderId=${orderId}`
     return new Promise((resolve, reject) => {
       axios
         .get(endpoint, getHeader(token))
@@ -41,7 +41,7 @@ export default {
     })
   },
   pullReportVOA(orderId, token) {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.getvoareport}?orderId=${orderId}`
+    const endpoint = `${appConfig.integrationApiEndpoint}/${apiPath.voa.getvoareport}?orderId=${orderId}`
     return new Promise((resolve, reject) => {
       axios
         .get(endpoint, getHeader(token))
@@ -54,7 +54,7 @@ export default {
     })
   },
   sendMail(payload, token) {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.sendMail}?orderId=${payload.orderId}`
+    const endpoint = `${appConfig.integrationApiEndpoint}/${apiPath.voa.sendMail}?orderId=${payload.orderId}`
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, getHeader(token))
@@ -67,7 +67,7 @@ export default {
     })
   },
   downloadPdfVOA(orderId, token) {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.downloadfile}?orderFileId=${orderId}`
+    const endpoint = `${appConfig.integrationApiEndpoint}/${apiPath.voa.downloadfile}?orderFileId=${orderId}`
     return new Promise((resolve, reject) => {
       axios
         .get(endpoint, { headers: this.setHeaders() })
@@ -97,7 +97,7 @@ export default {
   },
   submitVOA(payload, token) {
     return axios.post(
-      `${appConfig.cpssApiEndpoint}/${apiPath.voa.submitVOA}`,
+      `${appConfig.integrationApiEndpoint}/${apiPath.voa.submitVOA}`,
       payload,
       getHeader(token)
     )
