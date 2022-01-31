@@ -1,11 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <v-layout row wrap>
-      <v-flex sm12 md6>
-        <page-title :text="title" />
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap v-if="products && products.length > 1">
+    <v-layout row wrap v-if="products && products.length > 0">
       <v-flex sm12 md6>
         <v-select
           v-model="selectedDataProviderKey"
