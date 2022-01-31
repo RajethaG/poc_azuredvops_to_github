@@ -88,7 +88,6 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          response.data.dataProviders = [{ key: 207, value: 'Fiserv' }]
           resolve(response)
         })
         .catch((error) => {
