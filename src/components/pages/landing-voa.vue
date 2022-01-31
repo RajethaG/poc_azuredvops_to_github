@@ -5,7 +5,7 @@
         <page-title :text="title" />
       </v-flex>
     </v-layout>
-    <v-layout row wrap v-if="products && products.length > 0">
+    <v-layout row wrap v-if="products && products.length > 1">
       <v-flex sm12 md6>
         <v-select
           v-model="selectedDataProviderKey"
@@ -102,14 +102,17 @@ export default {
     })
     // mount is triggered only after config is loaded
     // uncomment if default selection is to be enabled
-    // if (this.config.voaRequest) {
-    //   this.selectedComponent = 'VOA'
-    // }
+    if (this.config.dataProviders && this.config.dataProviders.length === 1) {
+      this.selectedDataProviderKey = this.config.dataProviders[0].key
+      this.selectedComponent = this.getComponentKey(
+        this.selectedDataProviderKey
+      )
+    }
   },
   methods: {
     ...mapActions(['doGET']),
-    updateSelectedDataProvider(item) {
-      this.selectedComponent = this.getComponentKey(item)
+    updateSelectedDataProvider(key) {
+      this.selectedComponent = this.getComponentKey(key)
     },
     getComponentKey(key) {
       switch (Number(key)) {
