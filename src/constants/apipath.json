@@ -7,9 +7,8 @@
         "sendMail":"consumerreport/api/VOA/SendMail",
         "submitVOA":"consumerreport/api/VOA/OrderReport",
         "getVoaSummaryConfig":"consumerreport/api/voaSummary/GetVoaSummaryorder",
-        "mandatoryCallAsPerAPIRequest": "consumerreport/api/voa/orderedThroughDataProvider"
-    },
-    "admin": {
-        "getuserproduuct" : "admin/api/user/getCustomerUserProducts"
+        "mandatoryCallAsPerAPIRequest": "consumerreport/api/voa/orderedThroughDataProvider",
+        "getUserProducts" : "consumerreport/api/voa/getUserProducts"
+
     }
 }
