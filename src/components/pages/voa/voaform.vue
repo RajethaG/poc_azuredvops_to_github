@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import constant from '../../../constants/constant.json'
 export default {
@@ -202,21 +202,29 @@ export default {
     }
   },
   mounted() {
-    if (!this.verifyValueInList(this.refreshPeriod, this.refreshPeriodItems)) {
-      this.refreshPeriod = ''
-    }
-    if (
-      !this.verifyValueInList(this.accountHistory, this.accountHistoryItems)
-    ) {
-      this.accountHistory = ''
-    }
+    this.invalidateData()
   },
   watch: {
     customerProducts() {
       this.refreshPeriodItems = this.setRefreshPeriodItems()
+      this.refreshPeriod = this.prefillData.refreshPeriod || 0
+      this.invalidateData(this.refreshPeriod)
     }
   },
   methods: {
+    ...mapActions(['setNotification']),
+    invalidateData() {
+      if (
+        !this.verifyValueInList(this.refreshPeriod, this.refreshPeriodItems)
+      ) {
+        this.refreshPeriod = ''
+      }
+      if (
+        !this.verifyValueInList(this.accountHistory, this.accountHistoryItems)
+      ) {
+        this.accountHistory = ''
+      }
+    },
     formatPayload(payload) {
       return {
         key: payload.value,
@@ -306,6 +314,13 @@ export default {
             token: this.token
           })
           .then((response) => {
+            if (!response?.orderId && response?.message) {
+              this.setNotification({
+                msg: response.message,
+                type: 'error'
+              })
+              return
+            }
             this.$router.push({
               name: apiTypes.SUMMARY_REQUEST_INTERNAL,
               params: {
