@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <transition name="fade" mode="out-in">
-      <div class="container bordered mt-5 rounded">
+      <div class="container backgroundColor bordered mt-5 rounded">
         <router-view />
       </div>
     </transition>

@@ -3,7 +3,7 @@
     <!-- <v-app-bar height="90" fixed class="primary" shrink-on-scroll dark>
     </v-app-bar> -->
     <transition name="fade" mode="out-in">
-      <div class="container bordered mt-5 rounded">
+      <div class="container backgroundColor bordered mt-5 rounded">
         <v-breadcrumbs :items="breadcrumbs">
           <template v-slot:item="{ item }">
             <v-breadcrumbs-item :href="item.href" :disabled="item.disabled">

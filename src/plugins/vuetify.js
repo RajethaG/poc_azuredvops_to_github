@@ -7,7 +7,9 @@ const opts = {
   theme: {
     themes: {
       light: {
-        primary: '#fff' // '#EF4BC7'
+        primary: '#fff',
+        pageBackgroundColor: '#fff',
+        backgroundColor: '#fff'
       }
     }
   }
@@ -21,6 +23,8 @@ Vue.prototype.$setTheme = function (themes) {
   a.primary = themes.primary
   a.secondary = themes.secondary || themes.primary
   a.accent = themes.accent || themes.secondary || themes.primary
+  a.pageBackgroundColor = themes.pageBackgroundColor
+  a.backgroundColor = themes.backgroundColor
 }
 
 Vue.use(Vuetify)
