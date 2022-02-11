@@ -20,7 +20,7 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          resolve(response)
+          resolve(this.mockApiResponse(response))
         })
         .catch((error) => {
           reject(error)
@@ -88,7 +88,7 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          resolve(response)
+          resolve(this.mockApiResponse(response))
         })
         .catch((error) => {
           reject(error)
@@ -130,5 +130,10 @@ export default {
       payload,
       getHeader(token)
     )
+  },
+  mockApiResponse(response) {
+    response.data.appTheme.pageBackgroundColor = '#cccccc'
+    response.data.appTheme.backgroundColor = '#fff'
+    return response
   }
 }

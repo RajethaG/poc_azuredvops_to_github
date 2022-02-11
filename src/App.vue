@@ -1,15 +1,17 @@
 <template>
   <v-app>
-    <layout-default v-if="layout === 'default'" />
-    <layout-small v-else-if="layout === 'small'" />
-    <layout-blank v-if="layout === 'plain'" />
-    <v-overlay :value="isAppBusy" color="#aaa" opacity="0.9">
-      <v-progress-circular
-        indeterminate
-        size="36"
-        color="grey lighten-2"
-      ></v-progress-circular>
-    </v-overlay>
+    <v-main class="pageBackgroundColor">
+      <layout-default v-if="layout === 'default'" />
+      <layout-small v-else-if="layout === 'small'" />
+      <layout-blank v-if="layout === 'plain'" />
+      <v-overlay :value="isAppBusy" color="#aaa" opacity="0.9">
+        <v-progress-circular
+          indeterminate
+          size="36"
+          color="grey lighten-2"
+        ></v-progress-circular>
+      </v-overlay>
+    </v-main>
   </v-app>
 </template>
 
@@ -24,6 +26,9 @@ export default {
     ...mapGetters(['isAppBusy', 'themes', 'config']),
     layout() {
       return this.config.appTheme?.Layout || ''
+    },
+    backGroundTheme() {
+      return this.config.appTheme?.backGroundColor || '#cccccc'
     }
   },
   components: {
@@ -38,7 +43,9 @@ export default {
       }
       if (val.appTheme.Theme) {
         const themes = {
-          primary: val.appTheme.Theme
+          primary: val.appTheme.Theme,
+          pageBackgroundColor: val.appTheme.pageBackgroundColor,
+          backgroundColor: val.appTheme.backgroundColor
         }
         this.$setTheme(themes)
       }
