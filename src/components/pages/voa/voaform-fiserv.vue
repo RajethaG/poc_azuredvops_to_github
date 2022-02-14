@@ -3,11 +3,6 @@
     <form @submit.prevent="handleSubmit(save)">
       <v-container grid-list-md class="mx-0 px-0">
         <v-layout row wrap>
-          <v-alert type="info">
-            VOA-Fiserv is not yet implemented in CPSS
-          </v-alert>
-        </v-layout>
-        <v-layout row wrap v-if="1 === 3">
           <v-flex xs12 sm4>
             <ValidationProvider
               name="Reference Number"
@@ -100,12 +95,13 @@
           <v-flex xs12 sm4>
             <ValidationProvider
               name="SSN"
-              rules="required|numeric|max:10|min:10"
+              rules="required|min:11|max:11"
               v-slot="{ errors }"
             >
               <v-text-field
                 label="SSN"
                 v-model="ssn"
+                v-mask="'###-##-####'"
                 :error="errors.length > 0"
                 :error-messages="errors[0]"
                 autocomplete="off"
@@ -135,12 +131,13 @@
           <v-flex xs12 sm4>
             <ValidationProvider
               name="Phone Number"
-              rules="required|numeric|max:10|min:10"
+              rules="min:14|max:14"
               v-slot="{ errors }"
             >
               <v-text-field
                 label="Phone Number"
                 v-model="phone"
+                v-mask="'(###) ###-####'"
                 :error="errors.length > 0"
                 :error-messages="errors[0]"
                 autocomplete="off"
@@ -150,7 +147,7 @@
             </ValidationProvider>
           </v-flex>
         </v-layout>
-        <v-layout justify-start v-if="1 === 3">
+        <v-layout justify-start>
           <v-flex xs12 md1>
             <v-btn type="submit" class="primary darken-2">Order</v-btn>
           </v-flex>
@@ -162,6 +159,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import constant from '../../../constants/constant.json'
 export default {
   props: {
     prefillData: {
@@ -171,24 +169,37 @@ export default {
     token: {
       type: String,
       default: null
+    },
+    customerProducts: {
+      type: Array,
+      default: () => []
+    },
+    dataProvider: {
+      type: Object,
+      default: () => {}
     }
   },
+  created() {
+    this.refreshPeriodItems = this.setRefreshPeriodItems()
+    this.refreshPeriod = this.prefillData.refreshPeriod || 0
+  },
+  // watch: {
+  //   customerProducts() {
+  //     this.refreshPeriodItems = this.setRefreshPeriodItems()
+  //     this.refreshPeriod = this.prefillData.refreshPeriod || 0
+  //   }
+  // },
   data() {
     return {
       referenceNumber: this.prefillData.referenceNumber || '',
       transactionHistory: this.prefillData.accountHistory || '',
       transactionHistoryItems: [
-        { text: '30 days', value: 30 },
-        { text: '60 days', value: 60 },
-        { text: '90 days', value: 90 }
+        { text: '30 days', value: '30' },
+        { text: '60 days', value: '60' },
+        { text: '90 days', value: '90' }
       ],
-      refreshPeriodItems: [
-        { text: 'One Time Report', value: 0 },
-        { text: '30 Days Refresh', value: 30 },
-        { text: '60 Days Refresh', value: 60 },
-        { text: '90 Days Refresh', value: 90 }
-      ],
-      refreshPeriod: this.prefillData.refreshPeriod || '',
+      refreshPeriodItems: [],
+      refreshPeriod: this.prefillData.refreshPeriod,
       firstName: this.prefillData.firstName || '',
       lastName: this.prefillData.lastName || '',
       ssn: this.prefillData.ssn || '',
@@ -203,6 +214,40 @@ export default {
         msg: 'Order Cannot be Completed',
         type: 'error'
       })
+    },
+    // eslint-disable-next-line consistent-return
+    setRefreshPeriodItems() {
+      if (this.customerProducts) {
+        const product = this.customerProducts.filter(
+          (x) => Number(x.productId) === Number(constant.cpssProductIds.VOA)
+        )
+        if (product && product.length > 0) {
+          const pd = product[0].productAddOns
+            .filter((item) => item.changeable === true)
+            .map((item) => {
+              return {
+                value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
+                text: item.name
+              }
+            })
+          return pd
+        }
+        return []
+      }
+    },
+    getRefreshPeriodMappable(stringValue) {
+      switch (stringValue) {
+        case '30 Days Refresh':
+          return 30
+        case '60 Days Refresh':
+          return 60
+        case '90 Days Refresh':
+          return 90
+        case 'One Time Report':
+          return 0
+        default:
+          return 1
+      }
     }
   }
 }
