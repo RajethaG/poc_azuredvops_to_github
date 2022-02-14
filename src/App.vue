@@ -44,8 +44,8 @@ export default {
       if (val.appTheme.Theme) {
         const themes = {
           primary: val.appTheme.Theme,
-          pageBackgroundColor: val.appTheme.pageBackgroundColor,
-          backgroundColor: val.appTheme.backgroundColor
+          pageBackgroundColor: val.appTheme.PageBackgroundColor,
+          backgroundColor: val.appTheme.BackgroundColor
         }
         this.$setTheme(themes)
       }
