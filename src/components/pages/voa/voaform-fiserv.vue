@@ -55,9 +55,16 @@
               ></v-select>
             </ValidationProvider>
           </v-flex>
-          <v-flex xs12>
+        </v-layout>
+        <v-layout row wrap align-center>
+          <v-flex class="flex-grow-0 flex-shrink-0">
             <BaseLabel label="Borrower Information" />
           </v-flex>
+          <v-flex>
+            <v-divider></v-divider>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
           <v-flex xs12 sm4>
             <ValidationProvider
               name="First Name"
@@ -67,6 +74,23 @@
               <v-text-field
                 label="First Name"
                 v-model="firstName"
+                :error="errors.length > 0"
+                :error-messages="errors[0]"
+                autocomplete="off"
+                outlined
+                dense
+              ></v-text-field>
+            </ValidationProvider>
+          </v-flex>
+          <v-flex xs12 sm4>
+            <ValidationProvider
+              name="Middle Name"
+              rules="max:50|alpha_num"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                label="Middle Name"
+                v-model="middleName"
                 :error="errors.length > 0"
                 :error-messages="errors[0]"
                 autocomplete="off"
@@ -92,6 +116,8 @@
               ></v-text-field>
             </ValidationProvider>
           </v-flex>
+        </v-layout>
+        <v-layout row wrap>
           <v-flex xs12 sm4>
             <ValidationProvider
               name="SSN"
@@ -204,7 +230,8 @@ export default {
       lastName: this.prefillData.lastName || '',
       ssn: this.prefillData.ssn || '',
       email: this.prefillData.emailID || '',
-      phone: this.prefillData.phoneNumber || ''
+      phone: this.prefillData.phoneNumber || '',
+      middleName: this.prefillData.middleName || ''
     }
   },
   methods: {
