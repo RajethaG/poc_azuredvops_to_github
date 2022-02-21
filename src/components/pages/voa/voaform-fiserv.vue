@@ -3,11 +3,6 @@
     <form @submit.prevent="handleSubmit(save)">
       <v-container grid-list-md class="mx-0 px-0">
         <v-layout row wrap>
-          <v-alert type="info">
-            VOA-Fiserv is not yet implemented in CPSS
-          </v-alert>
-        </v-layout>
-        <v-layout row wrap v-if="1 === 3">
           <v-flex xs12 sm4>
             <ValidationProvider
               name="Reference Number"
@@ -60,9 +55,16 @@
               ></v-select>
             </ValidationProvider>
           </v-flex>
-          <v-flex xs12>
+        </v-layout>
+        <v-layout row wrap align-center>
+          <v-flex class="flex-grow-0 flex-shrink-0">
             <BaseLabel label="Borrower Information" />
           </v-flex>
+          <v-flex>
+            <v-divider></v-divider>
+          </v-flex>
+        </v-layout>
+        <v-layout row wrap>
           <v-flex xs12 sm4>
             <ValidationProvider
               name="First Name"
@@ -72,6 +74,23 @@
               <v-text-field
                 label="First Name"
                 v-model="firstName"
+                :error="errors.length > 0"
+                :error-messages="errors[0]"
+                autocomplete="off"
+                outlined
+                dense
+              ></v-text-field>
+            </ValidationProvider>
+          </v-flex>
+          <v-flex xs12 sm4>
+            <ValidationProvider
+              name="Middle Name"
+              rules="max:50|alpha_num"
+              v-slot="{ errors }"
+            >
+              <v-text-field
+                label="Middle Name"
+                v-model="middleName"
                 :error="errors.length > 0"
                 :error-messages="errors[0]"
                 autocomplete="off"
@@ -97,15 +116,18 @@
               ></v-text-field>
             </ValidationProvider>
           </v-flex>
+        </v-layout>
+        <v-layout row wrap>
           <v-flex xs12 sm4>
             <ValidationProvider
               name="SSN"
-              rules="required|numeric|max:10|min:10"
+              rules="required|min:11|max:11"
               v-slot="{ errors }"
             >
               <v-text-field
                 label="SSN"
                 v-model="ssn"
+                v-mask="'###-##-####'"
                 :error="errors.length > 0"
                 :error-messages="errors[0]"
                 autocomplete="off"
@@ -135,12 +157,13 @@
           <v-flex xs12 sm4>
             <ValidationProvider
               name="Phone Number"
-              rules="required|numeric|max:10|min:10"
+              rules="min:14|max:14"
               v-slot="{ errors }"
             >
               <v-text-field
                 label="Phone Number"
                 v-model="phone"
+                v-mask="'(###) ###-####'"
                 :error="errors.length > 0"
                 :error-messages="errors[0]"
                 autocomplete="off"
@@ -150,7 +173,7 @@
             </ValidationProvider>
           </v-flex>
         </v-layout>
-        <v-layout justify-start v-if="1 === 3">
+        <v-layout justify-start>
           <v-flex xs12 md1>
             <v-btn type="submit" class="primary darken-2">Order</v-btn>
           </v-flex>
@@ -161,7 +184,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import constant from '../../../constants/constant.json'
+import * as apiTypes from '@/services/api/api-types'
 export default {
   props: {
     prefillData: {
@@ -171,38 +196,118 @@ export default {
     token: {
       type: String,
       default: null
+    },
+    customerProducts: {
+      type: Array,
+      default: () => []
+    },
+    dataProvider: {
+      type: Object,
+      default: () => {}
     }
   },
+  created() {
+    this.refreshPeriodItems = this.setRefreshPeriodItems()
+    this.refreshPeriod = this.prefillData.refreshPeriod || 0
+  },
+  // watch: {
+  //   customerProducts() {
+  //     this.refreshPeriodItems = this.setRefreshPeriodItems()
+  //     this.refreshPeriod = this.prefillData.refreshPeriod || 0
+  //   }
+  // },
   data() {
     return {
       referenceNumber: this.prefillData.referenceNumber || '',
       transactionHistory: this.prefillData.accountHistory || '',
       transactionHistoryItems: [
-        { text: '30 days', value: 30 },
-        { text: '60 days', value: 60 },
-        { text: '90 days', value: 90 }
+        { text: '30 days', value: '30' },
+        { text: '60 days', value: '60' },
+        { text: '90 days', value: '90' }
       ],
-      refreshPeriodItems: [
-        { text: 'One Time Report', value: 0 },
-        { text: '30 Days Refresh', value: 30 },
-        { text: '60 Days Refresh', value: 60 },
-        { text: '90 Days Refresh', value: 90 }
-      ],
-      refreshPeriod: this.prefillData.refreshPeriod || '',
+      refreshPeriodItems: [],
+      refreshPeriod: this.prefillData.refreshPeriod,
       firstName: this.prefillData.firstName || '',
       lastName: this.prefillData.lastName || '',
       ssn: this.prefillData.ssn || '',
       email: this.prefillData.emailID || '',
-      phone: this.prefillData.phoneNumber || ''
+      phone: this.prefillData.phoneNumber || '',
+      middleName: this.prefillData.middleName || ''
+    }
+  },
+  computed: {
+    ...mapGetters(['config']),
+    USERID() {
+      return this.config.customerInfo.userId || 0
+    },
+    CUSTOMERID() {
+      return this.config.customerInfo.customerId || 0
     }
   },
   methods: {
-    ...mapActions(['setNotification']),
+    ...mapActions(['setNotification', 'doPOST']),
+    buildFiservRequest() {
+      return {
+        userId: this.USERID,
+        Source: 'AVANTUS UI',
+        productId: constant.cpssProductIds.VOAFiserv,
+        OrderForUser: this.USERID,
+        OrderForCustomer: this.CUSTOMERID,
+        referenceNumber: this.referenceNumber,
+        transactionHistory: this.transactionHistory,
+        refreshPeriod: this.refreshPeriod,
+        borrowerRequestViewModel: {
+          firstName: this.firstName,
+          middleName: this.middleName,
+          lastName: this.lastName,
+          ssn: this.ssn,
+          emailAddress: this.email,
+          phoneNumber: this.phone.replace(/[^0-9]/g, '')
+        }
+      }
+    },
     save() {
-      this.setNotification({
-        msg: 'Order Cannot be Completed',
-        type: 'error'
+      const payload = this.buildFiservRequest()
+      this.doPOST({
+        product: apiTypes.PRODUCT_FISERV,
+        payload,
+        token: this.token,
+        errorMessage: 'Order Cannot be Completed'
       })
+    },
+    // eslint-disable-next-line consistent-return
+    setRefreshPeriodItems() {
+      if (this.customerProducts) {
+        const product = this.customerProducts.filter(
+          (x) => Number(x.productId) === Number(constant.cpssProductIds.VOA)
+        )
+        if (product && product.length > 0) {
+          const pd = product[0].productAddOns
+            .filter((item) => item.changeable === true)
+            .map((item) => {
+              return {
+                value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
+                text: item.name
+              }
+            })
+          return pd
+        }
+        return []
+      }
+    },
+    getRefreshPeriodMappable(stringValue) {
+      switch (stringValue) {
+        case '30 Days Refresh':
+          return 30
+        case '60 Days Refresh':
+          return 60
+        case '90 Days Refresh':
+          return 90
+        case 'One Time Report':
+          return 0
+        default:
+          return 1
+      }
     }
   }
 }

@@ -53,10 +53,8 @@ const actions = {
           }
         })
         .catch((error) => {
-          handleError(error, errorParams)
-
           notifyError(commit, errorMessage)
-
+          handleError(error, errorParams)
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))

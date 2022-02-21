@@ -9,14 +9,7 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    ...routes,
-    {
-      path: '/nextpage',
-      name: 'nextpage',
-      component: () => import('@/components/pages/nextpage.vue')
-    }
-  ]
+  routes: [...routes]
 })
 
 const flowThroughNext = (requireConfig, to, next) => {

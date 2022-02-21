@@ -10,5 +10,8 @@
         "mandatoryCallAsPerAPIRequest": "consumerreport/api/voa/orderedThroughDataProvider",
         "getUserProducts" : "consumerreport/api/voa/getUserProducts"
 
+    },
+    "voaFiserv":{
+        "fiservOrder":"consumerreport/api/Fiserv/FiservOrderReport"
     }
 }
