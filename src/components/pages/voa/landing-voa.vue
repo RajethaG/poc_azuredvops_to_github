@@ -30,11 +30,11 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import PageTitle from '../sections/PageTitle.vue'
-import VOA from './voa/voaform.vue'
-import VOAFiserve from './voa/voaform-fiserv.vue'
+import PageTitle from '../../sections/PageTitle.vue'
+import VOA from './voaform.vue'
+import VOAFiserve from './voaform-fiserv.vue'
 import * as apiTypes from '@/services/api/api-types'
-import constant from '../../constants/constant.json'
+import constant from '../../../constants/constant.json'
 
 export default {
   components: { VOA, VOAFiserve, PageTitle },

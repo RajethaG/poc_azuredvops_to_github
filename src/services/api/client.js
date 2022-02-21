@@ -57,7 +57,6 @@ export default {
     return new Promise(({ reject }) => {
       reject()
     })
-
   },
   doPOST({ product, payload, token }) {
     switch (product) {

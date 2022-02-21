@@ -9,7 +9,7 @@ export default [
     },
     component: () =>
       import(
-        /* webpackChunkName: "landing" */ '@/components/pages/landing-voa.vue'
+        /* webpackChunkName: "landing" */ '@/components/pages/voa/landing-voa.vue'
       )
   },
   {
@@ -21,7 +21,7 @@ export default [
     exact: true,
     component: () =>
       import(
-        /* webpackChunkName: "landing" */ '@/components/pages/summary-main.vue'
+        /* webpackChunkName: "landing" */ '@/components/pages/voa/summary-main.vue'
       )
   },
   {
@@ -32,7 +32,7 @@ export default [
     },
     component: () =>
       import(
-        /* webpackChunkName: "landing" */ '@/components/pages/summary-main.vue'
+        /* webpackChunkName: "landing" */ '@/components/pages/voa/summary-main.vue'
       )
   }
 ]
