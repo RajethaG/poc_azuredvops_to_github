@@ -184,8 +184,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import constant from '../../../constants/constant.json'
+import * as apiTypes from '@/services/api/api-types'
 export default {
   props: {
     prefillData: {
@@ -234,12 +235,44 @@ export default {
       middleName: this.prefillData.middleName || ''
     }
   },
+  computed: {
+    ...mapGetters(['config']),
+    USERID() {
+      return this.config.customerInfo.userId || 0
+    },
+    CUSTOMERID() {
+      return this.config.customerInfo.customerId || 0
+    }
+  },
   methods: {
-    ...mapActions(['setNotification']),
+    ...mapActions(['setNotification', 'doPOST']),
+    buildFiservRequest() {
+      return {
+        userId: this.USERID,
+        Source: 'AVANTUS UI',
+        productId: constant.cpssProductIds.VOAFiserv,
+        OrderForUser: this.USERID,
+        OrderForCustomer: this.CUSTOMERID,
+        referenceNumber: this.referenceNumber,
+        transactionHistory: this.transactionHistory,
+        refreshPeriod: this.refreshPeriod,
+        borrowerRequestViewModel: {
+          firstName: this.firstName,
+          middleName: this.middleName,
+          lastName: this.lastName,
+          ssn: this.ssn,
+          emailAddress: this.email,
+          phoneNumber: this.phone.replace(/[^0-9]/g, '')
+        }
+      }
+    },
     save() {
-      this.setNotification({
-        msg: 'Order Cannot be Completed',
-        type: 'error'
+      const payload = this.buildFiservRequest()
+      this.doPOST({
+        product: apiTypes.PRODUCT_FISERV,
+        payload,
+        token: this.token,
+        errorMessage: 'Order Cannot be Completed'
       })
     },
     // eslint-disable-next-line consistent-return
