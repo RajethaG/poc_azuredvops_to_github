@@ -132,8 +132,8 @@ export default {
     )
   },
   mockApiResponse(response) {
-    response.data.appTheme.pageBackgroundColor = '#cccccc'
-    response.data.appTheme.backgroundColor = '#fff'
+    //   response.data.appTheme.pageBackgroundColor = '#cccccc'
+    //   response.data.appTheme.backgroundColor = '#fff'
     return response
   }
 }
