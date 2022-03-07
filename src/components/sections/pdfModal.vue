@@ -7,6 +7,7 @@
           >Close</v-btn
         >
       </v-card-title>
+      <v-spacer />
       <v-card-text v-if="Object.keys(pdfData).length">
         <pdfViewer :use-as-component="true" :pdf-data="pdfURL" />
       </v-card-text>
@@ -31,7 +32,7 @@ export default {
     pdfURL() {
       if (this.pdfData !== {}) {
         return common.downloadFile(
-          this.pdfData.fileData,
+          this.pdfData.fileData || this.pdfData.reportByteArray,
           'application/pdf',
           'pdf'
         )
@@ -50,9 +51,9 @@ export default {
     },
     DownloadPDF() {
       return common.downloadFile(
-        this.pdfData.fileData,
-        this.pdfData.contentType,
-        this.pdfData.fileName,
+        this.pdfData.fileData || this.pdfData.reportByteArray,
+        this.pdfData.contentType || 'application/pdf',
+        this.pdfData.fileName || 'VOA_Report',
         true
       )
     }
