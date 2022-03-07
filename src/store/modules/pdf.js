@@ -1,24 +1,23 @@
 import * as types from '@/store/mutation-types'
 
 const getters = {
-  showPDFState: (state) => state.showPDF
+  getPDFState: (state) => state.isShowPDF
 }
 
 const mutations = {
   [types.SET_PDF](state, payload) {
-    state.showPDF = payload
+    state.isShowPDF = payload
   }
 }
 
 const actions = {
   setPDFView: ({ commit }, payload) => {
-    console.log('inside action')
     commit(types.SET_PDF, payload)
   }
 }
 
 const state = {
-  showPDF: false
+  isShowPDF: false
 }
 
 export default {

@@ -39,12 +39,12 @@ export default {
       return ''
     },
     isShowPDF() {
-      return this.showPDFState()
+      return this.getPDFState()
     }
   },
   methods: {
     ...mapActions(['setPDFView']),
-    ...mapGetters(['showPDFState']),
+    ...mapGetters(['getPDFState']),
     closeModal() {
       this.setPDFView(false)
     },

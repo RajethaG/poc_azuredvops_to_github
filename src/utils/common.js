@@ -6,6 +6,7 @@ export default {
       type: contentType
     })
     const url = window.URL.createObjectURL(blob)
+    const urldata = fileData
     if (forceDownload) {
       // check for support for IE, which will not support blob save via links
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
@@ -25,7 +26,7 @@ export default {
         window.navigator.msSaveOrOpenBlob(blob, fileName)
       } else {
         const link = document.createElement('a')
-        link.href = url
+        link.href = urldata
         link.click()
       }
     } else {
