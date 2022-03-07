@@ -5,7 +5,7 @@
       :key="i"
       :src="pdfSrc"
       :page="i"
-      :class="'pdfViewer'"
+      :class="useAsComponent ? '' : 'pdfViewer'"
     />
   </div>
 </template>
@@ -17,6 +17,10 @@ export default {
     pdfData: {
       type: String,
       default: ''
+    },
+    useAsComponent: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -29,12 +33,12 @@ export default {
     pdf: vuePdf
   },
   mounted() {
-    this.pdfSrc = this.$route.query.url
+    this.pdfSrc = this.pdfData
     this.createLoadingTask()
   },
   methods: {
     createLoadingTask() {
-      const loadingTask = vuePdf.createLoadingTask(this.pdfSrc)
+      const loadingTask = vuePdf.createLoadingTask(this.pdfData)
       loadingTask.promise.then((pdf) => {
         this.numberOfPages = pdf.numPages
       })

@@ -1,5 +1,6 @@
 <template>
   <v-container grid-list-md>
+    <PdfModal :pdf-data="PDFURL" />
     <page-title text="VOA Order Summary" />
     <BaseReportLink
       :actionLinks="GENERATELINKS"
@@ -62,6 +63,7 @@ import constant from '../../../constants/constant'
 import { mapActions } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import { mapGetters } from 'vuex'
+import PdfModal from '../../sections/pdfModal.vue'
 
 const EventCodes = {
   generate: 1,
@@ -71,7 +73,8 @@ const EventCodes = {
 export default {
   components: {
     BaseCard,
-    BaseTable
+    BaseTable,
+    PdfModal
   },
   data() {
     return {
@@ -82,6 +85,7 @@ export default {
       displayGenerate: false,
       displayRefreshIcon: false,
       displayResendEmail: false,
+      pdfData: {},
       isRefreshPeriod: 'No',
       isPdfGenerated: 'No',
       referenceNumber: '',
@@ -103,6 +107,9 @@ export default {
   },
   computed: {
     ...mapGetters(['config']),
+    PDFURL() {
+      return this.pdfData
+    },
     ORDERID() {
       return this.config.orderId || this.$route.params.orderId || 0
     },
@@ -153,7 +160,8 @@ export default {
       'removeTask',
       'setNotification',
       'doGET',
-      'doPOST'
+      'doPOST',
+      'setPDFView'
     ]),
     getRefreshPeriodLabels(key) {
       switch (key) {
@@ -211,7 +219,8 @@ export default {
           name: apiTypes.PDF_VIEWER,
           query: { url }
         })
-        window.open(routeData.href, '_blank')
+        this.pdfData = data
+        this.setPDFView(true)
       })
     },
 
@@ -239,7 +248,9 @@ export default {
           name: apiTypes.PDF_VIEWER,
           query: { url }
         })
-        window.open(routeData.href, '_blank')
+        // window.open(routeData.href, '_blank')
+        this.setPDFView(true)
+        this.pdfData = respData
       })
     },
     // eslint-disable-next-line complexity
