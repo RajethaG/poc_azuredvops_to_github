@@ -2,7 +2,8 @@
 export default {
   // eslint-disable-next-line max-statements
   downloadFile(fileData, contentType, fileName, forceDownload) {
-    const blob = new Blob([base64ToArrayBuffer(fileData)], {
+    const data = fileData.trim()
+    const blob = new Blob([base64ToArrayBuffer(data)], {
       type: contentType
     })
     const url = window.URL.createObjectURL(blob)
