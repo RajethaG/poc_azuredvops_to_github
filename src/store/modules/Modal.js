@@ -5,14 +5,14 @@ const getters = {
 }
 
 const mutations = {
-  [types.SET_PDF](state, payload) {
-    state.isShowPDF = payload
+  [types.SET_PDF](state, value) {
+    state.isShowPDF = value
   }
 }
 
 const actions = {
-  setPDFView: ({ commit }, payload) => {
-    commit(types.SET_PDF, payload)
+  setPDFView: ({ commit }, value) => {
+    commit(types.SET_PDF, value)
   }
 }
 
