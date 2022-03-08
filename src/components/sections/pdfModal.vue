@@ -1,13 +1,15 @@
 <template>
   <v-dialog v-model="isShowPDF" persistent scrollable width="1160">
     <v-card>
-      <v-card-title>
-        <v-btn class="primary darken-2" @click="DownloadPDF">Download</v-btn>
-        <v-btn class="primary darken-2 ml-auto" @click="closeModal"
-          >Close</v-btn
+      <v-card-title class="my-3 ml-auto">
+        <v-btn class="primary darken-2 mr-2" @click="DownloadPDF"
+          ><v-icon>mdi-arrow-down-bold</v-icon>Download</v-btn
+        >
+        <v-btn @click="closeModal" class="primary darken-2"
+          ><v-icon>mdi-close-thick</v-icon></v-btn
         >
       </v-card-title>
-      <v-spacer />
+      <v-divider />
       <v-card-text v-if="Object.keys(pdfData).length">
         <pdfViewer :use-as-component="true" :pdf-data="pdfURL" />
       </v-card-text>
