@@ -113,58 +113,87 @@
           </v-layout>
           <v-layout row wrap>
             <v-flex xs12 sm4>
-              <ValidationProvider
-                name="Email"
-                rules="required|email|max:100"
-                v-slot="{ errors }"
-              >
-                <v-text-field
-                  label="Email"
-                  v-model="email"
-                  :error="errors.length > 0"
-                  :error-messages="errors[0]"
-                  autocomplete="off"
-                  outlined
-                  dense
-                ></v-text-field>
-              </ValidationProvider>
+              <v-layout row wrap>
+                <v-flex xs12 sm12>
+                  <ValidationProvider
+                    name="Email"
+                    rules="required|email|max:100"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      label="Email"
+                      v-model="email"
+                      :error="errors.length > 0"
+                      :error-messages="errors[0]"
+                      autocomplete="off"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-flex>
+                <v-flex xs12 sm12>
+                  <ValidationProvider
+                    name="Phone Number"
+                    rules="required|min:14|max:14"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      label="Phone Number"
+                      v-mask="'(###) ###-####'"
+                      v-model="phone"
+                      :error="errors.length > 0"
+                      :error-messages="errors[0]"
+                      autocomplete="off"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap>
+                <v-flex xs12 sm12>
+                  <ValidationProvider
+                    name="Employer Name"
+                    rules="max:50|alpha_num"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      label="Employer Name"
+                      v-model="employerName"
+                      :error="errors.length > 0"
+                      :error-messages="errors[0]"
+                      autocomplete="off"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-flex>
+              </v-layout>
             </v-flex>
-            <v-flex xs12 sm4>
-              <ValidationProvider
-                name="Phone Number"
-                rules="required|min:14|max:14"
-                v-slot="{ errors }"
-              >
-                <v-text-field
-                  label="Phone Number"
-                  v-mask="'(###) ###-####'"
-                  v-model="phone"
-                  :error="errors.length > 0"
-                  :error-messages="errors[0]"
-                  autocomplete="off"
-                  outlined
-                  dense
-                ></v-text-field>
-              </ValidationProvider>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap>
-            <v-flex xs12 sm4>
-              <ValidationProvider
-                name="Employer Name"
-                rules="max:50|alpha_num"
-                v-slot="{ errors }"
-              >
-                <v-text-field
-                  label="Employer Name"
-                  v-model="employerName"
-                  :error="errors.length > 0"
-                  :error-messages="errors[0]"
-                  autocomplete="off"
-                  outlined
-                  dense
-                ></v-text-field>
-              </ValidationProvider>
+            <v-flex
+              v-if="
+                prefillData.POS_Display === 'Y' &&
+                prefillData.POS_Required === 'Y'
+              "
+              xs12
+              sm6
+              offset-sm-1
+            >
+              <v-layout row wrap>
+                <v-flex xs12 sm12>
+                  <v-radio-group v-model="card" row mandatory>
+                    <v-radio
+                      v-for="data in cardOptions"
+                      :key="data.value"
+                      :label="data.text"
+                      :value="data.value"
+                    />
+                  </v-radio-group>
+                </v-flex>
+              </v-layout>
+              <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
+                <pos :posData="{ ...prefillData, ...{ card: card } }" />
+              </v-row>
             </v-flex>
           </v-layout>
           <v-layout justify-start>
@@ -358,6 +387,12 @@ export default {
         { text: '60 days', value: '60' },
         { text: '90 days', value: '90' }
       ],
+      cardOptions: [
+        { text: 'Saved Card', value: 'Saved Card' },
+        { text: 'New Card', value: 'New Card' },
+        { text: 'Bill Later', value: 'Bill Later' }
+      ],
+      card: '',
       refreshPeriodItems: this.setRefreshPeriodItems()
     }
   }
