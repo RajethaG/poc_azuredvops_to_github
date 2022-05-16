@@ -1,8 +1,6 @@
 import axios from 'axios'
 import apiPath from '../../constants/apipath.json'
 import appConfig from '../../constants/appconfig.json'
-import * as apiTypes from './api-types'
-import * as types from '@/store/mutation-types'
 const getHeader = (token, attr = {}) => {
   return {
     headers: {
@@ -32,6 +30,34 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(endpoint, getHeader(token))
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  getStates(token) {
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.masterData.states}`
+    return new Promise((resolve, reject) => {
+      axios
+        .get(endpoint, getHeader(token))
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  validateCard(payload, token) {
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.validateCredit}`
+    console.log(payload)
+    console.log(token)
+    return new Promise((resolve, reject) => {
+      return axios
+        .post(endpoint, payload, getHeader(token))
         .then((response) => {
           resolve(response)
         })
@@ -134,6 +160,17 @@ export default {
   mockApiResponse(response) {
     //   response.data.appTheme.pageBackgroundColor = '#cccccc'
     //   response.data.appTheme.backgroundColor = '#fff'
+
+    // response.data.voaRequest.POS_Display = 'Y'
+    // response.data.voaRequest.POS_Required = 'Y'
+    // response.data.voaRequest.POS_CardHolderName = 'Michael Abacommon'
+    // response.data.voaRequest.POS_CardHolderStreet = '600 Saw Mill Rd'
+    // response.data.voaRequest.POS_CardHolderCity = 'West Haven'
+    // response.data.voaRequest.POS_CardHolderState = 'CT'
+    // response.data.voaRequest.POS_CardHolderZip = '06516'
+    // response.data.voaRequest.POS_CardType = 'MC'
+    // response.data.voaRequest.POS_CardNumber = '5424000000000015'
+    // response.data.voaRequest.POS_CardExpiry = '02/2024'
     return response
   }
 }

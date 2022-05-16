@@ -16,3 +16,4 @@ export const INTEGRATION_REQUIRED_PRE_POST_CALL_FOR_VOA_IGNORE_RESPONSE =
 
 export const PRODUCT_FISERV = 'voaFiserv'
 export const CPSS_GET_STATES = 'CPSS_GET_STATES'
+export const CPSS_GET_VALIDATE_CARD = 'validateCard'

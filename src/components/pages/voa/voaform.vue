@@ -183,17 +183,15 @@
                   </v-radio-group>
                 </v-flex>
               </v-layout>
-              <v-row
-                v-if="prefillData.poS_Required === 'Y'"
-                class="pl-1"
-                align="center"
-              >
+              <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
                 <pos
                   :posData="{
                     ...prefillData,
                     ...{ card: card },
                     ...{ token: token }
                   }"
+                  ref="pos"
+                  @cardData="cardData"
                 />
               </v-row>
             </v-flex>
@@ -213,7 +211,9 @@
 import { mapActions, mapGetters } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import constant from '../../../constants/constant.json'
+import pos from '../../sections/pos.vue'
 export default {
+  components: { pos },
   props: {
     prefillData: {
       type: Object,
@@ -233,7 +233,19 @@ export default {
     }
   },
   mounted() {
-    if (this.prefillData.POS_Required === 'N') {
+    this.card =
+      this.prefillData &&
+      this.prefillData.poS_CardHolderName === '' &&
+      this.prefillData.poS_CardHolderStreet === '' &&
+      this.prefillData.poS_CardHolderZip === '' &&
+      this.prefillData.poS_CardHolderCity === '' &&
+      this.prefillData.poS_CardHolderState === '' &&
+      this.prefillData.poS_CardType === '' &&
+      this.prefillData.poS_CardNumber === '' &&
+      this.prefillData.poS_CardExpiry === ''
+        ? 'New Card'
+        : 'Saved Card'
+    if (this.prefillData.poS_Required === 'N') {
       this.cardOptions.push({
         text: 'Bill Later',
         value: 'Bill Later'
@@ -250,6 +262,9 @@ export default {
   },
   methods: {
     ...mapActions(['setNotification', 'doGET']),
+    cardData(data) {
+      this.creditCardData = data
+    },
     invalidateData() {
       if (
         !this.verifyValueInList(this.refreshPeriod, this.refreshPeriodItems)
@@ -340,33 +355,67 @@ export default {
           })
       })
     },
-    save() {
-      this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-        const payload = this.buildVOAPayload()
-
+    doCardValidation() {
+      const payload = {
+        POS_Display: this.prefillData.poS_Display,
+        POS_Required: this.prefillData.poS_Required,
+        POS_CardHolderName: this.creditCardData.holderName,
+        POS_CardHolderStreet: this.creditCardData.holderStreet,
+        POS_CardHolderCity: this.creditCardData.city,
+        POS_CardHolderState: this.creditCardData.state,
+        POS_CardHolderZip: this.creditCardData.zip,
+        POS_CardType: this.creditCardData.cardType,
+        POS_CardNumber: this.creditCardData.cardNumber,
+        POS_CardExpiry: this.creditCardData.cardExpiry
+      }
+      return new Promise((resolve, reject) => {
         this.$store
           .dispatch('doPOST', {
-            product: apiTypes.PRODUCT_VOA,
+            product: apiTypes.CPSS_GET_VALIDATE_CARD,
             payload,
             token: this.token
           })
           .then((response) => {
-            if (!response?.orderId && response?.message) {
-              this.setNotification({
-                msg: response.message,
-                type: 'error'
-              })
-              return
+            if (response) {
+              return resolve()
             }
-            this.$router.push({
-              name: apiTypes.SUMMARY_REQUEST_INTERNAL,
-              params: {
-                product: apiTypes.PRODUCT_VOA,
-                orderId: response.orderId
-              },
-              query: { Token: this.token }
-            })
+            return reject()
           })
+          .catch((error) => {
+            return reject()
+          })
+      })
+    },
+    save() {
+      this.$refs.pos.get()
+
+      this.doCardValidation().then(() => {
+        this.doMandatoryCallAsPerRequiredByAPI().then(() => {
+          const payload = this.buildVOAPayload()
+          this.$store
+            .dispatch('doPOST', {
+              product: apiTypes.PRODUCT_VOA,
+              payload,
+              token: this.token
+            })
+            .then((response) => {
+              if (!response?.orderId && response?.message) {
+                this.setNotification({
+                  msg: response.message,
+                  type: 'error'
+                })
+                return
+              }
+              this.$router.push({
+                name: apiTypes.SUMMARY_REQUEST_INTERNAL,
+                params: {
+                  product: apiTypes.PRODUCT_VOA,
+                  orderId: response.orderId
+                },
+                query: { Token: this.token }
+              })
+            })
+        })
       })
     }
   },
@@ -400,7 +449,8 @@ export default {
         { text: 'New Card', value: 'New Card' }
       ],
       card: '',
-      refreshPeriodItems: this.setRefreshPeriodItems()
+      refreshPeriodItems: this.setRefreshPeriodItems(),
+      creditCardData: {}
     }
   }
 }

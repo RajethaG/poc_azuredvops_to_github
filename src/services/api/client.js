@@ -68,6 +68,8 @@ export default {
         return voa.mandatoryCall(payload, token)
       case apiTypes.PRODUCT_FISERV:
         return voaFiserv.submitVOAFiserv(payload, token)
+      case apiTypes.CPSS_GET_VALIDATE_CARD:
+        return voa.validateCard(payload, token)
     }
     return new Promise(({ reject }) => reject())
   },

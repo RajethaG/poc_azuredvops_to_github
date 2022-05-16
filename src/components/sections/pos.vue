@@ -4,13 +4,13 @@
       <v-flex xs12 sm12 class="p-0">
         <ValidationProvider
           name="Cardholder Name"
-          :rules="{ max: 150, required: true }"
+          :rules="{ max: 150, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Cardholder Name"
-            v-model="holderName"
+            v-model="present.holderName"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -25,13 +25,13 @@
       <v-flex xs12 sm12>
         <ValidationProvider
           name="Cardholder Street"
-          :rules="{ max: 100, required: true }"
+          :rules="{ max: 100, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Cardholder Street"
-            v-model="holderStreet"
+            v-model="present.holderStreet"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -46,13 +46,13 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="City"
-          :rules="{ max: 50, required: true }"
+          :rules="{ max: 50, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="City"
-            v-model="city"
+            v-model="present.city"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -65,12 +65,12 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="State"
-          :rules="{ required: true }"
+          :rules="{ required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-select
             class="pos"
-            v-model="state"
+            v-model="present.state"
             :items="states"
             item-text="value1"
             item-value="value2"
@@ -86,13 +86,13 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="Zip"
-          :rules="{ max: 9, min: 5, required: true }"
+          :rules="{ max: 9, min: 5, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Zip"
-            v-model="zip"
+            v-model="present.zip"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -107,13 +107,13 @@
       <v-flex xs12 sm8>
         <ValidationProvider
           name="Card Number"
-          :rules="{ max: 100, required: true }"
+          :rules="{ max: 100, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Card Number"
-            v-model="cardNumber"
+            v-model="present.cardNumber"
             v-mask="'#### #### #### ####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
@@ -128,12 +128,12 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="Card Type"
-          :rules="{ required: true }"
+          :rules="{ required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-select
             class="pos"
-            v-model="cardType"
+            v-model="present.cardType"
             :items="cardTypeOptions"
             :error="errors.length > 0"
             :error-messages="errors[0]"
@@ -149,13 +149,13 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="Card Expiry"
-          :rules="{ max: 7, required: true }"
+          :rules="{ max: 7, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Card Expiry"
-            v-model="cardExpiry"
+            v-model="present.cardExpiry"
             v-mask="'##/####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
@@ -183,87 +183,81 @@ export default {
 
   data() {
     return {
-      savedHolderName: this.posData.poS_CardHolderName,
-      savedholderStreet: this.posData.poS_CardHolderStreet,
-      savedcity: this.posData.poS_CardHolderCity,
-      savedstate: this.posData.poS_CardHolderState,
-      savedzip: this.posData.poS_CardHolderZip,
-      savedCardNumber: this.posData.poS_CardNumber,
-      savedCardType: this.posData.poS_CardType,
-      savedCardExpiry: this.posData.poS_CardExpiry,
-      newHolderName: '',
-      newholderStreet: '',
-      newcity: '',
-      newstate: '',
-      newzip: '',
-      card: this.posData.card,
-      holderName: '',
-      holderStreet: '',
-      city: '',
-      state: '',
+      saved: {
+        holderName: this.posData.poS_CardHolderName,
+        holderStreet: this.posData.poS_CardHolderStreet,
+        city: this.posData.poS_CardHolderCity,
+        state: this.posData.poS_CardHolderState,
+        zip: this.posData.poS_CardHolderZip,
+        cardNumber: this.posData.poS_CardNumber,
+        cardType: this.posData.poS_CardType,
+        cardExpiry: this.posData.poS_CardExpiry
+      },
       states: [],
-      zip: '',
-      newCardNumber: '',
-      newCardType: '',
-      newCardExpiry: '',
+      new: this.getInitailValues(),
+      present: this.getInitailValues(),
       cardTypeOptions: [
         { text: 'MC', value: 'MC' },
         { text: 'VISA', value: 'VISA' },
         { text: 'AMEX', value: 'AMEX' },
         { text: 'DISC', value: 'DISC' }
-      ],
-      cardType: '',
-      cardNumber: '',
-      cardExpiry: '',
-      isDisabled: this.posData.posdisplay === 'N'
+      ]
+    }
+  },
+  computed: {
+    isDisabled() {
+      return this.posData.card === 'Saved Card'
+    },
+    isMandatory() {
+      return this.posData.card === 'New Card'
+    },
+    getStates() {
+      return this.states
     }
   },
   created() {
-    this.doGET({
-      getType: apiTypes.CPSS_GET_STATES,
-      params: {
-        token: this.posData.token
-      },
-      errorMessage: 'Unable to load States'
-    }).then((data) => {
-      this.states = data
-    })
+    this.getAllStates()
   },
   watch: {
     posData(from, to) {
-      console.log(from.card, to.card)
       if (from.card !== to.card) {
         if (from.card === 'Saved Card') {
-          this.getSavedCardData()
+          this.new = Object.assign({}, this.present)
+          this.present = Object.assign({}, this.saved)
         } else {
-          this.holderName = this.newHolderName
-          this.holderStreet = this.newholderStreet
-          this.city = this.newcity
-          this.zip = this.newzip
-          this.state = this.newstate
-          this.cardNumber = this.newCardNumber
-          this.cardType = this.newCardType
-          this.cardExpiry = this.newCardExpiry
+          this.present = Object.assign({}, this.new)
         }
       }
     }
   },
   methods: {
     ...mapActions(['doGET']),
-    getSavedCardData() {
-      this.newHolderName = this.holderName
-      this.newholderStreet = this.holderStreet
-      this.newcity = this.city
-      this.newstate = this.state
-      this.newzip = this.zip
-      this.holderName = this.savedHolderName
-      this.holderStreet = this.savedholderStreet
-      this.city = this.savedcity
-      this.zip = this.savedzip
-      this.state = this.savedstate
-      this.cardNumber = this.savedCardNumber
-      this.cardType = this.savedCardType
-      this.cardExpiry = this.savedCardExpiry
+    get() {
+      this.$emit('cardData', this.present)
+    },
+    getInitailValues() {
+      return {
+        holderName: '',
+        holderStreet: '',
+        city: '',
+        state: '',
+        zip: '',
+        cardNumber: '',
+        cardType: '',
+        cardExpiry: ''
+      }
+    },
+
+    async getAllStates() {
+      await this.doGET({
+        getType: apiTypes.CPSS_GET_STATES,
+        params: {
+          token: this.posData.token
+        },
+        errorMessage: 'Unable to load States'
+      }).then((data) => {
+        this.states = data
+      })
     }
   }
 }
