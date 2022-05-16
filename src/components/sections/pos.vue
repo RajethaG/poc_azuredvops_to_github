@@ -65,20 +65,22 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="State"
-          :rules="{ max: 2, required: true }"
+          :rules="{ required: true }"
           v-slot="{ errors }"
         >
-          <v-text-field
+          <v-select
             class="pos"
-            label="State"
             v-model="state"
+            :items="states"
+            item-text="value1"
+            item-value="value2"
             :error="errors.length > 0"
             :error-messages="errors[0]"
-            autocomplete="off"
+            label="State"
             outlined
             dense
             :disabled="isDisabled"
-          ></v-text-field>
+          ></v-select>
         </ValidationProvider>
       </v-flex>
       <v-flex xs12 sm4>
@@ -105,13 +107,14 @@
       <v-flex xs12 sm8>
         <ValidationProvider
           name="Card Number"
-          :rules="{ max: 100, required: true, numeric: true }"
+          :rules="{ max: 100, required: true }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Card Number"
             v-model="cardNumber"
+            v-mask="'#### #### #### ####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -152,7 +155,7 @@
           <v-text-field
             class="pos"
             label="Card Expiry"
-            v-model="cardexpiry"
+            v-model="cardExpiry"
             v-mask="'##/####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
@@ -168,6 +171,8 @@
 </template>
 
 <script>
+import * as apiTypes from '@/services/api/api-types'
+import { mapActions } from 'vuex'
 export default {
   props: {
     posData: {
@@ -178,22 +183,29 @@ export default {
 
   data() {
     return {
-      savedHolderName: 'saved card',
-      savedholderStreet: 'saved street',
-      savedcity: 'saved city',
-      savedstate: 'ss',
-      savedzip: 'saved zip',
+      savedHolderName: this.posData.poS_CardHolderName,
+      savedholderStreet: this.posData.poS_CardHolderStreet,
+      savedcity: this.posData.poS_CardHolderCity,
+      savedstate: this.posData.poS_CardHolderState,
+      savedzip: this.posData.poS_CardHolderZip,
+      savedCardNumber: this.posData.poS_CardNumber,
+      savedCardType: this.posData.poS_CardType,
+      savedCardExpiry: this.posData.poS_CardExpiry,
       newHolderName: '',
       newholderStreet: '',
       newcity: '',
       newstate: '',
       newzip: '',
-      card: '',
+      card: this.posData.card,
       holderName: '',
       holderStreet: '',
       city: '',
       state: '',
+      states: [],
       zip: '',
+      newCardNumber: '',
+      newCardType: '',
+      newCardExpiry: '',
       cardTypeOptions: [
         { text: 'MC', value: 'MC' },
         { text: 'VISA', value: 'VISA' },
@@ -202,9 +214,20 @@ export default {
       ],
       cardType: '',
       cardNumber: '',
-      cardexpiry: '',
+      cardExpiry: '',
       isDisabled: this.posData.posdisplay === 'N'
     }
+  },
+  created() {
+    this.doGET({
+      getType: apiTypes.CPSS_GET_STATES,
+      params: {
+        token: this.posData.token
+      },
+      errorMessage: 'Unable to load States'
+    }).then((data) => {
+      this.states = data
+    })
   },
   watch: {
     posData(from, to) {
@@ -218,11 +241,15 @@ export default {
           this.city = this.newcity
           this.zip = this.newzip
           this.state = this.newstate
+          this.cardNumber = this.newCardNumber
+          this.cardType = this.newCardType
+          this.cardExpiry = this.newCardExpiry
         }
       }
     }
   },
   methods: {
+    ...mapActions(['doGET']),
     getSavedCardData() {
       this.newHolderName = this.holderName
       this.newholderStreet = this.holderStreet
@@ -234,6 +261,9 @@ export default {
       this.city = this.savedcity
       this.zip = this.savedzip
       this.state = this.savedstate
+      this.cardNumber = this.savedCardNumber
+      this.cardType = this.savedCardType
+      this.cardExpiry = this.savedCardExpiry
     }
   }
 }
@@ -255,9 +285,6 @@ export default {
   padding: 0 !important;
   margin: 0 !important;
 }
-/* .v-messages.theme--light {
-  display: none !important;
-} */
 .pos.v-select
   .v-input__control
   .v-input__slot

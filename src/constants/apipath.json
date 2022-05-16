@@ -13,5 +13,8 @@
     },
     "voaFiserv":{
         "fiservOrder":"consumerreport/api/Fiserv/FiservOrderReport"
+    },
+    "masterData":{
+        "states":"consumerreport/api/master/states"
     }
 }

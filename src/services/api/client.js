@@ -82,6 +82,8 @@ export default {
         return voa.downloadPdfVOA(params.orderId, params.token)
       case apiTypes.CPSS_GET_CUST_USER_PRODUCTS:
         return getCustomerUserProducts(params.userId, params.token)
+      case apiTypes.CPSS_GET_STATES:
+        return voa.getStates(params.token)
     }
 
     return new Promise(({ reject }) => reject())

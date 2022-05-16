@@ -170,15 +170,7 @@
                 </v-flex>
               </v-layout>
             </v-flex>
-            <v-flex
-              v-if="
-                prefillData.POS_Display === 'Y' &&
-                prefillData.POS_Required === 'Y'
-              "
-              xs12
-              sm6
-              offset-sm-1
-            >
+            <v-flex v-if="prefillData.poS_Display === 'Y'" xs12 sm6 offset-sm-1>
               <v-layout row wrap>
                 <v-flex xs12 sm12>
                   <v-radio-group v-model="card" row mandatory>
@@ -191,8 +183,18 @@
                   </v-radio-group>
                 </v-flex>
               </v-layout>
-              <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
-                <pos :posData="{ ...prefillData, ...{ card: card } }" />
+              <v-row
+                v-if="prefillData.poS_Required === 'Y'"
+                class="pl-1"
+                align="center"
+              >
+                <pos
+                  :posData="{
+                    ...prefillData,
+                    ...{ card: card },
+                    ...{ token: token }
+                  }"
+                />
               </v-row>
             </v-flex>
           </v-layout>
@@ -231,6 +233,12 @@ export default {
     }
   },
   mounted() {
+    if (this.prefillData.POS_Required === 'N') {
+      this.cardOptions.push({
+        text: 'Bill Later',
+        value: 'Bill Later'
+      })
+    }
     this.invalidateData()
   },
   watch: {
@@ -241,7 +249,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setNotification']),
+    ...mapActions(['setNotification', 'doGET']),
     invalidateData() {
       if (
         !this.verifyValueInList(this.refreshPeriod, this.refreshPeriodItems)
@@ -389,8 +397,7 @@ export default {
       ],
       cardOptions: [
         { text: 'Saved Card', value: 'Saved Card' },
-        { text: 'New Card', value: 'New Card' },
-        { text: 'Bill Later', value: 'Bill Later' }
+        { text: 'New Card', value: 'New Card' }
       ],
       card: '',
       refreshPeriodItems: this.setRefreshPeriodItems()
