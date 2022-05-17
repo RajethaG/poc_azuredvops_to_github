@@ -179,6 +179,7 @@
                       :key="data.value"
                       :label="data.text"
                       :value="data.value"
+                      :disabled="data.disabled"
                     />
                   </v-radio-group>
                 </v-flex>
@@ -245,10 +246,20 @@ export default {
       this.prefillData.poS_CardExpiry === ''
         ? 'New Card'
         : 'Saved Card'
+
+    this.cardOptions.push(
+      {
+        text: 'Saved Card',
+        value: 'Saved Card',
+        disabled: this.isSavedDisable
+      },
+      { text: 'New Card', value: 'New Card', disabled: false }
+    )
     if (this.prefillData.poS_Required === 'N') {
       this.cardOptions.push({
         text: 'Bill Later',
-        value: 'Bill Later'
+        value: 'Bill Later',
+        disabled: false
       })
     }
     this.invalidateData()
@@ -365,7 +376,7 @@ export default {
         POS_CardHolderState: this.creditCardData.state,
         POS_CardHolderZip: this.creditCardData.zip,
         POS_CardType: this.creditCardData.cardType,
-        POS_CardNumber: this.creditCardData.cardNumber,
+        POS_CardNumber: this.creditCardData.cardNumber.replace(/[^0-9]/g, ''),
         POS_CardExpiry: this.creditCardData.cardExpiry
       }
       return new Promise((resolve, reject) => {
@@ -376,46 +387,57 @@ export default {
             token: this.token
           })
           .then((response) => {
-            if (response) {
-              return resolve()
+            if (response.responseStatus === 0) {
+              this.setNotification({
+                msg: response.message,
+                type: 'error'
+              })
+              return reject()
             }
-            return reject()
+            return resolve()
           })
           .catch((error) => {
             return reject()
           })
       })
     },
-    save() {
-      this.$refs.pos.get()
-
-      this.doCardValidation().then(() => {
-        this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-          const payload = this.buildVOAPayload()
-          this.$store
-            .dispatch('doPOST', {
-              product: apiTypes.PRODUCT_VOA,
-              payload,
-              token: this.token
-            })
-            .then((response) => {
-              if (!response?.orderId && response?.message) {
-                this.setNotification({
-                  msg: response.message,
-                  type: 'error'
-                })
-                return
-              }
-              this.$router.push({
-                name: apiTypes.SUMMARY_REQUEST_INTERNAL,
-                params: {
-                  product: apiTypes.PRODUCT_VOA,
-                  orderId: response.orderId
-                },
-                query: { Token: this.token }
-              })
-            })
+    finalPayLoad() {
+      const payload = this.buildVOAPayload()
+      this.$store
+        .dispatch('doPOST', {
+          product: apiTypes.PRODUCT_VOA,
+          payload,
+          token: this.token
         })
+        .then((response) => {
+          if (!response?.orderId && response?.message) {
+            this.setNotification({
+              msg: response.message,
+              type: 'error'
+            })
+            return
+          }
+          this.$router.push({
+            name: apiTypes.SUMMARY_REQUEST_INTERNAL,
+            params: {
+              product: apiTypes.PRODUCT_VOA,
+              orderId: response.orderId
+            },
+            query: { Token: this.token }
+          })
+        })
+    },
+    save() {
+      console.log('save')
+      this.doMandatoryCallAsPerRequiredByAPI().then(() => {
+        if (this.card !== 'Bill Later') {
+          this.$refs.pos.get()
+          this.doCardValidation().then(() => {
+            this.finalPayLoad()
+          })
+        } else {
+          this.finalPayLoad()
+        }
       })
     }
   },
@@ -426,6 +448,9 @@ export default {
     },
     CUSTOMERID() {
       return this.config.customerInfo.customerId || 0
+    },
+    isSavedDisable() {
+      return this.card === 'New Card'
     }
   },
   data() {
@@ -444,11 +469,8 @@ export default {
         { text: '60 days', value: '60' },
         { text: '90 days', value: '90' }
       ],
-      cardOptions: [
-        { text: 'Saved Card', value: 'Saved Card' },
-        { text: 'New Card', value: 'New Card' }
-      ],
       card: '',
+      cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
       creditCardData: {}
     }
