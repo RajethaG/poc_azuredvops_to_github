@@ -19,7 +19,6 @@ const actions = {
           if (response && response.status === 200) {
             commit(types.SET_CLIENT_CONFIG, response.data)
             resolve()
-          } else {
           }
         })
         .catch((error) => {
