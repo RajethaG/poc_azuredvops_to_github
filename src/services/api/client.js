@@ -74,7 +74,6 @@ export default {
     return new Promise(({ reject }) => reject())
   },
   doGET({ getType, params }) {
-    // console.log(getType, params)
     switch (getType) {
       case apiTypes.CPSS_GET_VOA_SUMMARY:
         return voa.pullSummaryVOA(params.orderId, params.token)

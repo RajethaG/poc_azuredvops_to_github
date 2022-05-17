@@ -428,7 +428,6 @@ export default {
         })
     },
     save() {
-      console.log('save')
       this.doMandatoryCallAsPerRequiredByAPI().then(() => {
         if (this.card !== 'Bill Later') {
           this.$refs.pos.get()
