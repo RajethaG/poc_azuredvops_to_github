@@ -113,58 +113,88 @@
           </v-layout>
           <v-layout row wrap>
             <v-flex xs12 sm4>
-              <ValidationProvider
-                name="Email"
-                rules="required|email|max:100"
-                v-slot="{ errors }"
-              >
-                <v-text-field
-                  label="Email"
-                  v-model="email"
-                  :error="errors.length > 0"
-                  :error-messages="errors[0]"
-                  autocomplete="off"
-                  outlined
-                  dense
-                ></v-text-field>
-              </ValidationProvider>
+              <v-layout row wrap>
+                <v-flex xs12 sm12>
+                  <ValidationProvider
+                    name="Email"
+                    rules="required|email|max:100"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      label="Email"
+                      v-model="email"
+                      :error="errors.length > 0"
+                      :error-messages="errors[0]"
+                      autocomplete="off"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-flex>
+                <v-flex xs12 sm12>
+                  <ValidationProvider
+                    name="Phone Number"
+                    rules="required|min:14|max:14"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      label="Phone Number"
+                      v-mask="'(###) ###-####'"
+                      v-model="phone"
+                      :error="errors.length > 0"
+                      :error-messages="errors[0]"
+                      autocomplete="off"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap>
+                <v-flex xs12 sm12>
+                  <ValidationProvider
+                    name="Employer Name"
+                    rules="max:50|alpha_num"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      label="Employer Name"
+                      v-model="employerName"
+                      :error="errors.length > 0"
+                      :error-messages="errors[0]"
+                      autocomplete="off"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-flex>
+              </v-layout>
             </v-flex>
-            <v-flex xs12 sm4>
-              <ValidationProvider
-                name="Phone Number"
-                rules="required|min:14|max:14"
-                v-slot="{ errors }"
-              >
-                <v-text-field
-                  label="Phone Number"
-                  v-mask="'(###) ###-####'"
-                  v-model="phone"
-                  :error="errors.length > 0"
-                  :error-messages="errors[0]"
-                  autocomplete="off"
-                  outlined
-                  dense
-                ></v-text-field>
-              </ValidationProvider>
-            </v-flex>
-          </v-layout>
-          <v-layout row wrap>
-            <v-flex xs12 sm4>
-              <ValidationProvider
-                name="Employer Name"
-                rules="max:50|alpha_num"
-                v-slot="{ errors }"
-              >
-                <v-text-field
-                  label="Employer Name"
-                  v-model="employerName"
-                  :error="errors.length > 0"
-                  :error-messages="errors[0]"
-                  autocomplete="off"
-                  outlined
-                  dense
-                ></v-text-field>
-              </ValidationProvider>
+            <v-flex v-if="prefillData.poS_Display === 'Y'" xs12 sm6 offset-sm-1>
+              <v-layout row wrap>
+                <v-flex xs12 sm12>
+                  <v-radio-group v-model="card" row mandatory>
+                    <v-radio
+                      v-for="data in cardOptions"
+                      :key="data.value"
+                      :label="data.text"
+                      :value="data.value"
+                      :disabled="data.disabled"
+                    />
+                  </v-radio-group>
+                </v-flex>
+              </v-layout>
+              <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
+                <pos
+                  :posData="{
+                    ...prefillData,
+                    ...{ card: card },
+                    ...{ token: token }
+                  }"
+                  ref="pos"
+                  @cardData="cardData"
+                />
+              </v-row>
             </v-flex>
           </v-layout>
           <v-layout justify-start>
@@ -182,7 +212,9 @@
 import { mapActions, mapGetters } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import constant from '../../../constants/constant.json'
+import pos from '../../sections/pos.vue'
 export default {
+  components: { pos },
   props: {
     prefillData: {
       type: Object,
@@ -202,6 +234,34 @@ export default {
     }
   },
   mounted() {
+    this.card =
+      this.prefillData &&
+      this.prefillData.poS_CardHolderName === '' &&
+      this.prefillData.poS_CardHolderStreet === '' &&
+      this.prefillData.poS_CardHolderZip === '' &&
+      this.prefillData.poS_CardHolderCity === '' &&
+      this.prefillData.poS_CardHolderState === '' &&
+      this.prefillData.poS_CardType === '' &&
+      this.prefillData.poS_CardNumber === '' &&
+      this.prefillData.poS_CardExpiry === ''
+        ? 'New Card'
+        : 'Saved Card'
+
+    this.cardOptions.push(
+      {
+        text: 'Saved Card',
+        value: 'Saved Card',
+        disabled: this.isSavedDisable
+      },
+      { text: 'New Card', value: 'New Card', disabled: false }
+    )
+    if (this.prefillData.poS_Required === 'N') {
+      this.cardOptions.push({
+        text: 'Bill Later',
+        value: 'Bill Later',
+        disabled: false
+      })
+    }
     this.invalidateData()
   },
   watch: {
@@ -212,7 +272,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setNotification']),
+    ...mapActions(['setNotification', 'doGET']),
+    cardData(data) {
+      this.creditCardData = data
+    },
     invalidateData() {
       if (
         !this.verifyValueInList(this.refreshPeriod, this.refreshPeriodItems)
@@ -303,33 +366,78 @@ export default {
           })
       })
     },
-    save() {
-      this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-        const payload = this.buildVOAPayload()
-
+    doCardValidation() {
+      const payload = {
+        POS_Display: this.prefillData.poS_Display,
+        POS_Required: this.prefillData.poS_Required,
+        POS_CardHolderName: this.creditCardData.holderName,
+        POS_CardHolderStreet: this.creditCardData.holderStreet,
+        POS_CardHolderCity: this.creditCardData.city,
+        POS_CardHolderState: this.creditCardData.state,
+        POS_CardHolderZip: this.creditCardData.zip,
+        POS_CardType: this.creditCardData.cardType,
+        POS_CardNumber: this.creditCardData.cardNumber.replace(/[^0-9]/g, ''),
+        POS_CardExpiry: this.creditCardData.cardExpiry
+      }
+      return new Promise((resolve, reject) => {
         this.$store
           .dispatch('doPOST', {
-            product: apiTypes.PRODUCT_VOA,
+            product: apiTypes.CPSS_GET_VALIDATE_CARD,
             payload,
             token: this.token
           })
           .then((response) => {
-            if (!response?.orderId && response?.message) {
+            if (response.responseStatus === 0) {
               this.setNotification({
                 msg: response.message,
                 type: 'error'
               })
-              return
+              return reject()
             }
-            this.$router.push({
-              name: apiTypes.SUMMARY_REQUEST_INTERNAL,
-              params: {
-                product: apiTypes.PRODUCT_VOA,
-                orderId: response.orderId
-              },
-              query: { Token: this.token }
-            })
+            return resolve()
           })
+          .catch((error) => {
+            return reject()
+          })
+      })
+    },
+    finalPayLoad() {
+      const payload = this.buildVOAPayload()
+      this.$store
+        .dispatch('doPOST', {
+          product: apiTypes.PRODUCT_VOA,
+          payload,
+          token: this.token
+        })
+        .then((response) => {
+          if (!response?.orderId && response?.message) {
+            this.setNotification({
+              msg: response.message,
+              type: 'error'
+            })
+            return
+          }
+          this.$router.push({
+            name: apiTypes.SUMMARY_REQUEST_INTERNAL,
+            params: {
+              product: apiTypes.PRODUCT_VOA,
+              orderId: response.orderId
+            },
+            query: { Token: this.token }
+          })
+        })
+    },
+    save() {
+      console.log('save')
+      this.doMandatoryCallAsPerRequiredByAPI().then(() => {
+        if (this.card !== 'Bill Later') {
+          this.$refs.pos.get()
+          this.doCardValidation().then(() => {
+            this.finalPayLoad()
+          })
+        } else {
+          this.finalPayLoad()
+        }
       })
     }
   },
@@ -340,6 +448,9 @@ export default {
     },
     CUSTOMERID() {
       return this.config.customerInfo.customerId || 0
+    },
+    isSavedDisable() {
+      return this.card === 'New Card'
     }
   },
   data() {
@@ -358,7 +469,10 @@ export default {
         { text: '60 days', value: '60' },
         { text: '90 days', value: '90' }
       ],
-      refreshPeriodItems: this.setRefreshPeriodItems()
+      card: '',
+      cardOptions: [],
+      refreshPeriodItems: this.setRefreshPeriodItems(),
+      creditCardData: {}
     }
   }
 }

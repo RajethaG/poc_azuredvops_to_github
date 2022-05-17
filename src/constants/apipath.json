@@ -8,10 +8,14 @@
         "submitVOA":"consumerreport/api/VOA/OrderReport",
         "getVoaSummaryConfig":"consumerreport/api/voaSummary/GetVoaSummaryorder",
         "mandatoryCallAsPerAPIRequest": "consumerreport/api/voa/orderedThroughDataProvider",
-        "getUserProducts" : "consumerreport/api/voa/getUserProducts"
+        "getUserProducts" : "consumerreport/api/voa/getUserProducts",
+        "validateCredit":"consumerreport/api/voa/validatecarddetails"
 
     },
     "voaFiserv":{
         "fiservOrder":"consumerreport/api/Fiserv/FiservOrderReport"
+    },
+    "masterData":{
+        "states":"consumerreport/api/master/states"
     }
 }
