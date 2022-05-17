@@ -53,8 +53,6 @@ export default {
   },
   validateCard(payload, token) {
     const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.validateCredit}`
-    console.log(payload)
-    console.log(token)
     return new Promise((resolve, reject) => {
       return axios
         .post(endpoint, payload, getHeader(token))

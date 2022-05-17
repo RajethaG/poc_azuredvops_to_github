@@ -20,11 +20,9 @@ const actions = {
             commit(types.SET_CLIENT_CONFIG, response.data)
             resolve()
           } else {
-            console.error('response is not 200')
           }
         })
         .catch((error) => {
-          console.error('it is rejected by API', error)
           reject()
         })
         .finally(() => commit(types.REMOVE_TASK))
