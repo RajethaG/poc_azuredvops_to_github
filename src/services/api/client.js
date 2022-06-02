@@ -32,6 +32,7 @@ const getCustomerUserProducts = (userId, token) => {
 
 export default {
   getClientConfig(client) {
+    debugger
     const token = client.query?.Token
     const product = (client.params.product || '').toLowerCase()
     const name = (client.name || '').toLowerCase()
@@ -70,12 +71,15 @@ export default {
         return voaFiserv.submitVOAFiserv(payload, token)
       case apiTypes.CPSS_GET_VALIDATE_CARD:
         return voa.validateCard(payload, token)
+      case apiTypes.CPSS_FISERV_POST_SEND_MAIL:
+        console.log('fiserv')
+        return voa.sendFiservMail(payload, token)
     }
     return new Promise(({ reject }) => reject())
   },
   doGET({ getType, params }) {
     switch (getType) {
-      case apiTypes.CPSS_GET_VOA_SUMMARY:
+      case apiTypes.CPSS_GET_VOA_ACCOUNTCHEK_SUMMARY:
         return voa.pullSummaryVOA(params.orderId, params.token)
       case apiTypes.CPSS_GET_VOA_REPORT:
         return voa.pullReportVOA(params.orderId, params.token)
@@ -85,6 +89,8 @@ export default {
         return getCustomerUserProducts(params.userId, params.token)
       case apiTypes.CPSS_GET_STATES:
         return voa.getStates(params.token)
+      case apiTypes.CPSS_GET_VOA_FISERV_SUMMARY:
+        return voa.pullSummaryVOAFiserv(params.orderId, params.token)
     }
 
     return new Promise(({ reject }) => reject())

@@ -301,7 +301,9 @@ export default {
     setRefreshPeriodItems() {
       if (this.customerProducts) {
         const product = this.customerProducts.filter(
-          (x) => Number(x.productId) === Number(constant.cpssProductIds.VOA)
+          (x) =>
+            Number(x.productId) ===
+            Number(constant.cpssProductIds.VOAAccountChek)
         )
         if (product && product.length > 0) {
           const pd = product[0].productAddOns
@@ -384,12 +386,17 @@ export default {
           .dispatch('doPOST', {
             product: apiTypes.CPSS_GET_VALIDATE_CARD,
             payload,
-            token: this.token
+            token: this.token,
+            errorParams: {
+              router: this.$router,
+              redirect400: true,
+              redirect500: true
+            }
           })
           .then((response) => {
-            if (response.responseStatus === 0) {
+            if (response.ResponseStatus === 0) {
               this.setNotification({
-                msg: response.message,
+                msg: response.Message,
                 type: 'error'
               })
               return reject()
@@ -397,6 +404,7 @@ export default {
             return resolve()
           })
           .catch((error) => {
+            console.log(error)
             return reject()
           })
       })
@@ -407,7 +415,12 @@ export default {
         .dispatch('doPOST', {
           product: apiTypes.PRODUCT_VOA,
           payload,
-          token: this.token
+          token: this.token,
+          errorParams: {
+            router: this.$router,
+            redirect400: true,
+            redirect500: true
+          }
         })
         .then((response) => {
           if (!response?.orderId && response?.message) {
@@ -429,7 +442,10 @@ export default {
     },
     save() {
       this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-        if (this.card !== 'Bill Later') {
+        if (
+          this.prefillData.poS_Display === 'Y' &&
+          this.card !== 'Bill Later'
+        ) {
           this.$refs.pos.get()
           this.doCardValidation().then(() => {
             this.finalPayLoad()

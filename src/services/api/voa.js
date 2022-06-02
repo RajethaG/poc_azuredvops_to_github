@@ -38,6 +38,24 @@ export default {
         })
     })
   },
+  pullSummaryVOAFiserv(orderId, token) {
+    console.log('fiserv')
+    const endpoint = `${appConfig.cpssApiEndpoint}/${
+      apiPath.voaFiserv.getvoafiservsummary
+    }?orderId=${39479}`
+    return new Promise((resolve, reject) => {
+      // getHeader(token)
+      axios
+        .get(endpoint, getHeader(token))
+        .then((response) => {
+          console.log(response)
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
   getStates(token) {
     const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.masterData.states}`
     return new Promise((resolve, reject) => {
@@ -79,6 +97,24 @@ export default {
   },
   sendMail(payload, token) {
     const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voa.sendMail}?orderId=${payload.orderId}`
+    return new Promise((resolve, reject) => {
+      axios
+        .post(endpoint, getHeader(token))
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+
+  // payload.orderId
+  sendFiservMail(payload, token) {
+    const endpoint = `${appConfig.cpssApiEndpoint}/${
+      apiPath.voaFiserv.sendMail
+    }?orderId=${39479}`
+    console.log(endpoint)
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, getHeader(token))

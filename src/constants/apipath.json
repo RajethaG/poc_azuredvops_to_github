@@ -13,7 +13,10 @@
 
     },
     "voaFiserv":{
-        "fiservOrder":"consumerreport/api/Fiserv/FiservOrderReport"
+        "fiservOrder":"consumerreport/api/Fiserv/FiservOrderReport",
+        "getAccountDetails": "consumerreport/api/Fiserv/GetAccountDetails",
+        "getvoafiservsummary":"consumerreport/api/Fiserv/GetOrderDetails",
+        "sendMail":"consumerreport/api/Fiserv/SendMail"
     },
     "masterData":{
         "states":"consumerreport/api/master/states"
