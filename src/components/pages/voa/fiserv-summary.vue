@@ -148,7 +148,7 @@ export default {
       'setPDFView',
       'setModalView'
     ]),
-    deleteBorrower(){
+    deleteBorrower() {
       this.setModalView()
     },
     onCommandEvent(command) {

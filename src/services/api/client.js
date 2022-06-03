@@ -32,7 +32,6 @@ const getCustomerUserProducts = (userId, token) => {
 
 export default {
   getClientConfig(client) {
-    debugger
     const token = client.query?.Token
     const product = (client.params.product || '').toLowerCase()
     const name = (client.name || '').toLowerCase()
@@ -72,7 +71,6 @@ export default {
       case apiTypes.CPSS_GET_VALIDATE_CARD:
         return voa.validateCard(payload, token)
       case apiTypes.CPSS_FISERV_POST_SEND_MAIL:
-        console.log('fiserv')
         return voa.sendFiservMail(payload, token)
     }
     return new Promise(({ reject }) => reject())

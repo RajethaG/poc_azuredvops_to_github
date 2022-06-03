@@ -39,7 +39,6 @@ export default {
     })
   },
   pullSummaryVOAFiserv(orderId, token) {
-    console.log('fiserv')
     const endpoint = `${appConfig.cpssApiEndpoint}/${
       apiPath.voaFiserv.getvoafiservsummary
     }?orderId=${39479}`
@@ -48,7 +47,6 @@ export default {
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
-          console.log(response)
           resolve(response)
         })
         .catch((error) => {
@@ -114,7 +112,6 @@ export default {
     const endpoint = `${appConfig.cpssApiEndpoint}/${
       apiPath.voaFiserv.sendMail
     }?orderId=${39479}`
-    console.log(endpoint)
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, getHeader(token))

@@ -26,8 +26,6 @@ export default {
   },
   methods: {
     getComponentKey(key) {
-      console.log(Number(key))
-      console.log(constant.cpssProductIds.VoaSummary)
       switch (Number(key)) {
         case constant.cpssProductIds.VoaAccountChekSummary:
           return 'voaFiservSummary'

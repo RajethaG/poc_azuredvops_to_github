@@ -93,6 +93,7 @@
             class="pos"
             label="Zip"
             v-model="present.zip"
+            v-mask="'##### ####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -217,6 +218,10 @@ export default {
   },
   created() {
     this.getAllStates()
+    if (this.posData.card === 'Saved Card') {
+      this.new = Object.assign({}, this.present)
+      this.present = Object.assign({}, this.saved)
+    }
   },
   watch: {
     posData(from, to) {

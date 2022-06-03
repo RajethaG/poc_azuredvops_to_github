@@ -26,7 +26,6 @@ export const notifyError = (commit, errorMessage) => {
 }
 
 export const handleError = (error, errorParams) => {
-  console.log(errorParams)
   const status = error?.response?.status
 
   if (errorParams) {
@@ -37,7 +36,6 @@ export const handleError = (error, errorParams) => {
       })
     }
     if (status === 400 && errorParams.redirect400) {
-      console.log(error)
       notifyError(store.commit, error.response.data.Message)
     }
   }

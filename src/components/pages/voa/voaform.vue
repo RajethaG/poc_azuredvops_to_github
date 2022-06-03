@@ -361,7 +361,12 @@ export default {
               RefreshPeriod: this.refreshPeriod,
               AccountHistory: this.accountHistory
             },
-            token: this.token
+            token: this.token,
+            errorParams: {
+              router: this.$router,
+              redirect400: true,
+              redirect500: true
+            }
           })
           .finally(() => {
             return resolve()
