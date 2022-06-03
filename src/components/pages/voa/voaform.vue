@@ -429,7 +429,10 @@ export default {
     },
     save() {
       this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-        if (this.card !== 'Bill Later') {
+        if (
+          this.card !== 'Bill Later' &&
+          this.prefillData.poS_Display === 'Y'
+        ) {
           this.$refs.pos.get()
           this.doCardValidation().then(() => {
             this.finalPayLoad()
