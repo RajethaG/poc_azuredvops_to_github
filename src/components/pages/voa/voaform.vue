@@ -185,15 +185,17 @@
                 </v-flex>
               </v-layout>
               <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
-                <pos
-                  :posData="{
-                    ...prefillData,
-                    ...{ card: card },
-                    ...{ token: token }
-                  }"
-                  ref="pos"
-                  @cardData="cardData"
-                />
+                <ValidationObserver ref="observer">
+                  <pos
+                    :posData="{
+                      ...prefillData,
+                      ...{ card: card },
+                      ...{ token: token }
+                    }"
+                    ref="pos"
+                    @cardData="cardData"
+                  />
+                </ValidationObserver>
               </v-row>
             </v-flex>
           </v-layout>
@@ -269,6 +271,9 @@ export default {
       this.refreshPeriodItems = this.setRefreshPeriodItems()
       this.refreshPeriod = this.prefillData.refreshPeriod || 0
       this.invalidateData(this.refreshPeriod)
+    },
+    card() {
+      this.$refs.observer.reset()
     }
   },
   methods: {
@@ -334,7 +339,7 @@ export default {
     buildVOAPayload() {
       const payload = {
         userId: this.USERID, // 2
-        productId: constant.cpssProductIds.VOA,
+        productId: constant.cpssProductIds.VOAAccountChek,
         OrderForUser: this.USERID, // 1222,
         OrderForCustomer: this.CUSTOMERID, // 6
         borrowerFirstName: this.firstName,
@@ -381,7 +386,7 @@ export default {
         POS_CardHolderStreet: this.creditCardData.holderStreet,
         POS_CardHolderCity: this.creditCardData.city,
         POS_CardHolderState: this.creditCardData.state,
-        POS_CardHolderZip: this.creditCardData.zip,
+        POS_CardHolderZip: this.creditCardData.zip.replace(/[^0-9-]/g, ''),
         POS_CardType: this.creditCardData.cardType,
         POS_CardNumber: this.creditCardData.cardNumber.replace(/[^0-9]/g, ''),
         POS_CardExpiry: this.creditCardData.cardExpiry
@@ -447,10 +452,7 @@ export default {
     },
     save() {
       this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-        if (
-          this.prefillData.poS_Display === 'Y' &&
-          this.card !== 'Bill Later'
-        ) {
+        if (this.ISPOSSUBMIT) {
           this.$refs.pos.get()
           this.doCardValidation().then(() => {
             this.finalPayLoad()
@@ -471,6 +473,9 @@ export default {
     },
     isSavedDisable() {
       return this.card === 'New Card'
+    },
+    ISPOSSUBMIT() {
+      return this.prefillData.poS_Display === 'Y' && this.card !== 'Bill Later'
     }
   },
   data() {

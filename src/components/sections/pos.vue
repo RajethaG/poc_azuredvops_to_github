@@ -86,7 +86,7 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="Zip"
-          :rules="{ max: 9, min: 5, required: isMandatory }"
+          :rules="{ max: 10, min: 5, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field

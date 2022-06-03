@@ -191,15 +191,17 @@
               </v-flex>
             </v-layout>
             <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
-              <pos
-                :posData="{
-                  ...prefillData,
-                  ...{ card: card },
-                  ...{ token: token }
-                }"
-                ref="pos"
-                @cardData="cardData"
-              />
+              <ValidationObserver ref="observer">
+                <pos
+                  :posData="{
+                    ...prefillData,
+                    ...{ card: card },
+                    ...{ token: token }
+                  }"
+                  ref="pos"
+                  @cardData="cardData"
+                />
+              </ValidationObserver>
             </v-row>
           </v-flex>
         </v-layout>
@@ -263,6 +265,9 @@ export default {
       this.refreshPeriodItems = this.setRefreshPeriodItems()
       this.refreshPeriod = this.prefillData.refreshPeriod || 0
       this.invalidateData(this.refreshPeriod)
+    },
+    card() {
+      this.$refs.observer.reset()
     }
   },
   mounted() {
@@ -303,6 +308,9 @@ export default {
     },
     CUSTOMERID() {
       return this.config.customerInfo.customerId || 0
+    },
+    ISPOSSUBMIT() {
+      return this.prefillData.poS_Display === 'Y' && this.card !== 'Bill Later'
     }
   },
   methods: {
@@ -359,7 +367,7 @@ export default {
         POS_CardHolderStreet: this.creditCardData.holderStreet,
         POS_CardHolderCity: this.creditCardData.city,
         POS_CardHolderState: this.creditCardData.state,
-        POS_CardHolderZip: this.creditCardData.zip,
+        POS_CardHolderZip: this.creditCardData.zip.replace(/[^0-9-]/g, ''),
         POS_CardType: this.creditCardData.cardType,
         POS_CardNumber: this.creditCardData.cardNumber.replace(/[^0-9]/g, ''),
         POS_CardExpiry: this.creditCardData.cardExpiry
@@ -406,10 +414,14 @@ export default {
           }
         })
         .then((response) => {
-          if (!response?.orderId && response?.message) {
+          if (
+            response?.id &&
+            response?.responseStatus &&
+            response?.responseStatus === 1
+          ) {
             this.setNotification({
               msg: response.message,
-              type: 'error'
+              type: 'success'
             })
             //  return
           }
@@ -424,12 +436,8 @@ export default {
         })
     },
     save() {
-      this.finalPayLoad()
       this.doMandatoryCallAsPerRequiredByAPI().then(() => {
-        if (
-          this.prefillData.poS_Display === 'Y' &&
-          this.card !== 'Bill Later'
-        ) {
+        if (this.ISPOSSUBMIT) {
           this.$refs.pos.get()
           this.doCardValidation().then(() => {
             this.finalPayLoad()

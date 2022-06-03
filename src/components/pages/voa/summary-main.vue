@@ -19,7 +19,6 @@ export default {
     ...mapGetters(['config'])
   },
   mounted() {
-    console.log(this.config.customerInfo.productId)
     this.selectedComponent = this.getComponentKey(
       this.config.customerInfo.productId
     )
