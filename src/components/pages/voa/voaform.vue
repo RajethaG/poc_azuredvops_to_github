@@ -418,7 +418,8 @@ export default {
             return resolve()
           })
           .catch((error) => {
-            console.log(error)
+            this.authError=error
+
             return reject()
           })
       })
@@ -507,7 +508,8 @@ export default {
       card: '',
       cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
-      creditCardData: {}
+      creditCardData: {},
+      authError:''
     }
   }
 }

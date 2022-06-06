@@ -262,7 +262,8 @@ export default {
       card: '',
       cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
-      creditCardData: {}
+      creditCardData: {},
+      authError:''
     }
   },
   watch: {
@@ -416,7 +417,7 @@ export default {
             return resolve()
           })
           .catch((error) => {
-            console.log(error)
+            this.authError=error
             return reject()
           })
       })
