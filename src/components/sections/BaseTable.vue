@@ -20,6 +20,12 @@
                 @click="resendMail"
                 >Resend Invitation</v-btn
               >
+              <v-btn
+                v-if="item.isDisplayDelete"
+                class="primary darken-2 ml-2"
+                @click="deleteBorrower"
+                >Delete Borrower</v-btn
+              >
             </v-flex>
           </template>
         </v-data-table>

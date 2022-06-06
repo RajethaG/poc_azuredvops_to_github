@@ -31,13 +31,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import PageTitle from '../../sections/PageTitle.vue'
-import VOA from './voaform.vue'
+import VOAAccountChek from './voaform.vue'
 import VOAFiserve from './voaform-fiserv.vue'
 import * as apiTypes from '@/services/api/api-types'
 import constant from '../../../constants/constant.json'
 
 export default {
-  components: { VOA, VOAFiserve, PageTitle },
+  components: { VOAAccountChek, VOAFiserve, PageTitle },
   data() {
     return {
       items: [],
@@ -111,8 +111,8 @@ export default {
     },
     getComponentKey(key) {
       switch (Number(key)) {
-        case constant.cpssProductIds.VOA:
-          return 'VOA'
+        case constant.cpssProductIds.VOAAccountChek:
+          return 'VOAAccountChek'
         case constant.cpssProductIds.VOAFiserv:
           return 'VOAFiserve'
       }

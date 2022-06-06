@@ -37,7 +37,6 @@ export default {
         return this.showNotification
       },
       set(value) {
-        // console.log('setting showMessage ', value)
         this.$store.commit(types.SHOW_NOTIFICATION, value)
       }
     },

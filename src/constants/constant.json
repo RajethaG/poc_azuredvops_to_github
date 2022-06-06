@@ -6,11 +6,13 @@
         "tiff": "image/tiff"
       },
     "cpssProductIds": {
-      "VOA": 112,
-      "VOAFiserv": 207
+      "VOAAccountChek": 112,
+      "VOAFiserv": 207,
+      "VoaAccountChekSummary": 35
     },
     "integrationProductIds" : {
       "VOA": 111,
-      "VOAFiserve": 206
+      "VOAFiserve": 206,
+      "VoaSummary": 35
     }
 }

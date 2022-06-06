@@ -1,6 +1,5 @@
 import * as types from '@/store/mutation-types'
-// import { store } from '@/store'
-
+import { store } from '../store'
 export const buildSuccess = (
   payload,
   commit,
@@ -17,6 +16,14 @@ export const buildSuccess = (
   commit(types.ERROR, null)
   resolve(resolveParam)
 }
+export const notifyError = (commit, errorMessage) => {
+  if (errorMessage) {
+    commit(types.SET_NOTIFICATION, {
+      msg: errorMessage,
+      type: 'error'
+    })
+  }
+}
 
 export const handleError = (error, errorParams) => {
   const status = error?.response?.status
@@ -28,14 +35,8 @@ export const handleError = (error, errorParams) => {
         params: { message: '500 Error occured' }
       })
     }
-  }
-}
-
-export const notifyError = (commit, errorMessage) => {
-  if (errorMessage) {
-    commit(types.SET_NOTIFICATION, {
-      msg: errorMessage,
-      type: 'error'
-    })
+    if (status === 400 && errorParams.redirect400) {
+      notifyError(store.commit, error.response.data.Message)
+    }
   }
 }

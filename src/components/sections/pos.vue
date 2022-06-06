@@ -1,5 +1,5 @@
 <template>
-  <div align="center" class="body--wrapper">
+  <div align="center" class="body--wrapper py-2 px-5 mx-5">
     <v-layout row wrap>
       <v-flex xs12 sm12 class="p-0">
         <ValidationProvider
@@ -86,13 +86,14 @@
       <v-flex xs12 sm4>
         <ValidationProvider
           name="Zip"
-          :rules="{ max: 9, min: 5, required: isMandatory }"
+          :rules="{ max: 10, min: 5, required: isMandatory }"
           v-slot="{ errors }"
         >
           <v-text-field
             class="pos"
             label="Zip"
             v-model="present.zip"
+            v-mask="'##### ####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
@@ -217,6 +218,10 @@ export default {
   },
   created() {
     this.getAllStates()
+    if (this.posData.card === 'Saved Card') {
+      this.new = Object.assign({}, this.present)
+      this.present = Object.assign({}, this.saved)
+    }
   },
   watch: {
     posData(from, to) {
