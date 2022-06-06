@@ -1,5 +1,5 @@
 <template>
-  <div align="center" class="body--wrapper">
+  <div align="center" class="body--wrapper py-2 px-5 mx-5">
     <v-layout row wrap>
       <v-flex xs12 sm12 class="p-0">
         <ValidationProvider

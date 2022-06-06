@@ -176,33 +176,35 @@
               </v-flex>
             </v-layout>
           </v-flex>
-          <v-flex v-if="prefillData.poS_Display === 'Y'" xs12 sm6 offset-sm-1>
-            <v-layout row wrap>
-              <v-flex xs12 sm12>
-                <v-radio-group v-model="card" row mandatory>
-                  <v-radio
-                    v-for="data in cardOptions"
-                    :key="data.value"
-                    :label="data.text"
-                    :value="data.value"
-                    :disabled="data.disabled"
+          <v-flex v-if="prefillData.poS_Display === 'Y'" xs12 sm8>
+            <div class="bordered mx-5 border-radius border-dark">
+              <v-layout row wrap class="mx-5">
+                <v-flex xs12 sm12>
+                  <v-radio-group v-model="card" row mandatory>
+                    <v-radio
+                      v-for="data in cardOptions"
+                      :key="data.value"
+                      :label="data.text"
+                      :value="data.value"
+                      :disabled="data.disabled"
+                    />
+                  </v-radio-group>
+                </v-flex>
+              </v-layout>
+              <v-row v-if="card !== billLater" class="pl-1" align="center">
+                <ValidationObserver ref="observer">
+                  <pos
+                    :posData="{
+                      ...prefillData,
+                      ...{ card: card },
+                      ...{ token: token }
+                    }"
+                    ref="pos"
+                    @cardData="cardData"
                   />
-                </v-radio-group>
-              </v-flex>
-            </v-layout>
-            <v-row v-if="card !== 'Bill Later'" class="pl-1" align="center">
-              <ValidationObserver ref="observer">
-                <pos
-                  :posData="{
-                    ...prefillData,
-                    ...{ card: card },
-                    ...{ token: token }
-                  }"
-                  ref="pos"
-                  @cardData="cardData"
-                />
-              </ValidationObserver>
-            </v-row>
+                </ValidationObserver>
+              </v-row>
+            </div>
           </v-flex>
         </v-layout>
         <v-layout justify-start>
@@ -240,6 +242,9 @@ export default {
   },
   data() {
     return {
+      newCard: 'New Card',
+      savedCard: 'Saved Card',
+      billLater: 'Bill Later',
       referenceNumber: this.prefillData.referenceNumber || '',
       transactionHistory: this.prefillData.accountHistory || '',
       refreshPeriod: this.prefillData.refreshPeriod,
@@ -267,7 +272,9 @@ export default {
       this.invalidateData(this.refreshPeriod)
     },
     card() {
-      this.$refs.observer.reset()
+      if (this.$refs.observer) {
+        this.$refs.observer.reset()
+      }
     }
   },
   mounted() {
@@ -281,21 +288,21 @@ export default {
       this.prefillData.poS_CardType === '' &&
       this.prefillData.poS_CardNumber === '' &&
       this.prefillData.poS_CardExpiry === ''
-        ? 'New Card'
-        : 'Saved Card'
+        ? this.newCard
+        : this.savedCard
 
     this.cardOptions.push(
       {
-        text: 'Saved Card',
-        value: 'Saved Card',
+        text: this.savedCard,
+        value: this.savedCard,
         disabled: this.isSavedDisable
       },
-      { text: 'New Card', value: 'New Card', disabled: false }
+      { text: this.newCard, value: this.newCard, disabled: false }
     )
     if (this.prefillData.poS_Required === 'N') {
       this.cardOptions.push({
         text: 'Bill Later',
-        value: 'Bill Later',
+        value: this.billLater,
         disabled: false
       })
     }
@@ -310,11 +317,25 @@ export default {
       return this.config.customerInfo.customerId || 0
     },
     ISPOSSUBMIT() {
-      return this.prefillData.poS_Display === 'Y' && this.card !== 'Bill Later'
+      return (
+        this.prefillData.poS_Display === 'Y' && this.card !== this.billLater
+      )
     }
   },
   methods: {
     ...mapActions(['setNotification', 'doPOST']),
+    getRefreshPeriodMappable(stringValue) {
+      switch (stringValue) {
+        case '30 Days Refresh':
+          return 30
+        case '60 Days Refresh':
+          return 60
+        case '90 Days Refresh':
+          return 90
+        default:
+          return 1
+      }
+    },
     buildFiservRequest() {
       return {
         userId: this.USERID,
@@ -491,20 +512,6 @@ export default {
           return pd
         }
         return []
-      }
-    },
-    getRefreshPeriodMappable(stringValue) {
-      switch (stringValue) {
-        case '30 Days Refresh':
-          return 30
-        case '60 Days Refresh':
-          return 60
-        case '90 Days Refresh':
-          return 90
-        case 'One Time Report':
-          return 0
-        default:
-          return 1
       }
     }
   }

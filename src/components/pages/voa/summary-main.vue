@@ -25,13 +25,13 @@ export default {
   },
   methods: {
     getComponentKey(key) {
-      switch (Number(key)) {
-        case constant.cpssProductIds.VoaAccountChekSummary:
-          return 'voaFiservSummary'
-        case constant.cpssProductIds.VOAFiserv:
-          return 'VOAFiserve'
-      }
-      return ''
+      // switch (Number(key)) {
+      //   case constant.cpssProductIds.VOAAccountChek:
+      //     return 'voaAccountChekSummary'
+      //   case constant.cpssProductIds.VOAFiserv:
+      //     return 'voaFiservSummary'
+      // }
+      return 'voaAccountChekSummary'
     }
   }
 }
