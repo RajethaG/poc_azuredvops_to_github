@@ -508,7 +508,8 @@ export default {
       card: '',
       cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
-      creditCardData: {}
+      creditCardData: {},
+      authError:''
     }
   }
 }
