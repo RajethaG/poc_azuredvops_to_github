@@ -16,7 +16,8 @@
         "fiservOrder":"consumerreport/api/Fiserv/FiservOrderReport",
         "getAccountDetails": "consumerreport/api/Fiserv/GetAccountDetails",
         "getvoafiservsummary":"consumerreport/api/Fiserv/GetOrderDetails",
-        "sendMail":"consumerreport/api/Fiserv/SendMail"
+        "sendMail":"consumerreport/api/Fiserv/SendMail",
+        "voaFiservDeleteUser": "consumerreport/api/Fiserv/delete"
     },
     "masterData":{
         "states":"consumerreport/api/master/states"

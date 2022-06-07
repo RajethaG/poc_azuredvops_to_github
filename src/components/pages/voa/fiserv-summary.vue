@@ -6,6 +6,18 @@
       :actionLinks="GENERATELINKS"
       @onCommandEvent="onCommandEvent"
     />
+    <modal
+      title="Confirmation"
+      cancel-variant="cancel"
+      ok-variant="Submit"
+      @confirmOkClicked="confirmOk"
+      @confirmCancelClicked="confirmCancel"
+    >
+      <p>
+        Borrower account will be deleted permanently and weblink will no longer
+        be accessible to the borrower
+      </p>
+    </modal>
     <section>
       <v-layout row wrap class="my-3">
         <v-flex xs12>
@@ -64,6 +76,7 @@ import { mapActions } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import { mapGetters } from 'vuex'
 import PdfModal from '../../sections/pdfModal.vue'
+import Modal from '../../sections/Modal.vue'
 
 const EventCodes = {
   generate: 1,
@@ -74,7 +87,8 @@ export default {
   components: {
     BaseCard,
     BaseTable,
-    PdfModal
+    PdfModal,
+    Modal
   },
   data() {
     return {
@@ -91,7 +105,8 @@ export default {
       headers: [
         { text: 'NAME', value: 'name', sortable: false },
         { text: 'EMAIL', value: 'email' },
-        { text: 'URL', value: 'url' }
+        { text: 'URL', value: 'url' },
+        { text: 'Actions', value: 'actions' }
       ],
       orderStatusItems: [],
       orderStatusFields: [
@@ -114,6 +129,9 @@ export default {
     TOKEN() {
       return this.$route.query.Token || ''
     },
+    USERID() {
+      return this.config.customerInfo.userId || 0
+    },
     SUMMARYDATA() {
       const data = []
       data.push(
@@ -133,7 +151,7 @@ export default {
         {
           text: 'Generate Report',
           event: EventCodes.generate,
-          isShow: this.displayGenerate
+          isShow: true
         }
       ]
     }
@@ -148,8 +166,26 @@ export default {
       'setPDFView',
       'setModalView'
     ]),
+    confirmOk() {
+      this.confirmCancel()
+      const payload = { orderId: this.ORDERID, userId: this.USERID }
+      this.doPOST({
+        product: apiTypes.CPSS_FISERV_DELETE_USER,
+        payload,
+        token: this.TOKEN,
+        errorMessage: 'Delete action failed',
+        successMsg: 'Borrower account deleted successfully',
+        errorParams: {
+          router: this.$router,
+          redirect500: true
+        }
+      })
+    },
+    confirmCancel() {
+      this.setModalView(false)
+    },
     deleteBorrower() {
-      this.setModalView()
+      this.setModalView(true)
     },
     onCommandEvent(command) {
       switch (command) {
@@ -157,6 +193,41 @@ export default {
           this.generateReport()
           break
       }
+    },
+    generateReport() {
+      const payload = { orderId: this.ORDERID, userId: this.USERID }
+      this.doPOST({
+        product: apiTypes.CPSS_FISERV_GENERATE_REPORT,
+        payload,
+        token: this.TOKEN,
+        errorParams: {
+          router: this.$router,
+          redirect500: true
+        }
+      }).then((response) => {
+        if (response.fileData !== null) {
+          this.pdfData = response.fileData
+          this.setPDFView(true)
+          return
+        }
+        this.setNotification({
+          msg: response.severity + ': ' + response.statusDesc,
+          type: 'error'
+        })
+      })
+    },
+    getRefreshPeriodLabels(key) {
+      switch (key) {
+        case 1:
+          return 'One Time Report'
+        case 30:
+          return '30 Days Refresh'
+        case 60:
+          return '60 Days Refresh'
+        case 90:
+          return '90 Days Refresh'
+      }
+      return ''
     },
     downloadOrderFile() {
       // eslint-disable-next-line no-alert
@@ -199,11 +270,11 @@ export default {
     this.doGET({
       getType: apiTypes.CPSS_GET_VOA_FISERV_SUMMARY,
       params: {
-        token:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyRXh0ZXJuYWxJRCI6ImViYWY3YTliLTM0OWUtNDRkZS1iMDEyLTQ5MzI4ZTQ0YjE0NCIsIlVzZXJJRCI6IjE2IiwiQ3VzdG9tZXJJZCI6IjEiLCJGaXJzdE5hbWUiOiJKb2hubnkiLCJNaWRkbGVJbml0aWFsIjoiIiwiTGFzdE5hbWUiOiJUZXN0IiwiZW1haWwiOiJUQ19SaXNoaSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6InhhY3R1cyBBZG1pbiIsIkxvZ2luU2Vzc2lvbklEIjoiMTE3MDU1IiwiQ3VzdG9tZXJOYW1lIjoieGFjdHVzIiwiUm9sZXMiOiJ4YWN0dXMgQWRtaW4sRnJhdWRQbHVzIEFkbWluIiwiZXhwIjoxNjU0MDg5MjgzLCJpc3MiOiJodHRwczovL2F6YXBwLWNwc3MtcWEtYXBpLTAwMS5henVyZXdlYnNpdGVzLm5ldC9hdXRoIiwiYXVkIjoiaHR0cHM6Ly9hemFwcC1jcHNzLXFhLWFwaS0wMDEuYXp1cmV3ZWJzaXRlcy5uZXQvIn0.zjS5KMvlwnaV1dixGG6ZQ4VD8TMegmfMiBmBc-vbg2E',
+        token: this.TOKEN,
         orderId: this.ORDERID
       },
-      errorMessage: 'An error occured while loading the VOA summary data',
+      errorMessage:
+        'An error occured while loading the VOA Fiserv summary data',
       errorParams: {
         router: this.$router,
         redirect500: true

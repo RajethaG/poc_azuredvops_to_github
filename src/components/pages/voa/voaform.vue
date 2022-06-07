@@ -418,7 +418,7 @@ export default {
             return resolve()
           })
           .catch((error) => {
-            console.log(error)
+            this.authError = error
             return reject()
           })
       })
@@ -449,7 +449,7 @@ export default {
             params: {
               product: apiTypes.PRODUCT_VOA,
               orderId: response.orderId,
-              productId: constant.cpssProductIds.VOAAccountChek
+              productId: this.dataProvider.value
             },
             query: { Token: this.token }
           })
@@ -487,6 +487,7 @@ export default {
   },
   data() {
     return {
+      authError: '',
       newCard: 'New Card',
       savedCard: 'Saved Card',
       billLater: 'Bill Later',

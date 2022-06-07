@@ -72,6 +72,10 @@ export default {
         return voa.validateCard(payload, token)
       case apiTypes.CPSS_FISERV_POST_SEND_MAIL:
         return voa.sendFiservMail(payload, token)
+      case apiTypes.CPSS_FISERV_DELETE_USER:
+        return voa.voaFiservDeleteUser(payload, token)
+      case apiTypes.CPSS_FISERV_GENERATE_REPORT:
+        return voa.generatepdfReport(payload, token)
     }
     return new Promise(({ reject }) => reject())
   },

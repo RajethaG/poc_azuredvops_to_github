@@ -14,18 +14,50 @@
           <template v-slot:[`item.url`]="{ item }">
             <v-flex>
               <a @click="openUrl(item.url)">{{ item.url }}</a>
-              <v-btn
+              <!-- <v-btn
                 v-if="item.isDisplayMail"
                 class="primary darken-2 ml-2"
                 @click="resendMail"
                 >Resend Invitation</v-btn
               >
+
               <v-btn
                 v-if="item.isDisplayDelete"
                 class="primary darken-2 ml-2"
                 @click="deleteBorrower"
                 >Delete Borrower</v-btn
-              >
+              > -->
+            </v-flex>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-flex>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                    v-if="item.isDisplayMail"
+                    class="darken-2 ml-2"
+                    @click="resendMail"
+                  >
+                    mdi-refresh
+                  </v-icon>
+                </template>
+                <span>Resend Invite Email</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    v-bind="attrs"
+                    v-on="on"
+                    v-if="item.isDisplayDelete"
+                    class="darken-2 ml-2"
+                    @click="deleteBorrower"
+                    >mdi-delete-circle-outline</v-icon
+                  >
+                </template>
+                <span> Delete Borrower</span>
+              </v-tooltip>
             </v-flex>
           </template>
         </v-data-table>
@@ -73,6 +105,9 @@ export default {
     },
     resendMail() {
       this.$emit('sendMail')
+    },
+    deleteBorrower() {
+      this.$emit('deleteBorrower')
     }
   },
   computed: {
