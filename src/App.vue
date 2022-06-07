@@ -20,6 +20,7 @@ import LayoutDefault from './components/layout/layout-default.vue'
 import LayoutSmall from './components/layout/layout-small.vue'
 import LayoutBlank from './components/layout/layout-blank.vue'
 import { mapGetters } from 'vuex'
+
 export default {
   name: 'App',
   computed: {

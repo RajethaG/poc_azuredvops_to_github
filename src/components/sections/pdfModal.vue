@@ -34,7 +34,7 @@ export default {
     pdfURL() {
       if (this.pdfData !== {}) {
         return common.downloadFile(
-          this.pdfData.fileData || this.pdfData.reportByteArray,
+          this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
           'application/pdf',
           'pdf'
         )
@@ -53,7 +53,7 @@ export default {
     },
     DownloadPDF() {
       return common.downloadFile(
-        this.pdfData.fileData || this.pdfData.reportByteArray,
+        this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
         this.pdfData.contentType || 'application/pdf',
         this.pdfData.fileName || 'VOA_Report',
         true

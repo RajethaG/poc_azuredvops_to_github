@@ -39,11 +39,8 @@ export default {
     })
   },
   pullSummaryVOAFiserv(orderId, token) {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${
-      apiPath.voaFiserv.getvoafiservsummary
-    }?orderId=${39479}`
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voaFiserv.getvoafiservsummary}?orderId=${orderId}`
     return new Promise((resolve, reject) => {
-      // getHeader(token)
       axios
         .get(endpoint, getHeader(token))
         .then((response) => {
@@ -106,12 +103,37 @@ export default {
         })
     })
   },
-
-  // payload.orderId
+  voaFiservDeleteUser(payload, token) {
+    const url = `${appConfig.cpssApiEndpoint}/${apiPath.voaFiserv.voaFiservDeleteUser}/${payload.orderId}/${payload.userId}`
+    return new Promise((resolve, reject) => {
+      axios
+        .post(url, {}, getHeader(token))
+        .then((response) => {
+          return resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  async generatepdfReport(payload, token) {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          `${appConfig.cpssApiEndpoint}/${apiPath.voaFiserv.getAccountDetails}?orderId=${payload.orderId}`,
+          {},
+          getHeader(token)
+        )
+        .then((response) => {
+          return resolve(response)
+        })
+        .catch((error) => {
+          return reject(error)
+        })
+    })
+  },
   sendFiservMail(payload, token) {
-    const endpoint = `${appConfig.cpssApiEndpoint}/${
-      apiPath.voaFiserv.sendMail
-    }?orderId=${39479}`
+    const endpoint = `${appConfig.cpssApiEndpoint}/${apiPath.voaFiserv.sendMail}?orderId=${payload.orderId}`
     return new Promise((resolve, reject) => {
       axios
         .post(endpoint, getHeader(token))

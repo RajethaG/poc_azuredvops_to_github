@@ -38,5 +38,8 @@ export const handleError = (error, errorParams) => {
     if (status === 400 && errorParams.redirect400) {
       notifyError(store.commit, error.response.data.Message)
     }
+    if (status === 401 && errorParams.redirect400) {
+      notifyError(store.commit, error.response.data.Message)
+    }
   }
 }

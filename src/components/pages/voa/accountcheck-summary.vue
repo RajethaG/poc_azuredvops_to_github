@@ -93,7 +93,8 @@ export default {
       headers: [
         { text: 'NAME', value: 'name', sortable: false },
         { text: 'EMAIL', value: 'email' },
-        { text: 'URL', value: 'url' }
+        { text: 'URL', value: 'url' },
+        { text: 'Actions', value: 'actions' }
       ],
       orderStatusItems: [],
       orderStatusFields: [

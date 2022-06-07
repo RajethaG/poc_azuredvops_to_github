@@ -16,22 +16,23 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['config'])
+    ...mapGetters(['config']),
+    PRODUCTID() {
+      return this.$route.params.productId || this.config.customerInfo.productId
+    }
   },
   mounted() {
-    this.selectedComponent = this.getComponentKey(
-      this.config.customerInfo.productId
-    )
+    this.selectedComponent = this.getComponentKey(this.PRODUCTID)
   },
   methods: {
     getComponentKey(key) {
-      // switch (Number(key)) {
-      //   case constant.cpssProductIds.VOAAccountChek:
-      //     return 'voaAccountChekSummary'
-      //   case constant.cpssProductIds.VOAFiserv:
-      //     return 'voaFiservSummary'
-      // }
-      return 'voaAccountChekSummary'
+      switch (Number(key)) {
+        case constant.cpssProductIds.VOAAccountChek:
+          return 'voaAccountChekSummary'
+        case constant.cpssProductIds.VOAFiserv:
+          return 'voaFiservSummary'
+      }
+      return ''
     }
   }
 }

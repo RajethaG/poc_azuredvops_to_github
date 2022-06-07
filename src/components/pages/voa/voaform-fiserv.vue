@@ -242,6 +242,7 @@ export default {
   },
   data() {
     return {
+      authError: '',
       newCard: 'New Card',
       savedCard: 'Saved Card',
       billLater: 'Bill Later',
@@ -262,8 +263,7 @@ export default {
       card: '',
       cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
-      creditCardData: {},
-      authError:''
+      creditCardData: {}
     }
   },
   watch: {
@@ -373,7 +373,8 @@ export default {
             errorParams: {
               router: this.$router,
               redirect400: true,
-              redirect500: true
+              redirect500: true,
+              redirect401: true
             }
           })
           .finally(() => {
@@ -403,7 +404,8 @@ export default {
             errorParams: {
               router: this.$router,
               redirect400: true,
-              redirect500: true
+              redirect500: true,
+              redirect401: true
             }
           })
           .then((response) => {
@@ -417,7 +419,7 @@ export default {
             return resolve()
           })
           .catch((error) => {
-            this.authError=error
+            this.authError = error
             return reject()
           })
       })
@@ -432,29 +434,32 @@ export default {
           errorParams: {
             router: this.$router,
             redirect400: true,
-            redirect500: true
+            redirect500: true,
+            redirect401: true
           }
         })
         .then((response) => {
           if (
-            response?.id &&
+            !response?.id &&
             response?.responseStatus &&
             response?.responseStatus === 1
           ) {
             this.setNotification({
               msg: response.message,
-              type: 'success'
+              type: 'error'
             })
-            //  return
+
+            return
           }
-          // this.$router.push({
-          //   name: apiTypes.SUMMARY_REQUEST_INTERNAL,
-          //   params: {
-          //     product: apiTypes.PRODUCT_VOA,
-          //     orderId: response.orderId
-          //   },
-          //   query: { Token: this.token }
-          // })
+          this.$router.push({
+            name: apiTypes.SUMMARY_REQUEST_INTERNAL,
+            params: {
+              product: apiTypes.PRODUCT_FISERV,
+              orderId: response.id,
+              productId: this.dataProvider.value
+            },
+            query: { Token: this.token }
+          })
         })
     },
     save() {
