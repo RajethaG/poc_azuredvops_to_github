@@ -263,8 +263,7 @@ export default {
       card: '',
       cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
-      creditCardData: {},
-      authError:''
+      creditCardData: {}
     }
   },
   watch: {
