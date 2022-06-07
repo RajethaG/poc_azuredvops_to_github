@@ -290,7 +290,7 @@ export default {
           name: data.borrowerName,
           email: data.borrowerEmail,
           url: data.url,
-          isDisplayMail: this.status === 'InProgress',
+          isDisplayMail: this.status === 'Active',
           isDisplayDelete: data.isDeleteVisible
         }
       ]
