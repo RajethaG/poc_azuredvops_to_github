@@ -296,10 +296,10 @@ export default {
       ]
       this.orderStatusItems = [
         {
-          date: data.responseTime,
+          date: data.requestTime,
           verification: data.verificationType,
           account: data.accountHistory,
-          refresh: this.getRefreshPeriodLabels(data.refreshPeriod)
+          refresh: data.refreshPeriod
         }
       ]
       this.infoModel = data.orderStatus
