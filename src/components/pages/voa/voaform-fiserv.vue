@@ -248,7 +248,7 @@ export default {
       billLater: 'Bill Later',
       referenceNumber: this.prefillData.referenceNumber || '',
       transactionHistory: this.prefillData.accountHistory || '',
-      refreshPeriod: this.prefillData.refreshPeriod,
+      refreshPeriod: '',
       transactionHistoryItems: [
         { text: '30 days', value: '30' },
         { text: '60 days', value: '60' },
@@ -279,6 +279,9 @@ export default {
     }
   },
   mounted() {
+    this.refreshPeriod = this.getRereshPeriodAddOnId(
+      this.prefillData.refreshPeriod
+    )
     this.card =
       this.prefillData &&
       this.prefillData.poS_CardHolderName === '' &&
@@ -325,17 +328,13 @@ export default {
   },
   methods: {
     ...mapActions(['setNotification', 'doPOST']),
-    getRefreshPeriodMappable(stringValue) {
-      switch (stringValue) {
-        case '30 Days Refresh':
-          return 30
-        case '60 Days Refresh':
-          return 60
-        case '90 Days Refresh':
-          return 90
-        default:
-          return 1
-      }
+    getRereshPeriodAddOnId(value) {
+      return (
+        this.refreshPeriodItems.find(
+          (x) =>
+            x.text === `${value} Days Refresh` || x.text === `One Time Report`
+        )?.value ?? 0
+      )
     },
     buildFiservRequest() {
       return {
@@ -511,7 +510,7 @@ export default {
             .filter((item) => item.changeable === true)
             .map((item) => {
               return {
-                value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
+                value: item.productAddOnId,
                 text: item.name
               }
             })
