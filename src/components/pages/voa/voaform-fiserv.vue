@@ -248,11 +248,11 @@ export default {
       billLater: 'Bill Later',
       referenceNumber: this.prefillData.referenceNumber || '',
       transactionHistory: this.prefillData.accountHistory || '',
-      refreshPeriod: this.prefillData.refreshPeriod,
+      refreshPeriod: '',
       transactionHistoryItems: [
-        { text: '30 days', value: '30' },
-        { text: '60 days', value: '60' },
-        { text: '90 days', value: '90' }
+        { text: '30 days', value: '30', productAddOnId: 128 },
+        { text: '60 days', value: '60', productAddOnId: 129 },
+        { text: '90 days', value: '90', productAddOnId: 130 }
       ],
       firstName: this.prefillData.firstName || '',
       lastName: this.prefillData.lastName || '',
@@ -279,6 +279,9 @@ export default {
     }
   },
   mounted() {
+    this.refreshPeriod = this.getRereshPeriodAddOnId(
+      this.prefillData.refreshPeriod
+    )
     this.card =
       this.prefillData &&
       this.prefillData.poS_CardHolderName === '' &&
@@ -325,17 +328,13 @@ export default {
   },
   methods: {
     ...mapActions(['setNotification', 'doPOST']),
-    getRefreshPeriodMappable(stringValue) {
-      switch (stringValue) {
-        case '30 Days Refresh':
-          return 30
-        case '60 Days Refresh':
-          return 60
-        case '90 Days Refresh':
-          return 90
-        default:
-          return 1
-      }
+    getRereshPeriodAddOnId(value) {
+      return (
+        this.refreshPeriodItems.find(
+          (x) =>
+            x.text === `${value} Days Refresh` || x.text === `One Time Report`
+        )?.value ?? 0
+      )
     },
     buildFiservRequest() {
       return {
@@ -346,7 +345,10 @@ export default {
         OrderForCustomer: this.CUSTOMERID,
         CustomerId: this.CUSTOMERID,
         referenceNumber: this.referenceNumber,
-        transactionHistory: this.transactionHistory,
+        transactionHistory:
+          this.transactionHistoryItems.find(
+            (x) => x.value === this.transactionHistory
+          ).productAddOnId || 0,
         refreshPeriod: this.refreshPeriod,
         borrowerRequestViewModel: {
           firstName: this.firstName,
@@ -367,7 +369,10 @@ export default {
             payload: {
               DataProvider: this.formatPayload(this.dataProvider),
               RefreshPeriod: this.refreshPeriod,
-              AccountHistory: this.transactionHistory
+              AccountHistory:
+                this.transactionHistoryItems.find(
+                  (x) => x.value === this.transactionHistory
+                ).productAddOnId || 0
             },
             token: this.token,
             errorParams: {
@@ -511,7 +516,7 @@ export default {
             .filter((item) => item.changeable === true)
             .map((item) => {
               return {
-                value: this.getRefreshPeriodMappable(item.name), // Number(item.productAddOnId),
+                value: item.productAddOnId,
                 text: item.name
               }
             })

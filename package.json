@@ -6,8 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint --fix",
-    "format": "prettier --write --config .prettierrc \"**/*.js\"",
-    "prettier-format": "prettier --write --config .prettierrc \"**/*.vue\"",
+    "format": "prettier --write --config .prettierrc \"**src/**/*.js\"",
+    "prettier-format": "prettier --write --config .prettierrc \"**src/**/*.vue\"",
     "prettier": "prettier --write --config .prettierrc"
   },
   "lint-staged": {
