@@ -27,7 +27,7 @@
       <v-layout row wrap class="my-5">
         <v-flex xs12>
           <BaseTable
-            :items="tabledata"
+            :items="TABLE"
             :fields="headers"
             hide-default-footer
             label="Borrower Details"
@@ -92,7 +92,7 @@ export default {
   },
   data() {
     return {
-      tabledata: [],
+      reponseData: [],
       status: '',
       orderFileId: '',
       displayPdfView: false,
@@ -115,11 +115,24 @@ export default {
         { text: 'ACCOUNT HISTORY', value: 'account' },
         { text: 'REFRESH PERIOD', value: 'refresh' }
       ],
-      infoModel: []
+      infoModel: [],
+      disableDeleteBtn: false
     }
   },
   computed: {
     ...mapGetters(['config']),
+    TABLE() {
+      return [
+        {
+          name: this.reponseData.borrowerName,
+          email: this.reponseData.borrowerEmail,
+          url: this.reponseData.url,
+          isDisplayMail: this.disableDeleteBtn,
+          isDisplayDelete: this.disableDeleteBtn,
+          isShowDelete: true
+        }
+      ]
+    },
     PDFURL() {
       return this.pdfData
     },
@@ -179,6 +192,8 @@ export default {
           router: this.$router,
           redirect500: true
         }
+      }).then((response) => {
+        this.disableDeleteBtn = response.message === 'Successful'
       })
     },
     confirmCancel() {
@@ -215,19 +230,6 @@ export default {
           type: 'error'
         })
       })
-    },
-    getRefreshPeriodLabels(key) {
-      switch (key) {
-        case 1:
-          return 'One Time Report'
-        case 30:
-          return '30 Days Refresh'
-        case 60:
-          return '60 Days Refresh'
-        case 90:
-          return '90 Days Refresh'
-      }
-      return ''
     },
     downloadOrderFile() {
       // eslint-disable-next-line no-alert
@@ -285,15 +287,9 @@ export default {
       this.isPdfGenerated = data.isPdfGenerated
       this.isRefreshPeriod = data.isRefreshPeriod
       this.orderFileId = data.orderFieldId
-      this.tabledata = [
-        {
-          name: data.borrowerName,
-          email: data.borrowerEmail,
-          url: data.url,
-          isDisplayMail: this.status === 'Active',
-          isDisplayDelete: data.isDeleteVisible
-        }
-      ]
+      this.disableDeleteBtn = !data.isDeleteVisible
+
+      this.reponseData = data
       this.orderStatusItems = [
         {
           date: data.requestTime,
