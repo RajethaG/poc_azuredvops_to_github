@@ -250,9 +250,9 @@ export default {
       transactionHistory: this.prefillData.accountHistory || '',
       refreshPeriod: '',
       transactionHistoryItems: [
-        { text: '30 days', value: '30' },
-        { text: '60 days', value: '60' },
-        { text: '90 days', value: '90' }
+        { text: '30 days', value: '30', productAddOnId: 128 },
+        { text: '60 days', value: '60', productAddOnId: 129 },
+        { text: '90 days', value: '90', productAddOnId: 130 }
       ],
       firstName: this.prefillData.firstName || '',
       lastName: this.prefillData.lastName || '',
@@ -345,7 +345,10 @@ export default {
         OrderForCustomer: this.CUSTOMERID,
         CustomerId: this.CUSTOMERID,
         referenceNumber: this.referenceNumber,
-        transactionHistory: this.transactionHistory,
+        transactionHistory:
+          this.transactionHistoryItems.find(
+            (x) => x.value === this.transactionHistory
+          ).productAddOnId || 0,
         refreshPeriod: this.refreshPeriod,
         borrowerRequestViewModel: {
           firstName: this.firstName,
@@ -366,7 +369,10 @@ export default {
             payload: {
               DataProvider: this.formatPayload(this.dataProvider),
               RefreshPeriod: this.refreshPeriod,
-              AccountHistory: this.transactionHistory
+              AccountHistory:
+                this.transactionHistoryItems.find(
+                  (x) => x.value === this.transactionHistory
+                ).productAddOnId || 0
             },
             token: this.token,
             errorParams: {
