@@ -15,7 +15,7 @@
       <v-layout row wrap class="my-5">
         <v-flex xs12>
           <BaseTable
-            :items="tabledata"
+            :items="TABLE"
             :fields="headers"
             hide-default-footer
             label="Borrower Details"
@@ -78,7 +78,7 @@ export default {
   },
   data() {
     return {
-      tabledata: [],
+      responseData: [],
       status: '',
       orderFileId: '',
       displayPdfView: false,
@@ -108,6 +108,17 @@ export default {
   },
   computed: {
     ...mapGetters(['config']),
+    TABLE() {
+      return [
+        {
+          name: this.responseData.borrowerName,
+          email: this.responseData.borrowerEmail,
+          url: this.responseData.url,
+          isDisplayMail: !this.displayResendEmail,
+          isShowDelete: false
+        }
+      ]
+    },
     PDFURL() {
       return this.pdfData
     },
@@ -343,14 +354,7 @@ export default {
       this.isRefreshPeriod = data.isRefreshPeriod
       this.orderFileId = data.orderFieldId
       this.getStatus()
-      this.tabledata = [
-        {
-          name: data.borrowerName,
-          email: data.borrowerEmail,
-          url: data.url,
-          isDisplayMail: this.displayResendEmail
-        }
-      ]
+      this.responseData = data
       this.orderStatusItems = [
         {
           date: data.responseTime,

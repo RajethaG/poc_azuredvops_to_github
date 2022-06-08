@@ -36,7 +36,7 @@
                   <v-icon
                     v-bind="attrs"
                     v-on="on"
-                    v-if="item.isDisplayMail"
+                    :disabled="item.isDisplayMail"
                     class="darken-2 ml-2"
                     @click="resendMail"
                   >
@@ -45,12 +45,12 @@
                 </template>
                 <span>Resend Invite Email</span>
               </v-tooltip>
-              <v-tooltip top>
+              <v-tooltip top v-if="item.isShowDelete">
                 <template v-slot:activator="{ on, attrs }">
                   <v-icon
                     v-bind="attrs"
                     v-on="on"
-                    v-if="item.isDisplayDelete"
+                    :disabled="item.isDisplayDelete"
                     class="darken-2 ml-2"
                     @click="deleteBorrower"
                     >mdi-delete-circle-outline</v-icon
