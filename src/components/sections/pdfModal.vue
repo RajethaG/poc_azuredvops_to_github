@@ -24,17 +24,32 @@ import { mapGetters, mapActions } from 'vuex'
 // import constant from '../../constants/constant'
 export default {
   props: {
-    pdfData: {
-      type: Object,
+    byteArray: { type: String, default: () => ''},
+    contentType: {type: String, default:() => 'application/pf'},
+    fileName: { type: String, defaut: () => constants.Voe},
+    //pdfData: {
+//       type: Object,
+//       default: () => {
+// pdfByteArray:'',
+// contentType: 'appliation/pdf',
+// fileName: 'no-file-name'
+
+//       },
       required: true
     }
   },
   components: { pdfViewer },
   computed: {
     pdfURL() {
+      if(this.byteArray){
+        this.common.downloadFile(
+          thi
+        )
+      }
       if (this.pdfData !== {}) {
         return common.downloadFile(
-          this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
+this.pdfData.pdfByteArray
+          // this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
           'application/pdf',
           'pdf'
         )

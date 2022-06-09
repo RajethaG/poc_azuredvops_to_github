@@ -50,6 +50,24 @@
           </BaseTable>
         </v-flex>
       </v-layout>
+      <v-layout>
+        <div v-if="generatedReportItems.length > 0" class="my-3">
+          <BaseLabel label="Status History" vclass="text-button" />
+
+          <div
+            v-for="generatedReportItem in generatedReportItems"
+            :key="generatedReportItem.orderFieldId"
+            class="d-flex justify-content-between align-items-center align-center my-1"
+          >
+            <v-icon color="red">mdi-file-pdf-box</v-icon>
+            <a
+              class="text-caption ml-2"
+              @click="GetPDFData(generatedReportItem.filePath)"
+              >{{ generatedReportItem.fileName }}</a
+            >
+          </div>
+        </div>
+      </v-layout>
       <v-layout row wrap>
         <v-flex xs12 md12 class="my-5">
           <BaseLabel label="Status History" vclass="text-button" />
@@ -77,6 +95,7 @@ import * as apiTypes from '@/services/api/api-types'
 import { mapGetters } from 'vuex'
 import PdfModal from '../../sections/pdfModal.vue'
 import Modal from '../../sections/Modal.vue'
+import constant from '../../../../src/constants/constant.json'
 
 const EventCodes = {
   generate: 1,
@@ -92,6 +111,7 @@ export default {
   },
   data() {
     return {
+      generatedReportItems: [],
       reponseData: [],
       status: '',
       orderFileId: '',
@@ -179,6 +199,14 @@ export default {
       'setPDFView',
       'setModalView'
     ]),
+    GetPDFData(data) {
+      this.pdfData = {
+        pdfByteArray: data,
+        contentType: 'application/pdf',
+        fileName: constant.origin.VoaFiservReport
+      }
+      this.setPDFView(true)
+    },
     confirmOk() {
       this.confirmCancel()
       const payload = { orderId: this.ORDERID, userId: this.USERID }
@@ -299,6 +327,12 @@ export default {
         }
       ]
       this.infoModel = data.orderStatus
+      for (let i = 0; i < data.fiservPdfFiles.length; i++) {
+        this.generatedReportItems.push({
+          fileName: data.fiservPdfFiles[i].fileName,
+          filePath: data.fiservPdfFiles[i].fileData
+        })
+      }
     })
   }
 }
@@ -326,6 +360,19 @@ export default {
   color: #2f2f2f;
   text-align: right;
 }
+.ReportLabelHeading {
+  margin-left: 1em;
+  color: #2f2f2f;
+}
+.ReportTable {
+  margin-top: 10px;
+  margin-left: 4px;
+}
+.ReportContent {
+  color: #2f2f2f;
+  text-decoration: none;
+}
+
 .events span {
   position: relative;
   width: 100%;

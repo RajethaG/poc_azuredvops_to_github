@@ -14,5 +14,8 @@
       "VOA": 111,
       "VOAFiserve": 206,
       "VoaSummary": 35
+    },
+    "origin": {
+      "VoaFiservReport": "voaFiservReport"
     }
 }
