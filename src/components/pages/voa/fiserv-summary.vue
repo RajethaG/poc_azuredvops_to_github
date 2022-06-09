@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <PdfModal :pdf-data="PDFURL" />
+    <PdfModal v-if="pdfData" :pdf-data="pdfData" />
     <page-title text="Verification of Assets - Fiserv" />
     <BaseReportLink
       :actionLinks="GENERATELINKS"
@@ -52,7 +52,7 @@
       </v-layout>
       <v-layout>
         <div v-if="generatedReportItems.length > 0" class="my-3">
-          <BaseLabel label="GENERATED REPORTS"  class="text-button" />
+          <BaseLabel label="GENERATED REPORTS" class="text-button" />
 
           <div
             v-for="generatedReportItem in generatedReportItems"
@@ -62,7 +62,7 @@
             <v-icon color="red">mdi-file-pdf-box</v-icon>
             <a
               class="text-caption ml-2"
-              @click="GetPDFData(generatedReportItem.filePath)"
+              @click="onClickShowPDFModal(generatedReportItem.filePath)"
               >{{ generatedReportItem.fileName }}</a
             >
           </div>
@@ -93,7 +93,7 @@ import common from '../../../utils/common'
 import { mapActions } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import { mapGetters } from 'vuex'
-import PdfModal from '../../sections/pdfModal.vue'
+const PdfModal = () => import('../../sections/pdfModal.vue')
 import Modal from '../../sections/Modal.vue'
 import constant from '../../../../src/constants/constant.json'
 
@@ -119,7 +119,7 @@ export default {
       displayGenerate: false,
       displayRefreshIcon: false,
       displayResendEmail: false,
-      pdfData: {},
+      pdfData: null,
       referenceNumber: '',
       statusMessage: '',
       headers: [
@@ -152,9 +152,6 @@ export default {
           isShowDelete: true
         }
       ]
-    },
-    PDFURL() {
-      return this.pdfData
     },
     ORDERID() {
       return this.config.orderId || this.$route.params.orderId || 0
@@ -199,7 +196,7 @@ export default {
       'setPDFView',
       'setModalView'
     ]),
-    GetPDFData(data) {
+    onClickShowPDFModal(data) {
       this.pdfData = common.prepareObjectForPDFModalView(
         data,
         constant.origin.VoaFiservReport
@@ -260,31 +257,6 @@ export default {
           msg: response.severity + ': ' + response.statusDesc,
           type: 'error'
         })
-      })
-    },
-    downloadOrderFile() {
-      // eslint-disable-next-line no-alert
-      this.doGET({
-        getType: apiTypes.CPSS_GET_DOCUMENT_DOWNLOAD,
-        params: {
-          token: this.TOKEN,
-          orderId: this.orderFileId
-        }
-      }).then((data) => {
-        const url = common.downloadFile(
-          data.fileData,
-          data.contentType,
-          data.fileName
-        )
-        const routeData = this.$router.resolve({
-          name: apiTypes.PDF_VIEWER,
-          query: { url }
-        })
-        this.pdfData = common.prepareObjectForPDFModalView(
-          data.fileData,
-          data.fileName
-        )
-        this.setPDFView(true)
       })
     },
     sendMails() {
