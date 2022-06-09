@@ -45,14 +45,14 @@
             :fields="orderStatusFields"
             hide-default-footer
             label="Order Details"
-            labelclass="text-button"
+            class="text-button"
           >
           </BaseTable>
         </v-flex>
       </v-layout>
       <v-layout>
         <div v-if="generatedReportItems.length > 0" class="my-3">
-          <BaseLabel label="GENERATED REPORTS" vclass="text-button" />
+          <BaseLabel label="GENERATED REPORTS"  class="text-button" />
 
           <div
             v-for="generatedReportItem in generatedReportItems"
