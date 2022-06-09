@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <PdfModal :pdf-data="PDFURL" />
+    <PdfModal v-if="pdfData" :pdf-data="pdfData" />
     <page-title text="VOA Order Summary" />
     <BaseReportLink
       :actionLinks="GENERATELINKS"
@@ -85,7 +85,7 @@ export default {
       displayGenerate: false,
       displayRefreshIcon: false,
       displayResendEmail: false,
-      pdfData: {},
+      pdfData: null,
       isRefreshPeriod: 'No',
       isPdfGenerated: 'No',
       referenceNumber: '',
@@ -118,9 +118,6 @@ export default {
           isShowDelete: false
         }
       ]
-    },
-    PDFURL() {
-      return this.pdfData
     },
     ORDERID() {
       return this.config.orderId || this.$route.params.orderId || 0
@@ -222,16 +219,10 @@ export default {
           orderId: this.orderFileId
         }
       }).then((data) => {
-        const url = common.downloadFile(
+        this.pdfData = common.prepareObjectForPDFModalView(
           data.fileData,
-          data.contentType,
           data.fileName
         )
-        const routeData = this.$router.resolve({
-          name: apiTypes.PDF_VIEWER,
-          query: { url }
-        })
-        this.pdfData = data
         this.setPDFView(true)
       })
     },
@@ -256,10 +247,6 @@ export default {
           constant.contentType.pdf,
           `VoA_${respData.orderId}`
         )
-        const routeData = this.$router.resolve({
-          name: apiTypes.PDF_VIEWER,
-          query: { url }
-        })
         // window.open(routeData.href, '_blank')
         this.setPDFView(true)
         this.pdfData = respData

@@ -2,7 +2,7 @@
   <v-dialog v-model="isShowPDF" persistent scrollable width="1160">
     <v-card>
       <v-card-title class="my-3 ml-auto">
-        <v-btn class="primary darken-2 mr-2" @click="DownloadPDF"
+        <v-btn class="primary darken-2 mr-2" @click="showAndORDownloadPDF"
           ><v-icon>mdi-arrow-down-bold</v-icon>Download</v-btn
         >
         <v-btn @click="closeModal" class="primary darken-2"
@@ -10,9 +10,10 @@
         >
       </v-card-title>
       <v-divider />
-      <v-card-text v-if="Object.keys(pdfData).length">
-        <pdfViewer :use-as-component="true" :pdf-data="pdfURL" />
+      <v-card-text v-if="previewUrl">
+        <pdfViewer :use-as-component="true" :pdf-data="previewUrl" />
       </v-card-text>
+      <v-card-text v-else> No Data to show (empty url) </v-card-text>
     </v-card>
   </v-dialog>
 </template>
@@ -29,17 +30,13 @@ export default {
       required: true
     }
   },
+  data() {
+    return {}
+  },
   components: { pdfViewer },
   computed: {
-    pdfURL() {
-      if (this.pdfData !== {}) {
-        return common.downloadFile(
-          this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
-          'application/pdf',
-          'pdf'
-        )
-      }
-      return ''
+    previewUrl() {
+      return this.showAndORDownloadPDF(false)
     },
     isShowPDF() {
       return this.getPDFState()
@@ -51,12 +48,20 @@ export default {
     closeModal() {
       this.setPDFView(false)
     },
-    DownloadPDF() {
+    getPdfByteArray() {
+      const theByteArray =
+        this.pdfData?.fileData ||
+        this.pdfData?.reportByteArray ||
+        this.pdfData ||
+        ''
+      return theByteArray
+    },
+    showAndORDownloadPDF(isShouldDownload = true) {
       return common.downloadFile(
-        this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
+        this.getPdfByteArray(),
         this.pdfData.contentType || 'application/pdf',
         this.pdfData.fileName || 'VOA_Report',
-        true
+        isShouldDownload
       )
     }
   }

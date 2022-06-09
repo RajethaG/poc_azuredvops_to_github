@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-md>
-    <PdfModal :pdf-data="PDFURL" />
+    <PdfModal v-if="pdfData" :pdf-data="pdfData" />
     <page-title text="Verification of Assets - Fiserv" />
     <BaseReportLink
       :actionLinks="GENERATELINKS"
@@ -45,10 +45,28 @@
             :fields="orderStatusFields"
             hide-default-footer
             label="Order Details"
-            labelclass="text-button"
+            class="text-button"
           >
           </BaseTable>
         </v-flex>
+      </v-layout>
+      <v-layout>
+        <div v-if="generatedReportItems.length > 0" class="my-3">
+          <BaseLabel label="GENERATED REPORTS" class="text-button" />
+
+          <div
+            v-for="generatedReportItem in generatedReportItems"
+            :key="generatedReportItem.orderFieldId"
+            class="d-flex justify-content-between align-items-center align-center my-1"
+          >
+            <v-icon color="red">mdi-file-pdf-box</v-icon>
+            <a
+              class="text-caption ml-2"
+              @click="onClickShowPDFModal(generatedReportItem.filePath)"
+              >{{ generatedReportItem.fileName }}</a
+            >
+          </div>
+        </div>
       </v-layout>
       <v-layout row wrap>
         <v-flex xs12 md12 class="my-5">
@@ -75,8 +93,9 @@ import common from '../../../utils/common'
 import { mapActions } from 'vuex'
 import * as apiTypes from '@/services/api/api-types'
 import { mapGetters } from 'vuex'
-import PdfModal from '../../sections/pdfModal.vue'
+const PdfModal = () => import('../../sections/pdfModal.vue')
 import Modal from '../../sections/Modal.vue'
+import constant from '../../../../src/constants/constant.json'
 
 const EventCodes = {
   generate: 1,
@@ -92,6 +111,7 @@ export default {
   },
   data() {
     return {
+      generatedReportItems: [],
       reponseData: [],
       status: '',
       orderFileId: '',
@@ -99,7 +119,7 @@ export default {
       displayGenerate: false,
       displayRefreshIcon: false,
       displayResendEmail: false,
-      pdfData: {},
+      pdfData: null,
       referenceNumber: '',
       statusMessage: '',
       headers: [
@@ -132,9 +152,6 @@ export default {
           isShowDelete: true
         }
       ]
-    },
-    PDFURL() {
-      return this.pdfData
     },
     ORDERID() {
       return this.config.orderId || this.$route.params.orderId || 0
@@ -179,6 +196,13 @@ export default {
       'setPDFView',
       'setModalView'
     ]),
+    onClickShowPDFModal(data) {
+      this.pdfData = common.prepareObjectForPDFModalView(
+        data,
+        constant.origin.VoaFiservReport
+      )
+      this.setPDFView(true)
+    },
     confirmOk() {
       this.confirmCancel()
       const payload = { orderId: this.ORDERID, userId: this.USERID }
@@ -221,36 +245,18 @@ export default {
         }
       }).then((response) => {
         if (response.fileData !== null) {
-          this.pdfData = response.fileData
+          this.pdfData = common.prepareObjectForPDFModalView(
+            response.fileData,
+            constant.origin.VoaFiservReport
+          )
           this.setPDFView(true)
+          this.loadData()
           return
         }
         this.setNotification({
           msg: response.severity + ': ' + response.statusDesc,
           type: 'error'
         })
-      })
-    },
-    downloadOrderFile() {
-      // eslint-disable-next-line no-alert
-      this.doGET({
-        getType: apiTypes.CPSS_GET_DOCUMENT_DOWNLOAD,
-        params: {
-          token: this.TOKEN,
-          orderId: this.orderFileId
-        }
-      }).then((data) => {
-        const url = common.downloadFile(
-          data.fileData,
-          data.contentType,
-          data.fileName
-        )
-        const routeData = this.$router.resolve({
-          name: apiTypes.PDF_VIEWER,
-          query: { url }
-        })
-        this.pdfData = data
-        this.setPDFView(true)
       })
     },
     sendMails() {
@@ -266,40 +272,50 @@ export default {
           redirect500: true
         }
       })
+    },
+    loadData() {
+      this.doGET({
+        getType: apiTypes.CPSS_GET_VOA_FISERV_SUMMARY,
+        params: {
+          token: this.TOKEN,
+          orderId: this.ORDERID
+        },
+        errorMessage:
+          'An error occured while loading the VOA Fiserv summary data',
+        errorParams: {
+          router: this.$router,
+          redirect500: true
+        }
+      }).then((data) => {
+        this.status = data.status
+        this.referenceNumber = data.referenceNumber
+        this.isPdfGenerated = data.isPdfGenerated
+        this.isRefreshPeriod = data.isRefreshPeriod
+        this.orderFileId = data.orderFieldId
+        this.disableDeleteBtn = !data.isDeleteVisible
+
+        this.reponseData = data
+        this.orderStatusItems = [
+          {
+            date: data.requestTime,
+            verification: data.verificationType,
+            account: data.accountHistory,
+            refresh: data.refreshPeriod
+          }
+        ]
+        this.infoModel = data.orderStatus
+        this.generatedReportItems = []
+        for (let i = 0; i < data.fiservPdfFiles.length; i++) {
+          this.generatedReportItems.push({
+            fileName: data.fiservPdfFiles[i].fileName,
+            filePath: data.fiservPdfFiles[i].fileData
+          })
+        }
+      })
     }
   },
   mounted() {
-    this.doGET({
-      getType: apiTypes.CPSS_GET_VOA_FISERV_SUMMARY,
-      params: {
-        token: this.TOKEN,
-        orderId: this.ORDERID
-      },
-      errorMessage:
-        'An error occured while loading the VOA Fiserv summary data',
-      errorParams: {
-        router: this.$router,
-        redirect500: true
-      }
-    }).then((data) => {
-      this.status = data.status
-      this.referenceNumber = data.referenceNumber
-      this.isPdfGenerated = data.isPdfGenerated
-      this.isRefreshPeriod = data.isRefreshPeriod
-      this.orderFileId = data.orderFieldId
-      this.disableDeleteBtn = !data.isDeleteVisible
-
-      this.reponseData = data
-      this.orderStatusItems = [
-        {
-          date: data.requestTime,
-          verification: data.verificationType,
-          account: data.accountHistory,
-          refresh: data.refreshPeriod
-        }
-      ]
-      this.infoModel = data.orderStatus
-    })
+    this.loadData()
   }
 }
 </script>
@@ -326,6 +342,19 @@ export default {
   color: #2f2f2f;
   text-align: right;
 }
+.ReportLabelHeading {
+  margin-left: 1em;
+  color: #2f2f2f;
+}
+.ReportTable {
+  margin-top: 10px;
+  margin-left: 4px;
+}
+.ReportContent {
+  color: #2f2f2f;
+  text-decoration: none;
+}
+
 .events span {
   position: relative;
   width: 100%;
