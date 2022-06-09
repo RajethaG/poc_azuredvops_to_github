@@ -46,3 +46,12 @@ function base64ToArrayBuffer(base64) {
   }
   return bytes
 }
+// eslint-disable-next-line func-style
+function prepareObjectForPDFModalView(byteArray,fileName){
+ return{
+  fileData: byteArray,
+  contentType: 'application/pdf',
+  fileName: fileName??'Report'
+ }
+
+}

@@ -222,16 +222,21 @@ export default {
           orderId: this.orderFileId
         }
       }).then((data) => {
-        const url = common.downloadFile(
+        this.pdfData = common.prepareObjectForPDFModalView(
           data.fileData,
-          data.contentType,
           data.fileName
         )
-        const routeData = this.$router.resolve({
-          name: apiTypes.PDF_VIEWER,
-          query: { url }
-        })
-        this.pdfData = data
+        // const url = common.downloadFile(
+        //   data.fileData,
+        //   data.contentType,
+
+        // )
+        // const routeData = this.$router.resolve({
+        //   name: apiTypes.PDF_VIEWER,
+        //   query: { url }
+        // })
+
+        // data
         this.setPDFView(true)
       })
     },

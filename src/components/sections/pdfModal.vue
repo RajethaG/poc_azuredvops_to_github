@@ -11,7 +11,7 @@
       </v-card-title>
       <v-divider />
       <v-card-text v-if="Object.keys(pdfData).length">
-        <pdfViewer :use-as-component="true" :pdf-data="pdfURL" />
+        <pdfViewer :use-as-component="true" :pdf-data="DownloadPDF(false)" />
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -31,16 +31,19 @@ export default {
   },
   components: { pdfViewer },
   computed: {
-    pdfURL() {
-      if (this.pdfData !== {}) {
-        return common.downloadFile(
-          this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
-          'application/pdf',
-          'pdf'
-        )
-      }
-      return ''
-    },
+    // pdfURL() {
+    //   if (this.pdfData !== {}) {
+    //     return common.downloadFile(
+    //       this.pdfData?.fileData ||
+    //         this.pdfData?.reportByteArray ||
+    //         this.pdfData ||
+    //         '',
+    //       'application/pdf',
+    //       'pdf'
+    //     )
+    //   }
+    //   return ''
+    // },
     isShowPDF() {
       return this.getPDFState()
     }
@@ -51,12 +54,15 @@ export default {
     closeModal() {
       this.setPDFView(false)
     },
-    DownloadPDF() {
+    DownloadPDF(isShouldDownload = true) {
       return common.downloadFile(
-        this.pdfData || this.pdfData.fileData || this.pdfData.reportByteArray,
+        this.pdfData?.fileData ||
+          this.pdfData?.reportByteArray ||
+          this.pdfData ||
+          '',
         this.pdfData.contentType || 'application/pdf',
         this.pdfData.fileName || 'VOA_Report',
-        true
+        isShouldDownload
       )
     }
   }
