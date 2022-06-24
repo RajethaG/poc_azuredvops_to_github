@@ -177,11 +177,11 @@ export default {
         case 1:
           return 'One Time Report'
         case 30:
-          return '30 Days Refresh'
+          return '30 Days'
         case 60:
-          return '60 Days Refresh'
+          return '60 Days'
         case 90:
-          return '90 Days Refresh'
+          return '90 Days'
       }
       return ''
     },
@@ -346,7 +346,7 @@ export default {
         {
           date: data.responseTime,
           verification: data.verificationType,
-          account: data.accountHistory,
+          account: this.getRefreshPeriodLabels(data.accountHistory),
           refresh: this.getRefreshPeriodLabels(data.refreshPeriod)
         }
       ]
