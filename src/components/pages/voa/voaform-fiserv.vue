@@ -250,9 +250,9 @@ export default {
       transactionHistory: this.prefillData.accountHistory || '',
       refreshPeriod: '',
       transactionHistoryItems: [
-        { text: '30 days', value: '30', productAddOnId: 128 },
-        { text: '60 days', value: '60', productAddOnId: 129 },
-        { text: '90 days', value: '90', productAddOnId: 130 }
+        { text: '30 days', value: '30' },
+        { text: '60 days', value: '60' },
+        { text: '90 days', value: '90' }
       ],
       firstName: this.prefillData.firstName || '',
       lastName: this.prefillData.lastName || '',
@@ -348,7 +348,7 @@ export default {
         transactionHistory:
           this.transactionHistoryItems.find(
             (x) => x.value === this.transactionHistory
-          ).productAddOnId || 0,
+          ).value || 0,
         refreshPeriod: this.refreshPeriod,
         borrowerRequestViewModel: {
           firstName: this.firstName,
@@ -372,7 +372,7 @@ export default {
               AccountHistory:
                 this.transactionHistoryItems.find(
                   (x) => x.value === this.transactionHistory
-                ).productAddOnId || 0
+                ).value || 0
             },
             token: this.token,
             errorParams: {
@@ -445,9 +445,11 @@ export default {
         })
         .then((response) => {
           if (
-            !response?.id &&
-            response?.responseStatus &&
-            response?.responseStatus === 1
+            !(
+              response?.id &&
+              response?.responseStatus &&
+              response?.responseStatus === 1
+            )
           ) {
             this.setNotification({
               msg: response.message,
@@ -504,6 +506,18 @@ export default {
     verifyValueInList(value, list) {
       return (list || []).filter((item) => item.value === value).length > 0
     },
+    getRefreshPeriodMappable(stringValue) {
+      switch (stringValue) {
+        case '30 Days Refresh':
+          return 30
+        case '60 Days Refresh':
+          return 60
+        case '90 Days Refresh':
+          return 90
+        default:
+          return 1
+      }
+    },
     // eslint-disable-next-line consistent-return
     setRefreshPeriodItems() {
       if (this.customerProducts) {
@@ -516,7 +530,7 @@ export default {
             .filter((item) => item.changeable === true)
             .map((item) => {
               return {
-                value: item.productAddOnId,
+                value: this.getRefreshPeriodMappable(item.name),
                 text: item.name
               }
             })
