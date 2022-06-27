@@ -154,7 +154,7 @@
                 <v-flex xs12 sm12>
                   <ValidationProvider
                     name="Employer Name"
-                    rules="max:50|alpha_num"
+                    rules="max:50|alpha_num_spaces"
                     v-slot="{ errors }"
                   >
                     <v-text-field

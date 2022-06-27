@@ -13,7 +13,8 @@ import {
   min_value,
   max_value,
   numeric,
-  alpha_num
+  alpha_num,
+  alpha_spaces
 } from 'vee-validate/dist/rules'
 
 extend('required', { ...required, message: '{_field_} Is Required' })
@@ -25,6 +26,10 @@ extend('max', { ...max, message: '{_field_} Maximum Length Exceeded' })
 extend('alpha_num', {
   ...alpha_num,
   message: '{_field_} should not contain special characters'
+})
+extend('alpha_spaces', {
+  ...alpha_spaces,
+  message: '{_field_} should not contain  characters'
 })
 extend('digits_between', {
   validate: (value, { min, max } = {}) => {
@@ -48,6 +53,13 @@ extend('url', {
         '(\\#[-a-z\\d_]*)?$',
       'i'
     ) // fragment locator
+    return !!pattern.test(str)
+  }
+})
+
+extend('alpha_num_spaces', {
+  validate: (str) => {
+    const pattern = new RegExp('^[A-Za-z0-9 ]*$')
     return !!pattern.test(str)
   }
 })
