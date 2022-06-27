@@ -445,9 +445,11 @@ export default {
         })
         .then((response) => {
           if (
-            !response?.id &&
-            response?.responseStatus &&
-            response?.responseStatus === 1
+            !(
+              response?.id &&
+              response?.responseStatus &&
+              response?.responseStatus === 1
+            )
           ) {
             this.setNotification({
               msg: response.message,
