@@ -238,24 +238,18 @@ export default {
     }
   },
   mounted() {
-    this.card =
-      this.prefillData &&
-      this.prefillData.poS_CardHolderName === '' &&
-      this.prefillData.poS_CardHolderStreet === '' &&
-      this.prefillData.poS_CardHolderZip === '' &&
-      this.prefillData.poS_CardHolderCity === '' &&
-      this.prefillData.poS_CardHolderState === '' &&
-      this.prefillData.poS_CardType === '' &&
-      this.prefillData.poS_CardNumber === '' &&
-      this.prefillData.poS_CardExpiry === ''
-        ? this.newCard
-        : this.savedCard
-
+    if (this.ASSIGNBILLLATER) {
+      this.card = this.billLater
+    } else if (!this.CHECKCARDFEILDS) {
+      this.card = this.savedCard
+    } else {
+      this.card = this.newCard
+    }
     this.cardOptions.push(
       {
         text: this.savedCard,
         value: this.savedCard,
-        disabled: this.isSavedDisable
+        disabled: this.CHECKCARDFEILDS
       },
       { text: this.newCard, value: this.newCard, disabled: false }
     )
@@ -274,8 +268,8 @@ export default {
       this.refreshPeriod = this.prefillData.refreshPeriod || 0
       this.invalidateData(this.refreshPeriod)
     },
-    card() {
-      if (this.card === this.newCard) {
+    card(from, to) {
+      if (to !== this.billLater && this.prefillData.poS_Display === 'Y') {
         this.$refs.observer.reset()
       }
     }
@@ -470,6 +464,26 @@ export default {
   },
   computed: {
     ...mapGetters(['config']),
+    ASSIGNBILLLATER() {
+      return (
+        this.prefillData &&
+        this.prefillData.poS_Display === 'Y' &&
+        this.prefillData.poS_Required === 'N'
+      )
+    },
+    CHECKCARDFEILDS() {
+      return (
+        this.prefillData &&
+        this.prefillData.poS_CardHolderName === '' &&
+        this.prefillData.poS_CardHolderStreet === '' &&
+        this.prefillData.poS_CardHolderZip === '' &&
+        this.prefillData.poS_CardHolderCity === '' &&
+        this.prefillData.poS_CardHolderState === '' &&
+        this.prefillData.poS_CardType === '' &&
+        this.prefillData.poS_CardNumber === '' &&
+        this.prefillData.poS_CardExpiry === ''
+      )
+    },
     USERID() {
       return this.config.customerInfo.userId || 0
     },
