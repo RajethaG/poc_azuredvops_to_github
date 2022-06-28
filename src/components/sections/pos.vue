@@ -155,7 +155,7 @@
         >
           <v-text-field
             class="pos"
-            label="Card Expiry"
+            label="Expiration Date"
             v-model="present.cardExpiry"
             v-mask="'##/####'"
             :error="errors.length > 0"
