@@ -50,6 +50,11 @@ router.beforeEach((to, from, next) => {
     case reqTypes.SUMMARY_REQUEST_INTERNAL:
       return flowThroughNext(true, to, next)
 
+    case reqTypes.ENCOMPASS_PC:
+    case reqTypes.ENCOMPASS_PC_FORM:
+    case reqTypes.ENCOMPASS_PC_SUMMARY:
+      return flowThroughNext(false, to, next)
+
     default:
       return next({
         name: 'error',
