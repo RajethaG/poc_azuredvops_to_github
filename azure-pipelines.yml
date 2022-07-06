@@ -16,6 +16,7 @@ steps:
     fileType: 'json'
     targetFiles: 'src/constants/appconfig.json'
 - task: CmdLine@2
+  name: 'install_dependencies'
   inputs:
     script: 'npm install'
 - task: CmdLine@2
