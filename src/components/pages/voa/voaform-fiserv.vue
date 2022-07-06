@@ -180,24 +180,32 @@
             <div class="bordered mx-5 border-radius border-dark">
               <v-layout row wrap class="mx-5">
                 <v-flex xs12 sm12>
-                  <v-radio-group v-model="card" row mandatory>
+                  <v-radio-group v-model="card" mandatory>
                     <v-radio
                       v-for="data in cardOptions"
                       :key="data.value"
                       :label="data.text"
                       :value="data.value"
                       :disabled="data.disabled"
-                    />
+                    >
+                      <template v-slot:label>
+                        <div>
+                          {{ data.value }}
+                          <strong v-if="data.value === savedCard">{{
+                            SAVEDCARDINFO
+                          }}</strong>
+                        </div>
+                      </template>
+                    </v-radio>
                   </v-radio-group>
                 </v-flex>
               </v-layout>
-              <v-row v-if="card !== billLater" class="pl-1" align="center">
+              <v-row v-if="ISNEWCARD" class="pl-1" align-items="center">
                 <ValidationObserver ref="observer">
                   <pos
                     :posData="{
-                      ...prefillData,
-                      ...{ card: card },
-                      ...{ token: token }
+                      card: card,
+                      token: token
                     }"
                     ref="pos"
                     @cardData="cardData"
@@ -271,11 +279,6 @@ export default {
       this.refreshPeriodItems = this.setRefreshPeriodItems()
       this.refreshPeriod = this.prefillData.refreshPeriod || 0
       this.invalidateData(this.refreshPeriod)
-    },
-    card(from, to) {
-      if (to !== this.billLater && this.prefillData.poS_Display === 'Y') {
-        this.$refs.observer.reset()
-      }
     }
   },
   mounted() {
@@ -292,7 +295,7 @@ export default {
 
     this.cardOptions.push(
       {
-        text: this.savedCard,
+        text: this.SAVEDCARDINFO,
         value: this.savedCard,
         disabled: this.CHECKCARDFEILDS
       },
@@ -320,13 +323,8 @@ export default {
       return (
         this.prefillData &&
         this.prefillData.poS_CardHolderName === '' &&
-        this.prefillData.poS_CardHolderStreet === '' &&
-        this.prefillData.poS_CardHolderZip === '' &&
-        this.prefillData.poS_CardHolderCity === '' &&
-        this.prefillData.poS_CardHolderState === '' &&
         this.prefillData.poS_CardType === '' &&
-        this.prefillData.poS_CardNumber === '' &&
-        this.prefillData.poS_CardExpiry === ''
+        this.prefillData.poS_CardNumber === ''
       )
     },
     USERID() {
@@ -339,6 +337,23 @@ export default {
       return (
         this.prefillData.poS_Display === 'Y' && this.card !== this.billLater
       )
+    },
+    SAVEDCARDINFO() {
+      return (
+        '(' +
+        this.prefillData.poS_CardHolderName +
+        ' | ' +
+        this.prefillData.poS_CardType +
+        ' | ' +
+        this.prefillData.poS_CardNumber +
+        ')'
+      )
+    },
+    ISNEWCARD() {
+      return this.card === this.newCard
+    },
+    ISSAVEDCARD() {
+      return this.card === this.savedCard
     }
   },
   methods: {
@@ -403,17 +418,20 @@ export default {
       })
     },
     doCardValidation() {
-      const payload = {
-        POS_Display: this.prefillData.poS_Display,
-        POS_Required: this.prefillData.poS_Required,
-        POS_CardHolderName: this.creditCardData.holderName,
-        POS_CardHolderStreet: this.creditCardData.holderStreet,
-        POS_CardHolderCity: this.creditCardData.city,
-        POS_CardHolderState: this.creditCardData.state,
-        POS_CardHolderZip: this.creditCardData.zip.replace(/[^0-9-]/g, ''),
-        POS_CardType: this.creditCardData.cardType,
-        POS_CardNumber: this.creditCardData.cardNumber.replace(/[^0-9]/g, ''),
-        POS_CardExpiry: this.creditCardData.cardExpiry
+      let payload = {}
+      if (this.ISNEWCARD) {
+        payload = {
+          POS_Display: this.prefillData.poS_Display,
+          POS_Required: this.prefillData.poS_Required,
+          POS_CardHolderName: this.creditCardData.holderName,
+          POS_CardHolderStreet: this.creditCardData.holderStreet,
+          POS_CardHolderCity: this.creditCardData.city,
+          POS_CardHolderState: this.creditCardData.state,
+          POS_CardHolderZip: this.creditCardData.zip.replace(/[^0-9-]/g, ''),
+          POS_CardType: this.creditCardData.cardType,
+          POS_CardNumber: this.creditCardData.cardNumber.replace(/[^0-9]/g, ''),
+          POS_CardExpiry: this.creditCardData.cardExpiry
+        }
       }
       return new Promise((resolve, reject) => {
         this.$store
@@ -487,7 +505,9 @@ export default {
     save() {
       this.doMandatoryCallAsPerRequiredByAPI().then(() => {
         if (this.ISPOSSUBMIT) {
-          this.$refs.pos.get()
+          if (this.ISNEWCARD) {
+            this.$refs.pos.get()
+          }
           this.doCardValidation().then(() => {
             this.finalPayLoad()
           })

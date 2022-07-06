@@ -1,5 +1,5 @@
 <template>
-  <div align="center" class="body--wrapper py-2 px-5 mx-5">
+  <div align-items="center" class="body--wrapper py-2 px-5 mx-5">
     <v-layout row wrap>
       <v-flex xs12 sm12 class="p-0">
         <ValidationProvider
@@ -10,13 +10,12 @@
           <v-text-field
             class="pos"
             label="Cardholder Name"
-            v-model="present.holderName"
+            v-model="cardDetails.holderName"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-text-field>
         </ValidationProvider>
       </v-flex>
@@ -31,13 +30,12 @@
           <v-text-field
             class="pos"
             label="Cardholder Street"
-            v-model="present.holderStreet"
+            v-model="cardDetails.holderStreet"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-text-field>
         </ValidationProvider>
       </v-flex>
@@ -52,13 +50,12 @@
           <v-text-field
             class="pos"
             label="City"
-            v-model="present.city"
+            v-model="cardDetails.city"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-text-field>
         </ValidationProvider>
       </v-flex>
@@ -70,7 +67,7 @@
         >
           <v-select
             class="pos"
-            v-model="present.state"
+            v-model="cardDetails.state"
             :items="states"
             item-text="value1"
             item-value="value2"
@@ -79,7 +76,6 @@
             label="State"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-select>
         </ValidationProvider>
       </v-flex>
@@ -92,14 +88,13 @@
           <v-text-field
             class="pos"
             label="Zip"
-            v-model="present.zip"
+            v-model="cardDetails.zip"
             v-mask="'##### ####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-text-field>
         </ValidationProvider>
       </v-flex>
@@ -114,14 +109,13 @@
           <v-text-field
             class="pos"
             label="Card Number"
-            v-model="present.cardNumber"
+            v-model="cardDetails.cardNumber"
             v-mask="'#### #### #### ####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-text-field>
         </ValidationProvider>
       </v-flex>
@@ -134,20 +128,19 @@
         >
           <v-select
             class="pos"
-            v-model="present.cardType"
+            v-model="cardDetails.cardType"
             :items="cardTypeOptions"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             label="Card Type"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-select>
         </ValidationProvider>
       </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs12 sm4>
+      <v-flex xs12 sm5>
         <ValidationProvider
           name="Card Expiry"
           :rules="{ max: 7, required: isMandatory }"
@@ -155,15 +148,14 @@
         >
           <v-text-field
             class="pos"
-            label="Expiration Date"
-            v-model="present.cardExpiry"
+            label="Expiration Date (MM/YYYY)"
+            v-model="cardDetails.cardExpiry"
             v-mask="'##/####'"
             :error="errors.length > 0"
             :error-messages="errors[0]"
             autocomplete="off"
             outlined
             dense
-            :disabled="isDisabled"
           ></v-text-field>
         </ValidationProvider>
       </v-flex>
@@ -184,19 +176,17 @@ export default {
 
   data() {
     return {
-      saved: {
-        holderName: this.posData.poS_CardHolderName,
-        holderStreet: this.posData.poS_CardHolderStreet,
-        city: this.posData.poS_CardHolderCity,
-        state: this.posData.poS_CardHolderState,
-        zip: this.posData.poS_CardHolderZip,
-        cardNumber: this.posData.poS_CardNumber,
-        cardType: this.posData.poS_CardType,
-        cardExpiry: this.posData.poS_CardExpiry
+      cardDetails: {
+        holderName: '',
+        holderStreet: '',
+        city: '',
+        state: '',
+        zip: '',
+        cardNumber: '',
+        cardType: '',
+        cardExpiry: ''
       },
       states: [],
-      new: this.getInitailValues(),
-      present: this.getInitailValues(),
       cardTypeOptions: [
         { text: 'MC', value: 'MC' },
         { text: 'VISA', value: 'VISA' },
@@ -206,9 +196,6 @@ export default {
     }
   },
   computed: {
-    isDisabled() {
-      return this.posData.card === 'Saved Card'
-    },
     isMandatory() {
       return this.posData.card === 'New Card'
     },
@@ -218,42 +205,13 @@ export default {
   },
   created() {
     this.getAllStates()
-    if (this.posData.card === 'Saved Card') {
-      this.new = Object.assign({}, this.present)
-      this.present = Object.assign({}, this.saved)
-    }
-  },
-  watch: {
-    posData(from, to) {
-      if (from.card !== to.card) {
-        if (from.card === 'Saved Card') {
-          this.new = Object.assign({}, this.present)
-          this.present = Object.assign({}, this.saved)
-        } else {
-          this.present = Object.assign({}, this.new)
-        }
-      }
-    }
   },
   methods: {
     ...mapActions(['doGET']),
     get() {
-      this.$emit('cardData', this.present)
+      this.$emit('cardData', this.cardDetails)
     },
-    getInitailValues() {
-      return {
-        holderName: '',
-        holderStreet: '',
-        city: '',
-        state: '',
-        zip: '',
-        cardNumber: '',
-        cardType: '',
-        cardExpiry: ''
-      }
-    },
-
-    async getAllStates() {
+   async getAllStates() {
       await this.doGET({
         getType: apiTypes.CPSS_GET_STATES,
         params: {
