@@ -7,13 +7,42 @@ trigger:
 - Dev
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: FileTransform@1
+  inputs:
+    folderPath: '**/'
+    fileType: 'json'
+    targetFiles: 'src/constants/appconfig.json'
+- task: Npm@1
+  inputs:
+    command: 'install'
+- task: CmdLine@2
+  inputs:
+    script: 'npm install'
+- task: CmdLine@2
+  inputs:
+    script: 'npm run format'
+- task: CmdLine@2
+  inputs:
+    script: 'npm run prettier-format'
+- task: CmdLine@2
+  inputs:
+    script: 'npm run build'
+- task: CopyFiles@2
+  inputs:
+    Contents: '**'
+    TargetFolder: '$(Build.SourcesDirectory)/dist/'
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)/dist/**'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop-integration-skyline-ui'
+    publishLocation: 'Container'
