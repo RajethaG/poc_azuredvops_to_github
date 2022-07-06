@@ -1,0 +1,49 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- Dev
+
+pool:
+  vmImage: windows-latest
+
+steps:
+- task: FileTransform@1
+  inputs:
+    folderPath: '**/'
+    fileType: 'json'
+    targetFiles: 'src/constants/appconfig.json'
+- task: CmdLine@2
+  name: 'install_dependencies'
+  inputs:
+    script: 'npm install'
+- task: CmdLine@2
+  name: 'format'
+  inputs:
+    script: 'npm run format'
+- task: CmdLine@2
+  name: 'prettier_format'
+  inputs:
+    script: 'npm run prettier-format'
+- task: CmdLine@2
+  name: 'build_project'
+  inputs:
+    script: 'npm run build'
+- task: CopyFiles@2
+  inputs:
+    Contents: '**'
+    TargetFolder: '$(Build.SourcesDirectory)/dist/'
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)/dist/**'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop-integration-skyline-ui'
+    publishLocation: 'Container'
