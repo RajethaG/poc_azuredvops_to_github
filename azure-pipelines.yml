@@ -20,12 +20,15 @@ steps:
   inputs:
     script: 'npm install'
 - task: CmdLine@2
+  name: 'format'
   inputs:
     script: 'npm run format'
 - task: CmdLine@2
+  name: 'prettier_format'
   inputs:
     script: 'npm run prettier-format'
 - task: CmdLine@2
+  name: 'build_project'
   inputs:
     script: 'npm run build'
 - task: CopyFiles@2
