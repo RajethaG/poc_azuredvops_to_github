@@ -15,9 +15,6 @@ steps:
     folderPath: '**/'
     fileType: 'json'
     targetFiles: 'src/constants/appconfig.json'
-- task: Npm@1
-  inputs:
-    command: 'install'
 - task: CmdLine@2
   inputs:
     script: 'npm install'
