@@ -211,7 +211,7 @@ export default {
     get() {
       this.$emit('cardData', this.cardDetails)
     },
-   async getAllStates() {
+    async getAllStates() {
       await this.doGET({
         getType: apiTypes.CPSS_GET_STATES,
         params: {

@@ -494,18 +494,19 @@ export default {
       return this.config.customerInfo.customerId || 0
     },
     ISPOSSUBMIT() {
-      return this.prefillData.poS_Display === 'Y' && this.card !== 'Bill Later'
+      return this.prefillData?.poS_Display === 'Y' && this.card !== 'Bill Later'
     },
     SAVEDCARDINFO() {
-      return (
-        '(' +
-        this.prefillData.poS_CardHolderName +
-        ' | ' +
-        this.prefillData.poS_CardType +
-        ' | ' +
-        this.prefillData.poS_CardNumber +
-        ')'
-      )
+      return !this.CHECKCARDFEILDS
+        ? '(' +
+            this.prefillData?.poS_CardHolderName +
+            ' | ' +
+            this.prefillData?.poS_CardType +
+            ' | ' +
+            'XXXX-XXXX-XXXX-' +
+            this.prefillData?.poS_CardNumber.substr(-4) +
+            ')'
+        : ''
     },
     ISNEWCARD() {
       return this.card === this.newCard
@@ -520,15 +521,15 @@ export default {
       newCard: 'New Card',
       savedCard: 'Saved Card',
       billLater: 'Bill Later',
-      referenceNumber: this.prefillData.referenceNumber || '',
-      accountHistory: this.prefillData.accountHistory || '',
-      refreshPeriod: this.prefillData.refreshPeriod || '',
-      firstName: this.prefillData.firstName || '',
-      lastName: this.prefillData.lastName || '',
-      ssn: this.prefillData.ssn || '',
-      email: this.prefillData.emailID || '',
-      phone: this.prefillData.phoneNumber || '',
-      employerName: this.prefillData.employerName || '',
+      referenceNumber: this.prefillData?.referenceNumber || '',
+      accountHistory: this.prefillData?.accountHistory || '',
+      refreshPeriod: this.prefillData?.refreshPeriod || '',
+      firstName: this.prefillData?.firstName || '',
+      lastName: this.prefillData?.lastName || '',
+      ssn: this.prefillData?.ssn || '',
+      email: this.prefillData?.emailID || '',
+      phone: this.prefillData?.phoneNumber || '',
+      employerName: this.prefillData?.employerName || '',
       accountHistoryItems: [
         { text: '30 days', value: '30' },
         { text: '60 days', value: '60' },

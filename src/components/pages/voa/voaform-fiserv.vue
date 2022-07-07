@@ -254,20 +254,20 @@ export default {
       newCard: 'New Card',
       savedCard: 'Saved Card',
       billLater: 'Bill Later',
-      referenceNumber: this.prefillData.referenceNumber || '',
-      transactionHistory: this.prefillData.accountHistory || '',
+      referenceNumber: this.prefillData?.referenceNumber || '',
+      transactionHistory: this.prefillData?.accountHistory || '',
       refreshPeriod: '',
       transactionHistoryItems: [
         { text: '30 days', value: '30' },
         { text: '60 days', value: '60' },
         { text: '90 days', value: '90' }
       ],
-      firstName: this.prefillData.firstName || '',
-      lastName: this.prefillData.lastName || '',
-      ssn: this.prefillData.ssn || '',
-      email: this.prefillData.emailID || '',
-      phone: this.prefillData.phoneNumber || '',
-      middleName: this.prefillData.middleName || '',
+      firstName: this.prefillData?.firstName || '',
+      lastName: this.prefillData?.lastName || '',
+      ssn: this.prefillData?.ssn || '',
+      email: this.prefillData?.emailID || '',
+      phone: this.prefillData?.phoneNumber || '',
+      middleName: this.prefillData?.middleName || '',
       card: '',
       cardOptions: [],
       refreshPeriodItems: this.setRefreshPeriodItems(),
@@ -277,7 +277,7 @@ export default {
   watch: {
     customerProducts() {
       this.refreshPeriodItems = this.setRefreshPeriodItems()
-      this.refreshPeriod = this.prefillData.refreshPeriod || 0
+      this.refreshPeriod = this.prefillData?.refreshPeriod || 0
       this.invalidateData(this.refreshPeriod)
     }
   },
@@ -335,19 +335,20 @@ export default {
     },
     ISPOSSUBMIT() {
       return (
-        this.prefillData.poS_Display === 'Y' && this.card !== this.billLater
+        this.prefillData?.poS_Display === 'Y' && this.card !== this.billLater
       )
     },
     SAVEDCARDINFO() {
-      return (
-        '(' +
-        this.prefillData.poS_CardHolderName +
-        ' | ' +
-        this.prefillData.poS_CardType +
-        ' | ' +
-        this.prefillData.poS_CardNumber +
-        ')'
-      )
+      return !this.CHECKCARDFEILDS
+        ? '(' +
+            this.prefillData?.poS_CardHolderName +
+            ' | ' +
+            this.prefillData?.poS_CardType +
+            ' | ' +
+            'XXXX-XXXX-XXXX-' +
+            this.prefillData?.poS_CardNumber.substr(-4) +
+            ')'
+        : ''
     },
     ISNEWCARD() {
       return this.card === this.newCard
