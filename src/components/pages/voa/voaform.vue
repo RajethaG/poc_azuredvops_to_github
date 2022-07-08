@@ -503,8 +503,7 @@ export default {
             ' | ' +
             this.prefillData?.poS_CardType +
             ' | ' +
-            'XXXX-XXXX-XXXX-' +
-            this.prefillData?.poS_CardNumber.substr(-4) +
+            this.prefillData?.poS_CardNumber +
             ')'
         : ''
     },
