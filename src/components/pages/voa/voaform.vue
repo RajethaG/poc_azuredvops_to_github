@@ -134,7 +134,7 @@
                 <v-flex xs12 sm12>
                   <ValidationProvider
                     name="Phone Number"
-                    rules="required|min:14|max:14"
+                    rules="min:14|max:14"
                     v-slot="{ errors }"
                   >
                     <v-text-field
@@ -351,7 +351,7 @@ export default {
         employerName: this.employerName === '' ? null : this.employerName,
         accountHistory: this.accountHistory,
         refreshPeriod: this.refreshPeriod,
-        phoneNumber: this.phone.replace(/[^0-9]/g, '')
+        phoneNumber: this.phone?.replace(/[^0-9]/g, '')
       }
 
       return payload
@@ -532,7 +532,10 @@ export default {
       accountHistoryItems: [
         { text: '30 days', value: '30' },
         { text: '60 days', value: '60' },
-        { text: '90 days', value: '90' }
+        { text: '90 days', value: '90' },
+        { text: '183 days', value: '183' },
+        { text: '365 days', value: '365' },
+        { text: '731 days', value: '731' }
       ],
       card: '',
       cardOptions: [],
