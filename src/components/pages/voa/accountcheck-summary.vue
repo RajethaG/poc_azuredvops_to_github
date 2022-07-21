@@ -346,7 +346,7 @@ export default {
         {
           date: data.responseTime,
           verification: data.verificationType,
-          account: this.getRefreshPeriodLabels(data.accountHistory),
+          account: data.accountHistory + ' days',
           refresh: this.getRefreshPeriodLabels(data.refreshPeriod)
         }
       ]
