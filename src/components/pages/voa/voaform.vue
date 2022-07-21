@@ -134,7 +134,7 @@
                 <v-flex xs12 sm12>
                   <ValidationProvider
                     name="Phone Number"
-                    rules="required|min:14|max:14"
+                    rules="min:14|max:14"
                     v-slot="{ errors }"
                   >
                     <v-text-field
@@ -351,7 +351,7 @@ export default {
         employerName: this.employerName === '' ? null : this.employerName,
         accountHistory: this.accountHistory,
         refreshPeriod: this.refreshPeriod,
-        phoneNumber: this.phone.replace(/[^0-9]/g, '')
+        phoneNumber: this.phone?.replace(/[^0-9]/g, '')
       }
 
       return payload
