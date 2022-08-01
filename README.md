@@ -1,5 +1,5 @@
 # integration-ui
-#read me to check protection rules
+#read me to check protection rule
 
 ## Project setup
 ```
